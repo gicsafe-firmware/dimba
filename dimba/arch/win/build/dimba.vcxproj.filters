@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\third-party\ssp\ssp.c">
+      <Filter>ssp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\mmgr\mmgr.c">
+      <Filter>dimba\mmgr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\main.c">
+      <Filter>dimba</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\third-party\rkh\source\fwk\src\rkhfwk_bittbl.c">
+      <Filter>rkh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\third-party\rkh\source\fwk\src\rkhfwk_dynevt.c">
+      <Filter>rkh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\third-party\rkh\source\fwk\src\rkhfwk_evtpool.c">
+      <Filter>rkh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\third-party\rkh\source\fwk\src\rkhfwk_sched.c">
+      <Filter>rkh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\third-party\rkh\source\fwk\src\rkhfwk_version.c">
+      <Filter>rkh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\third-party\rkh\source\mempool\src\rkhmempool.c">
+      <Filter>rkh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\third-party\rkh\source\portable\80x86\win32_st\vc\rkhport.c">
+      <Filter>rkh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\third-party\rkh\source\queue\src\rkhqueue.c">
+      <Filter>rkh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\third-party\rkh\source\sm\src\rkhsm.c">
+      <Filter>rkh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\third-party\rkh\source\sma\src\rkhsma.c">
+      <Filter>rkh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\third-party\rkh\source\sma\src\rkhsma_prio.c">
+      <Filter>rkh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\third-party\rkh\source\sma\src\rkhsma_sync.c">
+      <Filter>rkh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\third-party\rkh\source\tmr\src\rkhtmr.c">
+      <Filter>rkh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\third-party\rkh\source\trc\src\rkhtrc_filter.c">
+      <Filter>rkh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\third-party\rkh\source\trc\src\rkhtrc_record.c">
+      <Filter>rkh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\third-party\rkh\source\trc\src\rkhtrc_stream.c">
+      <Filter>rkh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsp\assert.c">
+      <Filter>bsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsp\bsp.c">
+      <Filter>bsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsp\getopt.c">
+      <Filter>bsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsp\hook.c">
+      <Filter>bsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsp\trace_io.c">
+      <Filter>bsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsp\trace_io_tcp.c">
+      <Filter>bsp</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="rkh">
+      <UniqueIdentifier>{da2fd889-7548-4bad-8240-8c34034e9a1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="bsp">
+      <UniqueIdentifier>{d13793e5-b7aa-446b-aff6-ffe09fcdbce0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="bsp\serial">
+      <UniqueIdentifier>{4f531c09-358a-4882-bbc3-2a86fd008922}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ssp">
+      <UniqueIdentifier>{86704938-4163-4798-ab82-811df96cd54d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dimba">
+      <UniqueIdentifier>{569708bf-8a07-44eb-af49-1b64ee9a9e98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dimba\mmgr">
+      <UniqueIdentifier>{c1a6b20c-627f-4c68-a831-9222b6abc2a0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\third-party\ssp\ssp.h">
+      <Filter>ssp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\mmgr\mmgr.h">
+      <Filter>dimba\mmgr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\rkhcfg.h">
+      <Filter>dimba</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\bsp.h">
+      <Filter>dimba</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\bsp\serial\winbsp.lib">
+      <Filter>bsp\serial</Filter>
+    </Library>
+  </ItemGroup>
+</Project>

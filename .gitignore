@@ -1,5 +1,6 @@
 # Vim backup files
 *.*~
+*.swp
 
 # Prerequisites
 *.d
