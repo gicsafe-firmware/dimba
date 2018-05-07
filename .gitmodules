@@ -5,3 +5,7 @@
 [submodule "third-party/ssp"]
 	path = third-party/ssp
 	url = https://github.com/leanfrancucci/ssp.git
+[submodule "rkh"]
+	branch = 9841217
+[submodule "ssp"]
+	branch = e7d87cb
