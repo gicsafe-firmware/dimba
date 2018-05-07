@@ -69,22 +69,17 @@
  */
 #define BSP_TS_RATE_HZ              CLOCKS_PER_SEC
 
-#define TRACE_CFG_CONSOLE_OPTIONS   "st:f:p:h"
-
 /* ---------------------------- Local data types --------------------------- */
+typedef struct
+{
+    char ftbinName[FTBIN_NAME_STR_LEN];
+    char tcpIpAddr[TCP_IPADDR_STR_LEN];
+    short tcpPort;
+    char silence;
+} TRACE_CFG_ST;
+
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
-static char *opts = (char *)TRACE_CFG_CONSOLE_OPTIONS;
-static const char *helpMessage =
-{
-    "\nOption usage:\n"
-	"\t -s silence\n"
-    "\t -f File name for binary trace output\n"
-    "\t -t ipaddr of TCP trace client\n"
-    "\t -p port of TCP trace client\n"
-    "\t -h (help)\n"
-};
-
 static TRACE_CFG_ST config =
 {
     "", TCP_TRC_IP_ADDR_DFT, TCP_TRC_PORT_DFT, 0
@@ -97,34 +92,27 @@ static SOCKET tsock;
 /* ---------------------------- Local functions ---------------------------- */
 /* ---------------------------- Global functions --------------------------- */
 void
-trace_io_setConfig(int argc, char **argv)
+trace_io_silence(void)
 {
-    int c;
+    config.silence = 1;
+}
 
-    while ((c = getopt(argc, argv, opts)) != EOF)
-        switch (c)
-        {
-			case 's':
-                config.silence = 1;
-				break;
+void
+trace_io_setFileName(char *fname)
+{
+    strncpy(config.ftbinName, fname, FTBIN_NAME_STR_LEN);
+}
 
-            case 'f':
-                strncpy(config.ftbinName, optarg, FTBIN_NAME_STR_LEN);
-                break;
+void
+trace_io_setTcpIpAddr(char *ip)
+{
+    strncpy(config.tcpIpAddr, ip, TCP_IPADDR_STR_LEN);
+}
 
-            case 't':
-                strncpy(config.tcpIpAddr, optarg, TCP_IPADDR_STR_LEN);
-                break;
-
-            case 'p':
-                config.tcpPort= (short)atoi(optarg);
-                break;
-
-            case '?':
-            case 'h':
-                printf(helpMessage);
-                break;
-        }
+void
+trace_io_setTcpPort(short p)
+{
+    config.tcpPort=p;
 }
 
 void
