@@ -108,8 +108,10 @@
     <ClCompile Include="..\..\..\..\third-party\rkh\source\trc\src\rkhtrc_record.c" />
     <ClCompile Include="..\..\..\..\third-party\rkh\source\trc\src\rkhtrc_stream.c" />
     <ClCompile Include="..\..\..\..\third-party\ssp\src\ssp.c" />
+    <ClCompile Include="..\..\..\conmgr\conmgr.c" />
     <ClCompile Include="..\..\..\main.c" />
     <ClCompile Include="..\..\..\modmgr\modmgr.c" />
+    <ClCompile Include="..\..\..\parser\sim900\sim900parser.c" />
     <ClCompile Include="..\bsp\assert.c" />
     <ClCompile Include="..\bsp\bsp.c" />
     <ClCompile Include="..\bsp\getopt.c" />

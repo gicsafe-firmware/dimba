@@ -1,6 +1,6 @@
 /**
  *  \file       conmgr.h
- *  \brief      Connection and protocol manager.
+ *  \brief      Specification of connection and protocol manager.
  */
 
 /* -------------------------- Development history -------------------------- */

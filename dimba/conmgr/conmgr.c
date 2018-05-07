@@ -1,60 +1,55 @@
 /**
- *  \file       modmgr.c
- *  \brief      AT-command Module Manager.
+ *  \file       conmgr.c
+ *  \brief      Implementation of connection and protocol manager.
  */
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2018.05.02  DaBa  v1.0.00  Initial version
+ *  2018.05.07  LeFr  v1.0.00  Initial version
  */
 
 /* -------------------------------- Authors -------------------------------- */
 /*
- *  DaBa  Dario Baliña db@vortexmakes.com
+ *  LeFr  Leandro Francucci lf@vortexmakes.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
 #include "rkh.h"
-#include "modmgr.h"
+#include "conmgr.h"
 #include "bsp.h"
 
 /* ----------------------------- Local macros ------------------------------ */
 /* ......................... Declares active object ........................ */
-typedef struct ModMgr ModMgr;
+typedef struct ConMgr ConMgr;
 
 /* ................... Declares states and pseudostates .................... */
-RKH_DCLR_BASIC_STATE ModMgr_idle;
+RKH_DCLR_BASIC_STATE ConMgr_idle;
 
 /* ........................ Declares initial action ........................ */
-static void init(ModMgr *const me, RKH_EVT_T *pe);
+static void init(ConMgr *const me, RKH_EVT_T *pe);
 
 /* ........................ Declares effect actions ........................ */
-static void close(ModMgr *const me, RKH_EVT_T *pe);
-static void send_ping(ModMgr *const me, RKH_EVT_T *pe);
-static void timeout(ModMgr *const me, RKH_EVT_T *pe);
-static void rcv_pong(ModMgr *const me, RKH_EVT_T *pe);
-
 /* ......................... Declares entry actions ........................ */
 /* ......................... Declares exit actions ......................... */
 /* ............................ Declares guards ............................ */
 /* ........................ States and pseudostates ........................ */
-RKH_CREATE_BASIC_STATE(ModMgr_idle, NULL, NULL, RKH_ROOT, NULL);
-RKH_CREATE_TRANS_TABLE(ModMgr_idle)
+RKH_CREATE_BASIC_STATE(ConMgr_idle, NULL, NULL, RKH_ROOT, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_idle)
     RKH_TRINT(evTerminate,  NULL, NULL),
 RKH_END_TRANS_TABLE
 
 /* ............................. Active object ............................. */
-struct ModMgr
+struct ConMgr
 {
     RKH_SMA_T ao;       /* base structure */
     RKH_TMR_T timer;    /* which is responsible for toggling the LED */
                         /* posting the TIMEOUT signal event to active object */
-                        /* 'modmgr' */
+                        /* 'conmgr' */
 };
 
-RKH_SMA_CREATE(ModMgr, modmgr, 0, HCAL, &ModMgr_idle, init, NULL);
-RKH_SMA_DEF_PTR(modmgr);
+RKH_SMA_CREATE(ConMgr, conmgr, 0, HCAL, &ConMgr_idle, init, NULL);
+RKH_SMA_DEF_PTR(conmgr);
 
 /* ------------------------------- Constants ------------------------------- */
 /* ---------------------------- Local data types --------------------------- */
@@ -71,20 +66,18 @@ static RKH_ROM_STATIC_EVENT(e_tout, evTimeout);
 /* ---------------------------- Local functions ---------------------------- */
 /* ............................ Initial action ............................. */
 static void
-init(ModMgr *const me, RKH_EVT_T *pe)
+init(ConMgr *const me, RKH_EVT_T *pe)
 {
 	(void)pe;
 
     RKH_TR_FWK_AO(me);
     RKH_TR_FWK_QUEUE(&RKH_UPCAST(RKH_SMA_T, me)->equeue);
-    RKH_TR_FWK_STATE(me, &ModMgr_idle);
+    RKH_TR_FWK_STATE(me, &ConMgr_idle);
     RKH_TR_FWK_TIMER(&me->timer);
     RKH_TR_FWK_SIG(evTerminate);
 	RKH_TR_FWK_SIG(evTimeout);
 
     RKH_TMR_INIT(&me->timer, &e_tout, NULL);
-
-    bsp_serial_open();
 }
 
 /* ............................ Effect actions ............................. */
