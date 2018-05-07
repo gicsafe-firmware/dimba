@@ -1,22 +1,22 @@
 /**
- *  \file       wsertest.h
- *  \brief      Example application.
+ *  \file       sim900parser.h
+ *  \brief      SIM900 parser for SSP.
  */
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2018.05.02  DaBa  v1.0.00  Initial version
+ *  2018.05.07  LeFr  v1.0.00  Initial version
  */
 
 /* -------------------------------- Authors -------------------------------- */
 /*
- *  DaBa  Dario Baliña db@vortexmakes.com
+ *  LeFr  Leandro Francucci lf@vortexmakes.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
 /* --------------------------------- Module -------------------------------- */
-#ifndef __PING_H__
-#define __PING_H__
+#ifndef __SIM900PARSER_H__
+#define __SIM900PARSER_H__
 
 /* ----------------------------- Include files ----------------------------- */
 #include "rkh.h"
@@ -29,16 +29,7 @@ extern "C" {
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
 /* ................................ Signals ................................ */
-typedef enum Signals
-{
-	evTimeout,
-	evTerminate,	 /* press the key escape on the keyboard */
-	BLINKY_NUM_EVENTS
-}Signals;
-
 /* ........................ Declares active object ......................... */
-RKH_SMA_DCLR(mmgr);
-
 /* ------------------------------- Data types ------------------------------ */
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */

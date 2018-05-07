@@ -1,12 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\third-party\ssp\ssp.c">
-      <Filter>ssp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mmgr\mmgr.c">
-      <Filter>dimba\mmgr</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\main.c">
       <Filter>dimba</Filter>
     </ClCompile>
@@ -76,6 +70,12 @@
     <ClCompile Include="..\bsp\trace_io_tcp.c">
       <Filter>bsp</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\third-party\ssp\src\ssp.c">
+      <Filter>ssp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\modmgr\modmgr.c">
+      <Filter>dimba\modmgr</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rkh">
@@ -93,17 +93,20 @@
     <Filter Include="dimba">
       <UniqueIdentifier>{569708bf-8a07-44eb-af49-1b64ee9a9e98}</UniqueIdentifier>
     </Filter>
-    <Filter Include="dimba\mmgr">
+    <Filter Include="dimba\modmgr">
       <UniqueIdentifier>{c1a6b20c-627f-4c68-a831-9222b6abc2a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dimba\conmgr">
+      <UniqueIdentifier>{6c74171c-7547-4bab-8478-d886a7adb11a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dimba\modcmd">
+      <UniqueIdentifier>{ce828ad4-e2e1-4623-88a3-f1d4386844fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dimba\parser">
+      <UniqueIdentifier>{fe14fea3-8785-4a4d-8be0-f5e70d94a5f1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\third-party\ssp\ssp.h">
-      <Filter>ssp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\mmgr\mmgr.h">
-      <Filter>dimba\mmgr</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\rkhcfg.h">
       <Filter>dimba</Filter>
     </ClInclude>

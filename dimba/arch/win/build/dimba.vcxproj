@@ -54,7 +54,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\..\third-party\rkh\source\fwk\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\mempool\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\queue\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\sm\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\sma\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\tmr\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\trc\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\portable\80x86\win32_st\vc\;$(ProjectDir)..\..\..\..\third-party\ssp;$(ProjectDir)..\bsp;$(ProjectDir)..\bsp\serial;$(ProjectDir)..\..\..\..\aos\ping;$(ProjectDir)..\..\..;$(ProjectDir)..\..\..\mmgr;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\..\third-party\rkh\source\fwk\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\mempool\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\queue\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\sm\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\sma\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\tmr\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\trc\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\portable\80x86\win32_st\vc\;$(ProjectDir)..\..\..\..\third-party\ssp\src;$(ProjectDir)..\bsp;$(ProjectDir)..\bsp\serial;$(ProjectDir)..\..\..\..\aos\ping;$(ProjectDir)..\..\..;$(ProjectDir)..\..\..\parser\sim900;$(ProjectDir)..\..\..\modcmd;$(ProjectDir)..\..\..\conmgr;$(ProjectDir)..\..\..\modmgr;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;__W32STVC__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -107,9 +107,9 @@
     <ClCompile Include="..\..\..\..\third-party\rkh\source\trc\src\rkhtrc_filter.c" />
     <ClCompile Include="..\..\..\..\third-party\rkh\source\trc\src\rkhtrc_record.c" />
     <ClCompile Include="..\..\..\..\third-party\rkh\source\trc\src\rkhtrc_stream.c" />
-    <ClCompile Include="..\..\..\..\third-party\ssp\ssp.c" />
+    <ClCompile Include="..\..\..\..\third-party\ssp\src\ssp.c" />
     <ClCompile Include="..\..\..\main.c" />
-    <ClCompile Include="..\..\..\mmgr\mmgr.c" />
+    <ClCompile Include="..\..\..\modmgr\modmgr.c" />
     <ClCompile Include="..\bsp\assert.c" />
     <ClCompile Include="..\bsp\bsp.c" />
     <ClCompile Include="..\bsp\getopt.c" />
@@ -118,9 +118,7 @@
     <ClCompile Include="..\bsp\trace_io_tcp.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\third-party\ssp\ssp.h" />
     <ClInclude Include="..\..\..\bsp.h" />
-    <ClInclude Include="..\..\..\mmgr\mmgr.h" />
     <ClInclude Include="..\..\..\rkhcfg.h" />
   </ItemGroup>
   <ItemGroup>

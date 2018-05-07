@@ -16,7 +16,7 @@
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
 #include "rkh.h"
-#include "mmgr.h"
+#include "modmgr.h"
 #include "bsp.h"
 
 
@@ -37,7 +37,7 @@ main(int argc, char *argv[])
 {
     bsp_init(argc, argv);
 
-    RKH_SMA_ACTIVATE(mmgr, qsto, QSTO_SIZE, 0, 0);
+    RKH_SMA_ACTIVATE(modmgr, qsto, QSTO_SIZE, 0, 0);
     rkh_fwk_enter();
 
     RKH_TRC_CLOSE();

@@ -53,7 +53,7 @@
 /* ----------------------------- Include files ----------------------------- */
 #include <stdio.h>
 
-#include "mmgr.h"
+#include "modmgr.h"
 
 #include "bsp.h"
 #include "rkh.h"
@@ -77,6 +77,7 @@ SERIAL_T serials[ NUM_CHANNELS ] =
 
 /* ---------------------------- Local variables ---------------------------- */
 static RKH_ROM_STATIC_EVENT(e_Term, evTerminate);
+static SSP sim900Parser;
 
 SSP_CREATE_NORMAL_NODE(root);
 SSP_CREATE_BR_TABLE(root)
@@ -128,7 +129,7 @@ bsp_init(int argc, char *argv[])
     RKH_FILTER_ON_EVENT(RKH_TRC_ALL_EVENTS);
     RKH_FILTER_OFF_EVENT(RKH_TE_TMR_TOUT);
     RKH_FILTER_OFF_EVENT(RKH_TE_SM_STATE);
-    RKH_FILTER_OFF_SMA(mmgr);
+    RKH_FILTER_OFF_SMA(modmgr);
     RKH_FILTER_OFF_ALL_SIGNALS();
 
     RKH_TRC_OPEN();
@@ -139,7 +140,7 @@ bsp_keyParser(int c)
 {
     if (c == ESC)
     {
-        RKH_SMA_POST_FIFO(mmgr, &e_Term, 0);
+        RKH_SMA_POST_FIFO(modmgr, &e_Term, 0);
         rkhport_fwk_stop();
     }
 }
@@ -153,7 +154,7 @@ static
 void
 ser_rx_isr( unsigned char byte )
 {
-    ssp_do_search(byte);
+    ssp_doSearch(&sim900Parser, byte);
 }
 
 static
@@ -169,7 +170,7 @@ bsp_serial_open(void)
 	connect_serial(TEST_PORT);
     tx_data(TEST_PORT, 'O');
 
-  	ssp_init(&root);
+  	ssp_init(&sim900Parser, &root);
 }
 
 void

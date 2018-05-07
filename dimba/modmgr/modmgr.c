@@ -1,5 +1,5 @@
 /**
- *  \file       mmgr.c
+ *  \file       modmgr.c
  *  \brief      AT-command Module Manager.
  */
 
@@ -16,27 +16,24 @@
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
 #include "rkh.h"
-#include "mmgr.h"
+#include "modmgr.h"
 #include "bsp.h"
 
 /* ----------------------------- Local macros ------------------------------ */
-#define PONG_WAIT_TIME          RKH_TIME_SEC(2)
-#define PING_DELAY_TIME         RKH_TIME_SEC(1)
-
 /* ......................... Declares active object ........................ */
-typedef struct Mmgr Mmgr;
+typedef struct ModMgr ModMgr;
 
 /* ................... Declares states and pseudostates .................... */
 RKH_DCLR_BASIC_STATE idle;
 
 /* ........................ Declares initial action ........................ */
-static void init(Mmgr *const me, RKH_EVT_T *pe);
+static void init(ModMgr *const me, RKH_EVT_T *pe);
 
 /* ........................ Declares effect actions ........................ */
-static void close(Mmgr *const me, RKH_EVT_T *pe);
-static void send_ping(Mmgr *const me, RKH_EVT_T *pe);
-static void timeout(Mmgr *const me, RKH_EVT_T *pe);
-static void rcv_pong(Mmgr *const me, RKH_EVT_T *pe);
+static void close(ModMgr *const me, RKH_EVT_T *pe);
+static void send_ping(ModMgr *const me, RKH_EVT_T *pe);
+static void timeout(ModMgr *const me, RKH_EVT_T *pe);
+static void rcv_pong(ModMgr *const me, RKH_EVT_T *pe);
 
 /* ......................... Declares entry actions ........................ */
 /* ......................... Declares exit actions ......................... */
@@ -48,16 +45,16 @@ RKH_CREATE_TRANS_TABLE(idle)
 RKH_END_TRANS_TABLE
 
 /* ............................. Active object ............................. */
-struct Mmgr
+struct ModMgr
 {
-    RKH_SMA_T sma;      /* base structure */
+    RKH_SMA_T ao;       /* base structure */
     RKH_TMR_T timer;    /* which is responsible for toggling the LED */
                         /* posting the TIMEOUT signal event to active object */
-                        /* 'mmgr' */
+                        /* 'modmgr' */
 };
 
-RKH_SMA_CREATE(Mmgr, mmgr, 0, HCAL, &idle, init, NULL);
-RKH_SMA_DEF_PTR(mmgr);
+RKH_SMA_CREATE(ModMgr, modmgr, 0, HCAL, &idle, init, NULL);
+RKH_SMA_DEF_PTR(modmgr);
 
 /* ------------------------------- Constants ------------------------------- */
 /* ---------------------------- Local data types --------------------------- */
@@ -74,7 +71,7 @@ static RKH_ROM_STATIC_EVENT(e_tout, evTimeout);
 /* ---------------------------- Local functions ---------------------------- */
 /* ............................ Initial action ............................. */
 static void
-init(Mmgr *const me, RKH_EVT_T *pe)
+init(ModMgr *const me, RKH_EVT_T *pe)
 {
 	(void)pe;
 
