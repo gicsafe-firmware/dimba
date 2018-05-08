@@ -28,6 +28,8 @@ extern "C" {
 
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
+#define MODMGR_MAX_SIZEOF_CMDSTR    32
+
 /* ................................ Signals ................................ */
 typedef enum ModMgr_Signals ModMgr_Signals;
 enum ModMgr_Signals
@@ -40,6 +42,15 @@ enum ModMgr_Signals
 RKH_SMA_DCLR(modmgr);
 
 /* ------------------------------- Data types ------------------------------ */
+typedef struct ModMgrEvt ModMgrEvt;
+struct ModMgrEvt
+{
+    ModCmd args;
+    char cmd[MODMGR_MAX_SIZEOF_CMDSTR];
+    unsigned char *data;
+    unsigned char nData;
+};
+
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
 /* -------------------- External C language linkage end -------------------- */

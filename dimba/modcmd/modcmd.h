@@ -1,6 +1,6 @@
 /**
  *  \file       modcmd.h
- *  \brief      Module command abstraction.
+ *  \brief      Specification of module command abstraction.
  */
 
 /* -------------------------- Development history -------------------------- */
@@ -31,6 +31,16 @@ extern "C" {
 /* ................................ Signals ................................ */
 /* ........................ Declares active object ......................... */
 /* ------------------------------- Data types ------------------------------ */
+typedef struct ModCmd ModCmd;
+struct ModCmd
+{
+    RKH_EVT_T evt;
+    const char *fmt;    /** contains a format string of AT command */
+    RKHSMA_T *aoDest;   /** pointer to SMA that receive the modem response */
+    RKH_TNT_T waitResponseTime; /** timeout waiting for modem response */
+    RKH_TNT_T interCmdTime;     /** inter-command delay */
+};
+
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
 /* -------------------- External C language linkage end -------------------- */
