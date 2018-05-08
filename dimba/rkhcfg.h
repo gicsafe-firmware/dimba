@@ -174,7 +174,7 @@
  *	not included: state nesting, composite state, history (shallow and deep)
  *	pseudostate, entry action, and exit action.
  */
-#define RKH_CFG_SMA_HCAL_EN             RKH_DISABLED
+#define RKH_CFG_SMA_HCAL_EN             RKH_ENABLED
 
 /**
  *  Specify the maximum number of hierarchical levels. The smaller this
@@ -196,7 +196,7 @@
  *	If the #RKH_CFG_SMA_PSEUDOSTATE_EN is set to 1, the RKH allows
  *	pseudostates usage.
  */
-#define RKH_CFG_SMA_PSEUDOSTATE_EN      RKH_DISABLED
+#define RKH_CFG_SMA_PSEUDOSTATE_EN      RKH_ENABLED
 
 /**
  *	If the #RKH_CFG_SMA_DEEP_HIST_EN and #RKH_CFG_SMA_PSEUDOSTATE_EN are
@@ -220,7 +220,7 @@
  *	If the #RKH_CFG_SMA_CONDITIONAL_EN and #RKH_CFG_SMA_PSEUDOSTATE_EN are
  *	set to 1, the RKH allows branch (or conditional) pseudostate usage.
  */
-#define RKH_CFG_SMA_CONDITIONAL_EN      RKH_DISABLED
+#define RKH_CFG_SMA_CONDITIONAL_EN      RKH_ENABLED
 
 /**
  *	If the #RKH_CFG_SMA_SUBMACHINE_EN and #RKH_CFG_SMA_PSEUDOSTATE_EN are

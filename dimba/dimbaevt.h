@@ -1,6 +1,6 @@
 /**
- *  \file       modmgr.h
- *  \brief      Module Manager.
+ *  \file       dimbaevt.h
+ *  \brief      Dimba reactive app signal definition.
  */
 
 /* -------------------------- Development history -------------------------- */
@@ -15,8 +15,8 @@
 
 /* --------------------------------- Notes --------------------------------- */
 /* --------------------------------- Module -------------------------------- */
-#ifndef __MODMGR_H__
-#define __MODMGR_H__
+#ifndef __DIMBAEVT_H__
+#define __DIMBAEVT_H__
 
 /* ----------------------------- Include files ----------------------------- */
 #include "rkh.h"
@@ -29,8 +29,17 @@ extern "C" {
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
 /* ................................ Signals ................................ */
-/* ........................ Declares active object ......................... */
-RKH_SMA_DCLR(modmgr);
+typedef enum Dimba_Signals Dimba_Signals;
+enum Dimba_Signals
+{
+	evOpen,
+	evClose,
+    evModCmd,
+    evModResp,
+    evModUrc,
+	evTimeout,
+	evTerminate     /* press the key escape on the keyboard */
+};
 
 /* ------------------------------- Data types ------------------------------ */
 /* -------------------------- External variables --------------------------- */
