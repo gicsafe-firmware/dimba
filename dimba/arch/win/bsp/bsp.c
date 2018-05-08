@@ -56,6 +56,7 @@
 #include "modmgr.h"
 
 #include "bsp.h"
+#include "getopt.h"
 #include "rkh.h"
 #include "trace_io_cfg.h"
 #include "wserial.h"
@@ -67,6 +68,7 @@ RKH_THIS_MODULE
 /* ----------------------------- Local macros ------------------------------ */
 /* ------------------------------- Constants ------------------------------- */
 #define ESC         0x1B
+#define DIMBA_CFG_OPTIONS    "st:f:p:m:h"
 
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
@@ -76,26 +78,30 @@ SERIAL_T serials[ NUM_CHANNELS ] =
 };
 
 /* ---------------------------- Local variables ---------------------------- */
+static char *opts = (char *)DIMBA_CFG_OPTIONS;
+static const char *helpMessage =
+{
+    "\nOption usage:\n"
+	"\t -s silence\n"
+    "\t -f File name for binary trace output\n"
+    "\t -t ipaddr of TCP trace client\n"
+    "\t -p port of TCP trace client\n"
+    "\t -m GSM Module Serial Port\n"
+    "\t -h (help)\n"
+};
+
 static RKH_ROM_STATIC_EVENT(e_Term, evTerminate);
 static SSP sim900Parser;
+
+static void ser_rx_isr(unsigned char byte);
+static void ser_tx_isr(void);
+static SERIAL_CBACK_T ser_cback =
+{ ser_rx_isr, NULL, NULL, ser_tx_isr, NULL, NULL, NULL };
 
 SSP_CREATE_NORMAL_NODE(root);
 SSP_CREATE_BR_TABLE(root)
 	SSPBR("OK\r\n", NULL,   &root),
 SSP_END_BR_TABLE
-
-static void ser_rx_isr(unsigned char byte);
-static void ser_tx_isr(void);
-static SERIAL_CBACK_T ser_cback =
-{
-	ser_rx_isr,
-	NULL,
-	NULL,
-	ser_tx_isr,
-	NULL,
-	NULL,
-	NULL
-};
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
@@ -112,6 +118,41 @@ printBanner(void)
     printf("1.- Press ESC to quit \n\n\n");
 }
 
+static void
+processCmdLineOpts(int argc, char **argv)
+{
+    int c;
+
+    while ((c = getopt(argc, argv, opts)) != EOF)
+        switch (c)
+        {
+            case 'm':
+                strcpy(serials[GSM_PORT].com_name, optarg);
+                break;
+
+			case 's':
+                trace_io_silence();
+				break;
+
+            case 'f':
+                trace_io_setFileName(optarg);
+                break;
+
+            case 't':
+                trace_io_setTcpIpAddr(optarg);
+                break;
+
+            case 'p':
+                trace_io_setTcpPort((short)atoi(optarg));
+                break;
+
+            case '?':
+            case 'h':
+                printf(helpMessage);
+                break;
+        }
+}
+
 /* ---------------------------- Global functions --------------------------- */
 void
 bsp_init(int argc, char *argv[])
@@ -121,7 +162,7 @@ bsp_init(int argc, char *argv[])
 
     printBanner();
 
-    trace_io_setConfig(argc, argv);
+    processCmdLineOpts(argc, argv);
 
     rkh_fwk_init();
 
@@ -166,9 +207,9 @@ ser_tx_isr( void )
 void
 bsp_serial_open(void)
 {
-	init_serial_hard(TEST_PORT, &ser_cback );
-	connect_serial(TEST_PORT);
-    tx_data(TEST_PORT, 'O');
+	init_serial_hard(GSM_PORT, &ser_cback );
+	connect_serial(GSM_PORT);
+    tx_data(GSM_PORT, 'O');
 
   	ssp_init(&sim900Parser, &root);
 }
@@ -176,8 +217,8 @@ bsp_serial_open(void)
 void
 bsp_serial_close(void)
 {
-	disconnect_serial(TEST_PORT);
-	deinit_serial_hard(TEST_PORT);
+	disconnect_serial(GSM_PORT);
+	deinit_serial_hard(GSM_PORT);
 }
 
 /* ------------------------------ File footer ------------------------------ */

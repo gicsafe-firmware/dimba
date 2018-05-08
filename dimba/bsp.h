@@ -63,8 +63,7 @@ extern "C" {
 /* -------------------------------- Constants ------------------------------ */
 enum
 {
-	COM1, 
-	TEST_PORT = COM1,
+	GSM_PORT, 
 
   	NUM_CHANNELS
 };
