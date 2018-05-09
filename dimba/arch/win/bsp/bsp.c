@@ -61,7 +61,7 @@
 #include "trace_io_cfg.h"
 #include "wserial.h"
 #include "wserdefs.h"
-#include "ssp.h"
+#include "modcmd.h"
 
 RKH_THIS_MODULE
 
@@ -78,6 +78,7 @@ SERIAL_T serials[ NUM_CHANNELS ] =
 };
 
 /* ---------------------------- Local variables ---------------------------- */
+static ModCmdRcvHandler cmdParser;
 static char *opts = (char *)DIMBA_CFG_OPTIONS;
 static const char *helpMessage =
 {
@@ -91,17 +92,11 @@ static const char *helpMessage =
 };
 
 static RKH_ROM_STATIC_EVENT(e_Term, evTerminate);
-static SSP sim900Parser;
 
 static void ser_rx_isr(unsigned char byte);
 static void ser_tx_isr(void);
 static SERIAL_CBACK_T ser_cback =
 { ser_rx_isr, NULL, NULL, ser_tx_isr, NULL, NULL, NULL };
-
-SSP_CREATE_NORMAL_NODE(root);
-SSP_CREATE_BR_TABLE(root)
-	SSPBR("OK\r\n", NULL,   &root),
-SSP_END_BR_TABLE
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
@@ -195,7 +190,7 @@ static
 void
 ser_rx_isr( unsigned char byte )
 {
-    ssp_doSearch(&sim900Parser, byte);
+    cmdParser(byte);
 }
 
 static
@@ -210,8 +205,7 @@ bsp_serial_open(void)
 	init_serial_hard(GSM_PORT, &ser_cback );
 	connect_serial(GSM_PORT);
     tx_data(GSM_PORT, 'O');
-
-  	ssp_init(&sim900Parser, &root);
+    cmdParser = ModCmd_init();
 }
 
 void

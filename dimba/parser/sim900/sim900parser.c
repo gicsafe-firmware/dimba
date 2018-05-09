@@ -1,25 +1,29 @@
 /**
  *  \file       sim900parser.c
- *  \brief      Implementation of SIM900 parser (SSP).
+ *  \brief      ...
  */
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2018.05.07  LeFr  v1.0.00  Initial version
+ *  2018.05.09  LeFr  v1.0.00  Initial version
  */
 
 /* -------------------------------- Authors -------------------------------- */
 /*
- *  LeFr  Leandro Francucci lf@vortexmakes.com
+ *  2018.05.09  LeFr  v1.0.00  Initial version
  */
 
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
 #include "ssp.h"
-#include "sim900parser.h"
 
 /* ----------------------------- Local macros ------------------------------ */
 /* ------------------------------- Constants ------------------------------- */
+SSP_CREATE_NORMAL_NODE(root);
+SSP_CREATE_BR_TABLE(root)
+	SSPBR("OK\r\n", NULL,   &root),
+SSP_END_BR_TABLE
+
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */

@@ -8,4 +8,4 @@
 [submodule "rkh"]
 	branch = 9841217
 [submodule "ssp"]
-	branch = e7d87cb
+	branch = master

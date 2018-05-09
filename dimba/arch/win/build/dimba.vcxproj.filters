@@ -82,6 +82,9 @@
     <ClCompile Include="..\..\..\parser\sim900\sim900parser.c">
       <Filter>dimba\parser</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\modcmd\modcmdSim900.c">
+      <Filter>dimba\modcmd</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rkh">

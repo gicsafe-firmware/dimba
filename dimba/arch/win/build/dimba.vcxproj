@@ -110,6 +110,7 @@
     <ClCompile Include="..\..\..\..\third-party\ssp\src\ssp.c" />
     <ClCompile Include="..\..\..\conmgr\conmgr.c" />
     <ClCompile Include="..\..\..\main.c" />
+    <ClCompile Include="..\..\..\modcmd\modcmdSim900.c" />
     <ClCompile Include="..\..\..\modmgr\modmgr.c" />
     <ClCompile Include="..\..\..\parser\sim900\sim900parser.c" />
     <ClCompile Include="..\bsp\assert.c" />
