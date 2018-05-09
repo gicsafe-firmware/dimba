@@ -1,6 +1,6 @@
 /**
- *  \file       modmgr.h
- *  \brief      Module Manager.
+ *  \file       dimbaevt.h
+ *  \brief      Dimba reactive app signal definition.
  */
 
 /* -------------------------- Development history -------------------------- */
@@ -15,12 +15,11 @@
 
 /* --------------------------------- Notes --------------------------------- */
 /* --------------------------------- Module -------------------------------- */
-#ifndef __MODMGR_H__
-#define __MODMGR_H__
+#ifndef __DIMBAEVT_H__
+#define __DIMBAEVT_H__
 
 /* ----------------------------- Include files ----------------------------- */
 #include "rkh.h"
-#include "modcmd.h"
 
 /* ---------------------- External C language linkage ---------------------- */
 #ifdef __cplusplus
@@ -29,22 +28,20 @@ extern "C" {
 
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
-#define MODMGR_MAX_SIZEOF_CMDSTR    32
-
 /* ................................ Signals ................................ */
-/* ........................ Declares active object ......................... */
-RKH_SMA_DCLR(modMgr);
-
-/* ------------------------------- Data types ------------------------------ */
-typedef struct ModMgrEvt ModMgrEvt;
-struct ModMgrEvt
+typedef enum Dimba_Signals Dimba_Signals;
+enum Dimba_Signals
 {
-    ModCmd args;
-    char cmd[MODMGR_MAX_SIZEOF_CMDSTR];
-    unsigned char *data;
-    unsigned char nData;
+	evOpen,
+	evClose,
+    evModCmd,
+    evModResp,
+    evModUrc,
+	evTimeout,
+	evTerminate     /* press the key escape on the keyboard */
 };
 
+/* ------------------------------- Data types ------------------------------ */
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
 /* -------------------- External C language linkage end -------------------- */

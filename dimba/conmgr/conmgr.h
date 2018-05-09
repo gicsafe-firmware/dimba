@@ -29,15 +29,8 @@ extern "C" {
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
 /* ................................ Signals ................................ */
-typedef enum ConMgr_Signals ConMgr_Signals;
-enum ConMgr_Signals
-{
-	evTimeout,
-	evTerminate     /* press the key escape on the keyboard */
-};
-
 /* ........................ Declares active object ......................... */
-RKH_SMA_DCLR(conmgr);
+RKH_SMA_DCLR(conMgr);
 
 /* ------------------------------- Data types ------------------------------ */
 /* -------------------------- External variables --------------------------- */

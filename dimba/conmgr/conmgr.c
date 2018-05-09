@@ -36,7 +36,7 @@ static void init(ConMgr *const me, RKH_EVT_T *pe);
 /* ........................ States and pseudostates ........................ */
 RKH_CREATE_BASIC_STATE(ConMgr_idle, NULL, NULL, RKH_ROOT, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_idle)
-    RKH_TRINT(evTerminate,  NULL, NULL),
+    RKH_TRINT(0,  NULL, NULL),
 RKH_END_TRANS_TABLE
 
 /* ............................. Active object ............................. */
@@ -45,11 +45,11 @@ struct ConMgr
     RKH_SMA_T ao;       /* base structure */
     RKH_TMR_T timer;    /* which is responsible for toggling the LED */
                         /* posting the TIMEOUT signal event to active object */
-                        /* 'conmgr' */
+                        /* 'conMgr' */
 };
 
-RKH_SMA_CREATE(ConMgr, conmgr, 0, HCAL, &ConMgr_idle, init, NULL);
-RKH_SMA_DEF_PTR(conmgr);
+RKH_SMA_CREATE(ConMgr, conMgr, 0, HCAL, &ConMgr_idle, init, NULL);
+RKH_SMA_DEF_PTR(conMgr);
 
 /* ------------------------------- Constants ------------------------------- */
 /* ---------------------------- Local data types --------------------------- */
@@ -60,7 +60,7 @@ RKH_SMA_DEF_PTR(conmgr);
  *  The 'e_tout' event with TIMEOUT signal never changes, so it can be
  *  statically allocated just once by means of RKH_ROM_STATIC_EVENT() macro.
  */
-static RKH_ROM_STATIC_EVENT(e_tout, evTimeout);
+static RKH_ROM_STATIC_EVENT(e_tout, 0);
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
@@ -74,8 +74,6 @@ init(ConMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_QUEUE(&RKH_UPCAST(RKH_SMA_T, me)->equeue);
     RKH_TR_FWK_STATE(me, &ConMgr_idle);
     RKH_TR_FWK_TIMER(&me->timer);
-    RKH_TR_FWK_SIG(evTerminate);
-	RKH_TR_FWK_SIG(evTimeout);
 
     RKH_TMR_INIT(&me->timer, &e_tout, NULL);
 }

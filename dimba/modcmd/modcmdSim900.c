@@ -19,7 +19,8 @@
 #include "modcmd.h"
 #include "modmgr.h"
 #include "conmgr.h"
-#include "ssp.h"
+#include "sim900parser.h"
+#include "dimbaevt.h"
 #include <string.h>
 
 /* ----------------------------- Local macros ------------------------------ */
@@ -40,10 +41,8 @@ static const CmdTbl cmdTbl =
 {
     {RKH_INIT_STATIC_EVT(evModCmd), 
      "at\r\n", 
-     conMgr, 
+     0, 
      RKH_TIME_MS(300), RKH_TIME_MS(100)}
-    /*{...
-       ...}*/
 };
 
 /* ----------------------- Local function prototypes ----------------------- */

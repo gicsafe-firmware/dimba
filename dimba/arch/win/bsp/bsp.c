@@ -53,6 +53,7 @@
 /* ----------------------------- Include files ----------------------------- */
 #include <stdio.h>
 
+#include "dimbaevt.h"
 #include "modmgr.h"
 
 #include "bsp.h"
@@ -165,7 +166,7 @@ bsp_init(int argc, char *argv[])
     RKH_FILTER_ON_EVENT(RKH_TRC_ALL_EVENTS);
     RKH_FILTER_OFF_EVENT(RKH_TE_TMR_TOUT);
     RKH_FILTER_OFF_EVENT(RKH_TE_SM_STATE);
-    RKH_FILTER_OFF_SMA(modmgr);
+    RKH_FILTER_OFF_SMA(modMgr);
     RKH_FILTER_OFF_ALL_SIGNALS();
 
     RKH_TRC_OPEN();
@@ -176,7 +177,7 @@ bsp_keyParser(int c)
 {
     if (c == ESC)
     {
-        RKH_SMA_POST_FIFO(modmgr, &e_Term, 0);
+        RKH_SMA_POST_FIFO(modMgr, &e_Term, 0);
         rkhport_fwk_stop();
     }
 }
