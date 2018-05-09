@@ -20,6 +20,7 @@
 
 /* ----------------------------- Include files ----------------------------- */
 #include "rkh.h"
+#include "modcmd.h"
 
 /* ---------------------- External C language linkage ---------------------- */
 #ifdef __cplusplus

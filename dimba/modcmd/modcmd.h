@@ -31,6 +31,8 @@ extern "C" {
 /* ................................ Signals ................................ */
 /* ........................ Declares active object ......................... */
 /* ------------------------------- Data types ------------------------------ */
+typedef void (*ModCmdRcvHandler)(unsigned char c);
+
 typedef struct ModCmd ModCmd;
 struct ModCmd
 {
@@ -43,6 +45,9 @@ struct ModCmd
 
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
+ModCmdRcvHandler ModCmd_init(void);
+void ModCmd_sync(void);
+
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus
 }
