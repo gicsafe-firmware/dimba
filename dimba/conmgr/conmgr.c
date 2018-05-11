@@ -17,6 +17,7 @@
 /* ----------------------------- Include files ----------------------------- */
 #include "rkh.h"
 #include "conmgr.h"
+#include "signals.h"
 #include "bsp.h"
 
 /* ----------------------------- Local macros ------------------------------ */
@@ -24,19 +25,54 @@
 typedef struct ConMgr ConMgr;
 
 /* ................... Declares states and pseudostates .................... */
-RKH_DCLR_BASIC_STATE ConMgr_idle;
+RKH_DCLR_BASIC_STATE ConMgr_inactive, ConMgr_sync, ConMgr_delay, 
+                     ConMgr_configure, ConMgr_connect;
+RKH_DCLR_COMP_STATE ConMgr_active, ConMgr_initialize;
 
 /* ........................ Declares initial action ........................ */
 static void init(ConMgr *const me, RKH_EVT_T *pe);
 
 /* ........................ Declares effect actions ........................ */
 /* ......................... Declares entry actions ........................ */
+static void sendSync(ConMgr *const me, RKH_EVT_T *pe);
+
 /* ......................... Declares exit actions ......................... */
 /* ............................ Declares guards ............................ */
 /* ........................ States and pseudostates ........................ */
-RKH_CREATE_BASIC_STATE(ConMgr_idle, NULL, NULL, RKH_ROOT, NULL);
-RKH_CREATE_TRANS_TABLE(ConMgr_idle)
-    RKH_TRINT(0,  NULL, NULL),
+RKH_CREATE_BASIC_STATE(ConMgr_inactive, NULL, NULL, RKH_ROOT, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_inactive)
+    RKH_TRREG(evOpen, NULL, NULL, &ConMgr_active),
+RKH_END_TRANS_TABLE
+
+RKH_CREATE_COMP_REGION_STATE(ConMgr_active, NULL, NULL, RKH_ROOT, 
+                             &ConMgr_initialize, NULL,
+                             RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_active)
+    RKH_TRREG(evClose, NULL, NULL, &ConMgr_inactive),
+RKH_END_TRANS_TABLE
+
+RKH_CREATE_COMP_REGION_STATE(ConMgr_initialize, NULL, NULL, &ConMgr_active, 
+                             &ConMgr_sync, NULL,
+                             RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_initialize)
+RKH_END_TRANS_TABLE
+
+RKH_CREATE_BASIC_STATE(ConMgr_sync, sendSync, NULL, &ConMgr_initialize, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_sync)
+    RKH_TRREG(evSync, NULL, NULL, &ConMgr_delay),
+RKH_END_TRANS_TABLE
+
+RKH_CREATE_BASIC_STATE(ConMgr_delay, NULL, NULL, &ConMgr_initialize, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_delay)
+    RKH_TRREG(evToutDelay, NULL, NULL, &ConMgr_sync),
+RKH_END_TRANS_TABLE
+
+RKH_CREATE_BASIC_STATE(ConMgr_configure, NULL, NULL, &ConMgr_active, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_configure)
+RKH_END_TRANS_TABLE
+
+RKH_CREATE_BASIC_STATE(ConMgr_connect, NULL, NULL, &ConMgr_active, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_connect)
 RKH_END_TRANS_TABLE
 
 /* ............................. Active object ............................. */
@@ -48,7 +84,7 @@ struct ConMgr
                         /* 'conMgr' */
 };
 
-RKH_SMA_CREATE(ConMgr, conMgr, 0, HCAL, &ConMgr_idle, init, NULL);
+RKH_SMA_CREATE(ConMgr, conMgr, 0, HCAL, &ConMgr_inactive, init, NULL);
 RKH_SMA_DEF_PTR(conMgr);
 
 /* ------------------------------- Constants ------------------------------- */
@@ -72,7 +108,7 @@ init(ConMgr *const me, RKH_EVT_T *pe)
 
     RKH_TR_FWK_AO(me);
     RKH_TR_FWK_QUEUE(&RKH_UPCAST(RKH_SMA_T, me)->equeue);
-    RKH_TR_FWK_STATE(me, &ConMgr_idle);
+    RKH_TR_FWK_STATE(me, &ConMgr_inactive);
     RKH_TR_FWK_TIMER(&me->timer);
 
     RKH_TMR_INIT(&me->timer, &e_tout, NULL);
@@ -80,6 +116,13 @@ init(ConMgr *const me, RKH_EVT_T *pe)
 
 /* ............................ Effect actions ............................. */
 /* ............................. Entry actions ............................. */
+static void
+sendSync(ConMgr *const me, RKH_EVT_T *pe)
+{
+    (void)me;
+    (void)pe;
+}
+
 /* ............................. Exit actions .............................. */
 /* ................................ Guards ................................. */
 /* ---------------------------- Global functions --------------------------- */

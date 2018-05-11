@@ -16,17 +16,17 @@
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
 #include "rkh.h"
+#include "rkhfwk_dynevt.h"
 #include "modcmd.h"
 #include "modmgr.h"
 #include "conmgr.h"
 #include "sim900parser.h"
-#include "dimbaevt.h"
+#include "signals.h"
 #include <string.h>
 
 /* ----------------------------- Local macros ------------------------------ */
 /* ------------------------------- Constants ------------------------------- */
 /* ---------------------------- Local data types --------------------------- */
-static SSP sim900Parser;
 typedef struct CmdTbl CmdTbl;
 struct CmdTbl
 {
@@ -36,6 +36,9 @@ struct CmdTbl
 
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
+static SSP sim900Parser;
+static RKH_SMA_T *sender;
+
 static const CmdTbl cmdTbl =
 {
     {RKH_INIT_STATIC_EVT(evCmd), 
@@ -63,14 +66,13 @@ ModCmd_init(void)
 void 
 ModCmd_sync(void)
 {
-    RKH_SMA_T *sender;
-    static ModMgrEvt evtCmdObj;    /* it must be allocated in dynamic mem */
-    ModMgrEvt *evtCmd = &evtCmdObj;
+    ModMgrEvt *evtCmd;
 
-    /* ModMgrEvt *evtCmd = RKH_ALLOC_EVT(ModMgrEvt, 0, sender); */
     sender = *cmdTbl.sync.aoDest;
+    evtCmd = RKH_ALLOC_EVT(ModMgrEvt, 0, sender);
     strcpy(evtCmd->cmd, cmdTbl.sync.fmt);
     evtCmd->args = cmdTbl.sync;
+
     RKH_SMA_POST_FIFO(modMgr, RKH_UPCAST(RKH_EVT_T, evtCmd), sender);
 }
 

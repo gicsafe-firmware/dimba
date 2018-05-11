@@ -53,7 +53,7 @@
 /* ----------------------------- Include files ----------------------------- */
 #include <stdio.h>
 
-#include "dimbaevt.h"
+#include "signals.h"
 #include "modmgr.h"
 
 #include "bsp.h"
