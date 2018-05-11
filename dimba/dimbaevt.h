@@ -34,10 +34,11 @@ enum Dimba_Signals
 {
 	evOpen,
 	evClose,
-    evModCmd,
-    evModResp,
-    evModUrc,
+    evCmd,
+    evResponse,
+    evURC,
 	evTimeout,
+    evToutWaitResponse,
 	evTerminate     /* press the key escape on the keyboard */
 };
 

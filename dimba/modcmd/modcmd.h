@@ -37,8 +37,9 @@ typedef struct ModCmd ModCmd;
 struct ModCmd
 {
     RKH_EVT_T evt;
-    const char *fmt;    /** contains a format string of AT command */
-    RKH_SMA_T *aoDest;  /** pointer to SMA that receive the modem response */
+    const char *fmt;            /** contains a format string of AT command */
+    RKH_SMA_T * const *aoDest;   /** pointer to SMA that receive the modem */
+                                /*  response */
     RKH_TNT_T waitResponseTime; /** timeout waiting for modem response */
     RKH_TNT_T interCmdTime;     /** inter-command delay */
 };

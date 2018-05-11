@@ -19,9 +19,9 @@
 
 /* ----------------------------- Local macros ------------------------------ */
 /* ------------------------------- Constants ------------------------------- */
-SSP_CREATE_NORMAL_NODE(root);
-SSP_CREATE_BR_TABLE(root)
-	SSPBR("OK\r\n", NULL,   &root),
+SSP_CREATE_NORMAL_NODE(rootCmdParser);
+SSP_CREATE_BR_TABLE(rootCmdParser)
+	SSPBR("ok\r\n", NULL, &rootCmdParser),
 SSP_END_BR_TABLE
 
 /* ---------------------------- Local data types --------------------------- */

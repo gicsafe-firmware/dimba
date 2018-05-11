@@ -31,17 +31,16 @@ typedef struct CmdTbl CmdTbl;
 struct CmdTbl
 {
     ModCmd sync;
-    /*...*/
+    /* other string commands */
 };
 
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
-static ModMgrEvt evtCmd;
 static const CmdTbl cmdTbl =
 {
-    {RKH_INIT_STATIC_EVT(evModCmd), 
+    {RKH_INIT_STATIC_EVT(evCmd), 
      "at\r\n", 
-     0, 
+     &conMgr, 
      RKH_TIME_MS(300), RKH_TIME_MS(100)}
 };
 
@@ -57,16 +56,22 @@ doSearch(unsigned char c)
 ModCmdRcvHandler
 ModCmd_init(void)
 {
-  	ssp_init(&sim900Parser, &root);
+  	ssp_init(&sim900Parser, &rootCmdParser);
     return &doSearch;
 }
 
 void 
 ModCmd_sync(void)
 {
-    strcpy(evtCmd.cmd, cmdTbl.sync.fmt);
-    evtCmd.args = cmdTbl.sync;
-    RKH_SMA_POST_FIFO(modMgr, RKH_UPCAST(RKH_EVT_T, &evtCmd), 0);
+    RKH_SMA_T *sender;
+    static ModMgrEvt evtCmdObj;    /* it must be allocated in dynamic mem */
+    ModMgrEvt *evtCmd = &evtCmdObj;
+
+    /* ModMgrEvt *evtCmd = RKH_ALLOC_EVT(ModMgrEvt, 0, sender); */
+    sender = *cmdTbl.sync.aoDest;
+    strcpy(evtCmd->cmd, cmdTbl.sync.fmt);
+    evtCmd->args = cmdTbl.sync;
+    RKH_SMA_POST_FIFO(modMgr, RKH_UPCAST(RKH_EVT_T, evtCmd), sender);
 }
 
 /* ------------------------------ End of file ------------------------------ */

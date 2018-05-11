@@ -25,25 +25,26 @@
 typedef struct ModMgr ModMgr;
 
 /* ................... Declares states and pseudostates .................... */
-RKH_DCLR_BASIC_STATE inactive, idle, inProgress, waitInterCmd;
+RKH_DCLR_BASIC_STATE inactive, idle, inProgress, waitInterCmdDelay;
 RKH_DCLR_COMP_STATE active;
 RKH_DCLR_COND_STATE chkInterCmdDelay;
 
 /* ........................ Declares initial action ........................ */
-static void init(ModMgr *const me, RKH_EVT_T *pe);
+static void initialization(ModMgr *const me, RKH_EVT_T *pe);
 
 /* ........................ Declares effect actions ........................ */
-static void eventDefer(ModMgr *const me, RKH_EVT_T *pe);
-static void urcForward(ModMgr *const me, RKH_EVT_T *pe);
-static void cmdSend(ModMgr *const me, RKH_EVT_T *pe);
-static void respForward(ModMgr *const me, RKH_EVT_T *pe);
-static void interCmdStart(ModMgr *const me, RKH_EVT_T *pe);
-static void cmdRecall(ModMgr *const me, RKH_EVT_T *pe);
+static void defer(ModMgr *const me, RKH_EVT_T *pe);
+static void notifyURC(ModMgr *const me, RKH_EVT_T *pe);
+static void sendCmd(ModMgr *const me, RKH_EVT_T *pe);
+static void sendResponse(ModMgr *const me, RKH_EVT_T *pe);
+static void noResponse(ModMgr *const me, RKH_EVT_T *pe);
+static void startDelay(ModMgr *const me, RKH_EVT_T *pe);
+static void moreCmd(ModMgr *const me, RKH_EVT_T *pe);
 
 /* ......................... Declares entry actions ........................ */
 /* ......................... Declares exit actions ......................... */
 /* ............................ Declares guards ............................ */
-rbool_t interCmdDelay(const RKH_SM_T *sma, RKH_EVT_T *pe);
+rbool_t isInterCmdTime(const RKH_SM_T *me, RKH_EVT_T *pe);
 
 /* ........................ States and pseudostates ........................ */
 RKH_CREATE_BASIC_STATE(inactive, NULL, NULL, RKH_ROOT, NULL);
@@ -54,30 +55,31 @@ RKH_END_TRANS_TABLE
 RKH_CREATE_COMP_REGION_STATE(active, NULL, NULL, RKH_ROOT, &idle, NULL,
                               RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
 RKH_CREATE_TRANS_TABLE(active)
-    RKH_TRINT(evModCmd, NULL, eventDefer),
-    RKH_TRINT(evModUrc, NULL, urcForward),
-    RKH_TRINT(evClose,  NULL, eventDefer),
+    RKH_TRINT(evCmd, NULL, defer),
+    RKH_TRINT(evURC, NULL, notifyURC),
+    RKH_TRINT(evClose,  NULL, defer),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(idle, NULL, NULL, &active, NULL);
 RKH_CREATE_TRANS_TABLE(idle)
-    RKH_TRREG(evModCmd, NULL, cmdSend, &inProgress),
+    RKH_TRREG(evCmd, NULL, sendCmd, &inProgress),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(inProgress, NULL, NULL, &active, NULL);
 RKH_CREATE_TRANS_TABLE(inProgress)
-RKH_TRREG(evModResp, NULL, respForward, &chkInterCmdDelay),
+    RKH_TRREG(evResponse, NULL, sendResponse, &chkInterCmdDelay),
+    RKH_TRREG(evToutWaitResponse, NULL, noResponse, &idle),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_COND_STATE(chkInterCmdDelay);
 RKH_CREATE_BRANCH_TABLE(chkInterCmdDelay)
-    RKH_BRANCH(interCmdDelay,  interCmdStart,   &waitInterCmd),
-    RKH_BRANCH(ELSE,           cmdRecall,       &idle),
+    RKH_BRANCH(isInterCmdTime, startDelay,  &waitInterCmdDelay),
+    RKH_BRANCH(ELSE,           moreCmd,   &idle),
 RKH_END_BRANCH_TABLE
 
-RKH_CREATE_BASIC_STATE(waitInterCmd, NULL, NULL, &active, NULL);
-RKH_CREATE_TRANS_TABLE(waitInterCmd)
-    RKH_TRREG(evTimeout, NULL, cmdRecall, &idle),
+RKH_CREATE_BASIC_STATE(waitInterCmdDelay, NULL, NULL, &active, NULL);
+RKH_CREATE_TRANS_TABLE(waitInterCmdDelay)
+    RKH_TRREG(evTimeout, NULL, moreCmd, &idle),
 RKH_END_TRANS_TABLE
 
 /* ............................. Active object ............................. */
@@ -87,7 +89,7 @@ struct ModMgr
     RKH_TMR_T timer;    /* which is responsible for intercmd delay */
 };
 
-RKH_SMA_CREATE(ModMgr, modMgr, 0, HCAL, &inactive, init, NULL);
+RKH_SMA_CREATE(ModMgr, modMgr, 0, HCAL, &inactive, initialization, NULL);
 RKH_SMA_DEF_PTR(modMgr);
 
 /* ------------------------------- Constants ------------------------------- */
@@ -101,7 +103,7 @@ static RKH_QUEUE_T queueReq;
 /* ---------------------------- Local functions ---------------------------- */
 /* ............................ Initial action ............................. */
 static void
-init(ModMgr *const me, RKH_EVT_T *pe)
+initialization(ModMgr *const me, RKH_EVT_T *pe)
 {
 	(void)pe;
 
@@ -112,7 +114,7 @@ init(ModMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_STATE(me, &idle);
     RKH_TR_FWK_STATE(me, &inProgress);
     RKH_TR_FWK_STATE(me, &chkInterCmdDelay);
-    RKH_TR_FWK_STATE(me, &waitInterCmd);
+    RKH_TR_FWK_STATE(me, &waitInterCmdDelay);
     RKH_TR_FWK_TIMER(&me->timer);
     RKH_TR_FWK_SIG(evTerminate);
 	RKH_TR_FWK_SIG(evTimeout);
@@ -124,47 +126,62 @@ init(ModMgr *const me, RKH_EVT_T *pe)
 
 /* ............................ Effect actions ............................. */
 static void
-eventDefer(ModMgr *const me, RKH_EVT_T *pe)
+defer(ModMgr *const me, RKH_EVT_T *pe)
 {
-
+    (void)me;
+    (void)pe;
 }
 
 static void
-urcForward(ModMgr *const me, RKH_EVT_T *pe)
+notifyURC(ModMgr *const me, RKH_EVT_T *pe)
 {
-
+    (void)me;
+    (void)pe;
 }
 
 static void
-cmdSend(ModMgr *const me, RKH_EVT_T *pe)
+sendCmd(ModMgr *const me, RKH_EVT_T *pe)
 {
-
+    (void)me;
+    (void)pe;
 }
 
 static void
-respForward(ModMgr *const me, RKH_EVT_T *pe)
+sendResponse(ModMgr *const me, RKH_EVT_T *pe)
 {
-
+    (void)me;
+    (void)pe;
 }
 
 static void
-interCmdStart(ModMgr *const me, RKH_EVT_T *pe)
+noResponse(ModMgr *const me, RKH_EVT_T *pe)
 {
-
+    (void)me;
+    (void)pe;
 }
 
 static void
-cmdRecall(ModMgr *const me, RKH_EVT_T *pe)
+startDelay(ModMgr *const me, RKH_EVT_T *pe)
 {
+    (void)me;
+    (void)pe;
+}
 
+static void
+moreCmd(ModMgr *const me, RKH_EVT_T *pe)
+{
+    (void)me;
+    (void)pe;
 }
 
 /* ............................. Entry actions ............................. */
 /* ............................. Exit actions .............................. */
 /* ................................ Guards ................................. */
 rbool_t
-interCmdDelay(const RKH_SM_T *sma, RKH_EVT_T *pe)
+isInterCmdTime(const RKH_SM_T *me, RKH_EVT_T *pe)
 {
+    (void)me;
+    (void)pe;
     return RKH_TRUE;
 }
 
