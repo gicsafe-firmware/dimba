@@ -1,63 +1,79 @@
 /**
- *  \file       main.c
- *  \brief      Example application.
+ *  \file       modcmdSim900.c
+ *  \brief      Implementation of module command abstraction.
  */
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2016.03.17  LeFr  v1.0.00  Initial version
+ *  2018.05.07  LeFr  v1.0.00  Initial version
  */
 
 /* -------------------------------- Authors -------------------------------- */
 /*
- *  LeFr  Leandro Francucci  lf@vortexmakes.com
+ *  2018.05.07  LeFr  v1.0.00  Initial version
  */
 
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
 #include "rkh.h"
 #include "rkhfwk_dynevt.h"
+#include "modcmd.h"
 #include "modmgr.h"
-#include "bsp.h"
-
+#include "conmgr.h"
+#include "sim900parser.h"
+#include "signals.h"
+#include <string.h>
 
 /* ----------------------------- Local macros ------------------------------ */
-#define QSTO_SIZE           4
-
-#define SIZEOF_EP0STO       16
-#define SIZEOF_EP0_BLOCK    sizeof(RKH_EVT_T)
-#define SIZEOF_EP1STO       8
-#define SIZEOF_EP1_BLOCK    sizeof(ModCmd)
-#define SIZEOF_EP2STO       8
-#define SIZEOF_EP2_BLOCK    sizeof(ModCmd)
-
 /* ------------------------------- Constants ------------------------------- */
 /* ---------------------------- Local data types --------------------------- */
+typedef struct CmdTbl CmdTbl;
+struct CmdTbl
+{
+    ModCmd sync;
+    /* other string commands */
+};
+
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
-static RKH_EVT_T *qsto[QSTO_SIZE];
-static rui8_t evPool0Sto[SIZEOF_EP0STO], 
-              evPool1Sto[SIZEOF_EP1STO], 
-              evPool2Sto[SIZEOF_EP0STO];
+static SSP sim900Parser;
+static RKH_SMA_T *sender;
+
+static const CmdTbl cmdTbl =
+{
+    {RKH_INIT_STATIC_EVT(evCmd), 
+     "at\r\n", 
+     &conMgr, 
+     RKH_TIME_MS(300), RKH_TIME_MS(100)}
+};
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
-/* ---------------------------- Global functions --------------------------- */
-int
-main(int argc, char *argv[])
+static void
+doSearch(unsigned char c)
 {
-    bsp_init(argc, argv);
-    
-    rkh_dynEvt_init();
-    rkh_fwk_registerEvtPool(evPool0Sto, SIZEOF_EP0STO, SIZEOF_EP0_BLOCK);
-    rkh_fwk_registerEvtPool(evPool1Sto, SIZEOF_EP1STO, SIZEOF_EP1_BLOCK);
-    rkh_fwk_registerEvtPool(evPool2Sto, SIZEOF_EP0STO, SIZEOF_EP2_BLOCK);
+    ssp_doSearch(&sim900Parser, c);
+}
 
-    RKH_SMA_ACTIVATE(modMgr, qsto, QSTO_SIZE, 0, 0);
-    rkh_fwk_enter();
+/* ---------------------------- Global functions --------------------------- */
+ModCmdRcvHandler
+ModCmd_init(void)
+{
+  	ssp_init(&sim900Parser, &rootCmdParser);
+    return &doSearch;
+}
 
-    RKH_TRC_CLOSE();
-    return 0;
+void 
+ModCmd_sync(void)
+{
+    ModMgrEvt *evtCmd;
+
+    sender = *cmdTbl.sync.aoDest;
+    evtCmd = RKH_ALLOC_EVT(ModMgrEvt, 0, sender);
+    strcpy(evtCmd->cmd, cmdTbl.sync.fmt);
+    evtCmd->args = cmdTbl.sync;
+
+    RKH_SMA_POST_FIFO(modMgr, RKH_UPCAST(RKH_EVT_T, evtCmd), sender);
 }
 
 /* ------------------------------ End of file ------------------------------ */

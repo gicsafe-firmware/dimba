@@ -20,6 +20,7 @@
 
 /* ----------------------------- Include files ----------------------------- */
 #include "rkh.h"
+#include "modcmd.h"
 
 /* ---------------------- External C language linkage ---------------------- */
 #ifdef __cplusplus
@@ -28,11 +29,22 @@ extern "C" {
 
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
+#define MODMGR_MAX_SIZEOF_CMDSTR    32
+
 /* ................................ Signals ................................ */
 /* ........................ Declares active object ......................... */
-RKH_SMA_DCLR(modmgr);
+RKH_SMA_DCLR(modMgr);
 
 /* ------------------------------- Data types ------------------------------ */
+typedef struct ModMgrEvt ModMgrEvt;
+struct ModMgrEvt
+{
+    ModCmd args;
+    char cmd[MODMGR_MAX_SIZEOF_CMDSTR];
+    unsigned char *data;
+    unsigned char nData;
+};
+
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
 /* -------------------- External C language linkage end -------------------- */

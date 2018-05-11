@@ -1,22 +1,24 @@
 /**
- *  \file       dimbaevt.h
- *  \brief      Dimba reactive app signal definition.
+ *  \file       signals.h
+ *  \brief      Event signal definitions.
  */
 
 /* -------------------------- Development history -------------------------- */
 /*
  *  2018.05.02  DaBa  v1.0.00  Initial version
+ *  2018.05.11  LeFr  v1.0.01
  */
 
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  DaBa  Dario Baliña db@vortexmakes.com
+ *  LeFr  Leandro Francucci lf@vortexmakes.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
 /* --------------------------------- Module -------------------------------- */
-#ifndef __DIMBAEVT_H__
-#define __DIMBAEVT_H__
+#ifndef __SIGNALS_H__
+#define __SIGNALS_H__
 
 /* ----------------------------- Include files ----------------------------- */
 #include "rkh.h"
@@ -29,15 +31,18 @@ extern "C" {
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
 /* ................................ Signals ................................ */
-typedef enum Dimba_Signals Dimba_Signals;
-enum Dimba_Signals
+typedef enum Signals Signals;
+enum Signals
 {
 	evOpen,
 	evClose,
-    evModCmd,
-    evModResp,
-    evModUrc,
+    evCmd,
+    evResponse,
+    evURC,
 	evTimeout,
+    evToutWaitResponse,
+    evSync,
+    evToutDelay,
 	evTerminate     /* press the key escape on the keyboard */
 };
 

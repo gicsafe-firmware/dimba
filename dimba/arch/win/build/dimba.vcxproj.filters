@@ -76,6 +76,15 @@
     <ClCompile Include="..\..\..\modmgr\modmgr.c">
       <Filter>dimba\modmgr</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\conmgr\conmgr.c">
+      <Filter>dimba\conmgr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\parser\sim900\sim900parser.c">
+      <Filter>dimba\parser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\modcmd\modcmdSim900.c">
+      <Filter>dimba\modcmd</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rkh">
