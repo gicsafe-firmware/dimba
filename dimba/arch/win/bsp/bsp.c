@@ -46,7 +46,7 @@
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci  lf@vortexmakes.com
- *  DaBa  Dario Baliña       dariosb@gmail.com
+ *  DaBa  Dario Baliña       dariosb@vortexmakes.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
@@ -55,6 +55,7 @@
 
 #include "signals.h"
 #include "modmgr.h"
+#include "conmgr.h"
 
 #include "bsp.h"
 #include "getopt.h"
@@ -93,6 +94,8 @@ static const char *helpMessage =
 };
 
 static RKH_ROM_STATIC_EVENT(e_Term, evTerminate);
+static RKH_ROM_STATIC_EVENT(e_Open, evOpen);
+static RKH_ROM_STATIC_EVENT(e_Sync, evSync);
 
 static void ser_rx_isr(unsigned char byte);
 static void ser_tx_isr(void);
@@ -175,10 +178,20 @@ bsp_init(int argc, char *argv[])
 void
 bsp_keyParser(int c)
 {
-    if (c == ESC)
+    switch(c)
     {
-        RKH_SMA_POST_FIFO(modMgr, &e_Term, 0);
-        rkhport_fwk_stop();
+        case ESC:
+            RKH_SMA_POST_FIFO(modMgr, &e_Term, 0);
+            rkhport_fwk_stop();
+            break;
+
+        case 'o':
+            RKH_SMA_POST_FIFO(conMgr, &e_Open, 0);
+            break;
+
+        case 's':
+            RKH_SMA_POST_FIFO(conMgr, &e_Sync, 0);
+            break;
     }
 }
 
@@ -201,19 +214,29 @@ ser_tx_isr( void )
 }
 
 void
-bsp_serial_open(void)
+bsp_serial_open(int ch)
 {
-	init_serial_hard(GSM_PORT, &ser_cback );
-	connect_serial(GSM_PORT);
-    tx_data(GSM_PORT, 'O');
+    init_serial_hard(ch, &ser_cback );
+    connect_serial(ch);
+    tx_data(ch, 'O');
     cmdParser = ModCmd_init();
 }
 
 void
-bsp_serial_close(void)
+bsp_serial_close(int ch)
 {
-	disconnect_serial(GSM_PORT);
-	deinit_serial_hard(GSM_PORT);
+	disconnect_serial(ch);
+	deinit_serial_hard(ch);
+}
+
+void
+bsp_serial_puts(int ch, char *p)
+{
+    while(*p!='\0')
+    {
+        tx_data(ch, *p);
+        ++p;
+    }
 }
 
 /* ------------------------------ File footer ------------------------------ */

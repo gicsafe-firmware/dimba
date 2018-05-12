@@ -17,6 +17,7 @@
 /* ----------------------------- Include files ----------------------------- */
 #include "rkh.h"
 #include "conmgr.h"
+#include "modcmd.h"
 #include "signals.h"
 #include "bsp.h"
 
@@ -84,7 +85,7 @@ struct ConMgr
                         /* 'conMgr' */
 };
 
-RKH_SMA_CREATE(ConMgr, conMgr, 0, HCAL, &ConMgr_inactive, init, NULL);
+RKH_SMA_CREATE(ConMgr, conMgr, 1, HCAL, &ConMgr_inactive, init, NULL);
 RKH_SMA_DEF_PTR(conMgr);
 
 /* ------------------------------- Constants ------------------------------- */
@@ -121,6 +122,8 @@ sendSync(ConMgr *const me, RKH_EVT_T *pe)
 {
     (void)me;
     (void)pe;
+
+    ModCmd_sync();
 }
 
 /* ............................. Exit actions .............................. */

@@ -182,7 +182,7 @@
  *  hierarchical state machines uses up to 4 levels. Currently
  *  #RKH_CFG_SMA_MAX_HCAL_DEPTH cannot exceed 8.
  */
-#define RKH_CFG_SMA_MAX_HCAL_DEPTH      2u
+#define RKH_CFG_SMA_MAX_HCAL_DEPTH      3u
 
 /**
  *	Specify the maximum number of linked transition segments. The smaller
