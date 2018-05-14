@@ -17,6 +17,7 @@
 /* ----------------------------- Include files ----------------------------- */
 #include "rkh.h"
 #include "conmgr.h"
+#include "modmgr.h"
 #include "modcmd.h"
 #include "signals.h"
 #include "bsp.h"
@@ -34,6 +35,8 @@ RKH_DCLR_COMP_STATE ConMgr_active, ConMgr_initialize;
 static void init(ConMgr *const me, RKH_EVT_T *pe);
 
 /* ........................ Declares effect actions ........................ */
+static void open(ConMgr *const me, RKH_EVT_T *pe);
+
 /* ......................... Declares entry actions ........................ */
 static void sendSync(ConMgr *const me, RKH_EVT_T *pe);
 
@@ -42,7 +45,7 @@ static void sendSync(ConMgr *const me, RKH_EVT_T *pe);
 /* ........................ States and pseudostates ........................ */
 RKH_CREATE_BASIC_STATE(ConMgr_inactive, NULL, NULL, RKH_ROOT, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_inactive)
-    RKH_TRREG(evOpen, NULL, NULL, &ConMgr_active),
+    RKH_TRREG(evOpen, NULL, open, &ConMgr_active),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_COMP_REGION_STATE(ConMgr_active, NULL, NULL, RKH_ROOT, 
@@ -99,6 +102,8 @@ RKH_SMA_DEF_PTR(conMgr);
  */
 static RKH_ROM_STATIC_EVENT(e_tout, 0);
 
+static RKH_ROM_STATIC_EVENT(e_Open, evOpen);
+
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
 /* ............................ Initial action ............................. */
@@ -116,6 +121,15 @@ init(ConMgr *const me, RKH_EVT_T *pe)
 }
 
 /* ............................ Effect actions ............................. */
+static void
+open(ConMgr *const me, RKH_EVT_T *pe)
+{
+    (void)pe;
+    (void)me;
+
+    RKH_SMA_POST_FIFO(modMgr, &e_Open, 0);
+}
+
 /* ............................. Entry actions ............................. */
 static void
 sendSync(ConMgr *const me, RKH_EVT_T *pe)

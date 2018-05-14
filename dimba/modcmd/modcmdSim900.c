@@ -42,7 +42,7 @@ static RKH_SMA_T *sender;
 static const CmdTbl cmdTbl =
 {
     {RKH_INIT_STATIC_EVT(evCmd), 
-     "at\r\n", 
+     "AT\r\n", 
      &conMgr, 
      RKH_TIME_MS(300), RKH_TIME_MS(100)}
 };

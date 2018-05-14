@@ -76,7 +76,7 @@ RKH_THIS_MODULE
 /* ---------------------------- Global variables --------------------------- */
 SERIAL_T serials[ NUM_CHANNELS ] =
 {
-	{	"COM8",	115200, 8, PAR_NONE, STOP_1, 0 },	// COM1
+	{	"COM8",	19200, 8, PAR_NONE, STOP_1, 0 },	// COM1
 };
 
 /* ---------------------------- Local variables ---------------------------- */
@@ -170,6 +170,7 @@ bsp_init(int argc, char *argv[])
     RKH_FILTER_OFF_EVENT(RKH_TE_TMR_TOUT);
     RKH_FILTER_OFF_EVENT(RKH_TE_SM_STATE);
     RKH_FILTER_OFF_SMA(modMgr);
+    RKH_FILTER_OFF_SMA(conMgr);
     RKH_FILTER_OFF_ALL_SIGNALS();
 
     RKH_TRC_OPEN();
@@ -218,7 +219,6 @@ bsp_serial_open(int ch)
 {
     init_serial_hard(ch, &ser_cback );
     connect_serial(ch);
-    tx_data(ch, 'O');
     cmdParser = ModCmd_init();
 }
 

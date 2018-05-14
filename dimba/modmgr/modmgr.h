@@ -45,6 +45,13 @@ struct ModMgrEvt
     unsigned char nData;
 };
 
+typedef struct ModMgrResp ModMgrResp;
+struct ModMgrResp
+{
+    RKH_EVT_T evt;
+    RKH_SIG_T fwdEvt;
+};
+
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
 /* -------------------- External C language linkage end -------------------- */

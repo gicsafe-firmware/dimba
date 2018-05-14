@@ -92,7 +92,7 @@ struct ModMgr
     RKH_SMA_T ao;           /* base structure */
     RKH_TMR_T timer;        /* which is responsible for wait responce and
                                intercmd delay */
-    RKH_TNT_T interCmdTime; /* stores intercmd delay for current command */ 
+    ModMgrEvt *pCmd;        /* stores a reference to current command */
 };
 
 RKH_SMA_CREATE(ModMgr, modMgr, 0, HCAL, &ModMgr_inactive, initialization, 
@@ -103,7 +103,7 @@ RKH_SMA_DEF_PTR(modMgr);
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
-static RKH_ROM_STATIC_EVENT(e_tout, evToutWaitResponse);
+static RKH_STATIC_EVENT(e_tout, evToutWaitResponse);
 static RKH_QUEUE_T queueReq;
 
 /* ----------------------- Local function prototypes ----------------------- */
@@ -149,17 +149,14 @@ notifyURC(ModMgr *const me, RKH_EVT_T *pe)
 static void
 sendCmd(ModMgr *const me, RKH_EVT_T *pe)
 {
-    ModMgrEvt *pevt;
+    RKH_FWK_RSV( pe );
+    me->pCmd = RKH_UPCAST(ModMgrEvt, pe);
 
-    pevt = RKH_UPCAST(ModMgrEvt, pe);
-
-    bsp_serial_puts(GSM_PORT, pevt->cmd);
+    bsp_serial_puts(GSM_PORT, me->pCmd->cmd);
 
     RKH_SET_STATIC_EVENT(&e_tout, evToutWaitResponse);
     RKH_TMR_ONESHOT(&me->timer, RKH_UPCAST(RKH_SMA_T, me), 
-                    pevt->args.waitResponseTime);
-
-    me->interCmdTime = pevt->args.interCmdTime;
+                    me->pCmd->args.waitResponseTime);
 }
 
 static void
@@ -174,6 +171,8 @@ noResponse(ModMgr *const me, RKH_EVT_T *pe)
 {
     (void)me;
     (void)pe;
+    
+    RKH_FWK_GC(RKH_CAST(RKH_EVT_T, me->pCmd), me);
 }
 
 static void
@@ -183,7 +182,7 @@ startDelay(ModMgr *const me, RKH_EVT_T *pe)
 
     RKH_SET_STATIC_EVENT(&e_tout, evToutDelay);
     RKH_TMR_ONESHOT(&me->timer, RKH_UPCAST(RKH_SMA_T, me), 
-                    me->interCmdTime);
+                    me->pCmd->args.interCmdTime);
 }
 
 static void
@@ -191,6 +190,8 @@ moreCmd(ModMgr *const me, RKH_EVT_T *pe)
 {
     (void)me;
     (void)pe;
+
+    RKH_FWK_GC(RKH_CAST(RKH_EVT_T, me->pCmd), me);
 }
 
 /* ............................. Entry actions ............................. */
@@ -201,7 +202,7 @@ isInterCmdTime(ModMgr *const me, RKH_EVT_T *pe)
 {
     (void)pe;
     
-    return (me->interCmdTime != 0) ? RKH_TRUE : RKH_FALSE;
+    return (me->pCmd->args.interCmdTime != 0) ? RKH_TRUE : RKH_FALSE;
 }
 
 /* ---------------------------- Global functions --------------------------- */
