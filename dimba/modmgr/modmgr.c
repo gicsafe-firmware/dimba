@@ -20,9 +20,11 @@
 #include "rkh.h"
 #include "signals.h"
 #include "modmgr.h"
+#include "conmgr.h"
 #include "bsp.h"
 
 /* ----------------------------- Local macros ------------------------------ */
+#define SIZEOF_QDEFER   4
 /* ......................... Declares ModMgr_active object ........................ */
 typedef struct ModMgr ModMgr;
 
@@ -105,7 +107,8 @@ RKH_SMA_DEF_PTR(modMgr);
 /* ---------------------------- Local variables ---------------------------- */
 static RKH_STATIC_EVENT(e_tout, evToutWaitResponse);
 static RKH_STATIC_EVENT(e_noResp, evNoResponse);
-static RKH_QUEUE_T queueReq;
+static RKH_QUEUE_T qDefer;
+static ModMgrEvt *qDefer_sto[SIZEOF_QDEFER];
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
@@ -128,6 +131,9 @@ initialization(ModMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_SIG(evTimeout);
     RKH_TR_FWK_SIG(evResponse);
 
+    rkh_queue_init(&qDefer, (const void **)qDefer_sto, SIZEOF_QDEFER, 
+                CV(0));
+ 
     RKH_TMR_INIT(&me->timer, &e_tout, NULL);
 
     bsp_serial_open(GSM_PORT);
@@ -138,7 +144,8 @@ static void
 defer(ModMgr *const me, RKH_EVT_T *pe)
 {
     (void)me;
-    (void)pe;
+
+    rkh_sma_defer(&qDefer, pe);
 }
 
 static void
@@ -171,15 +178,17 @@ sendResponse(ModMgr *const me, RKH_EVT_T *pe)
     presp->evt.e = presp->fwdEvt;
 
     RKH_SMA_POST_FIFO((RKH_SMA_T *)*(me->pCmd->args.aoDest), 
-                            (const RKH_EVT_T *)(presp), modMgr);
+                            RKH_UPCAST(RKH_EVT_T, presp), modMgr);
 }
 
 static void
 noResponse(ModMgr *const me, RKH_EVT_T *pe)
 {
-    (void)me;
     (void)pe;
     
+    RKH_SMA_POST_FIFO((RKH_SMA_T *)*(me->pCmd->args.aoDest), 
+                            &e_noResp, modMgr);
+
     RKH_FWK_GC(RKH_CAST(RKH_EVT_T, me->pCmd), me);
 }
 
@@ -196,10 +205,11 @@ startDelay(ModMgr *const me, RKH_EVT_T *pe)
 static void
 moreCmd(ModMgr *const me, RKH_EVT_T *pe)
 {
-    (void)me;
     (void)pe;
 
     RKH_FWK_GC(RKH_CAST(RKH_EVT_T, me->pCmd), me);
+
+    rkh_sma_recall((RKH_SMA_T *)me, &qDefer);
 }
 
 /* ............................. Entry actions ............................. */
