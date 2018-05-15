@@ -111,7 +111,21 @@ static RKH_QUEUE_T qDefer;
 static ModMgrEvt *qDefer_sto[SIZEOF_QDEFER];
 
 /* ----------------------- Local function prototypes ----------------------- */
+static void forwardModMgrEvt(RKH_SMA_T *ao, RKH_EVT_T *pe);
+
 /* ---------------------------- Local functions ---------------------------- */
+static void
+forwardModMgrEvt(RKH_SMA_T *ao, RKH_EVT_T *pe)
+{
+    ModMgrResp *presp;
+
+    presp = (ModMgrResp *)(pe);
+
+    presp->evt.e = presp->fwdEvt;
+
+    RKH_SMA_POST_FIFO(ao, RKH_UPCAST(RKH_EVT_T, presp), modMgr);
+}
+
 /* ............................ Initial action ............................. */
 static void
 initialization(ModMgr *const me, RKH_EVT_T *pe)
@@ -152,7 +166,8 @@ static void
 notifyURC(ModMgr *const me, RKH_EVT_T *pe)
 {
     (void)me;
-    (void)pe;
+
+    forwardModMgrEvt(conMgr, pe);
 }
 
 static void
@@ -171,14 +186,7 @@ sendCmd(ModMgr *const me, RKH_EVT_T *pe)
 static void
 sendResponse(ModMgr *const me, RKH_EVT_T *pe)
 {
-    ModMgrResp *presp;
-
-    presp = (ModMgrResp *)(pe);
-
-    presp->evt.e = presp->fwdEvt;
-
-    RKH_SMA_POST_FIFO((RKH_SMA_T *)*(me->pCmd->args.aoDest), 
-                            RKH_UPCAST(RKH_EVT_T, presp), modMgr);
+    forwardModMgrEvt((RKH_SMA_T *)*(me->pCmd->args.aoDest), pe);
 }
 
 static void
