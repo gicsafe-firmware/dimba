@@ -12,4 +12,6 @@
   <semanticResources>pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml</semanticResources>
   <semanticResources>pathmap://UML_METAMODELS/UML.metamodel.uml</semanticResources>
   <semanticResources>pathmap://UML_METAMODELS/Ecore.metamodel.uml</semanticResources>
+  <semanticResources>pathmap://PAPYRUS_ACTIONLANGUAGE_PROFILE/ActionLanguage-Profile.profile.uml</semanticResources>
+  <semanticResources>http://www.eclipse.org/uml2/5.0.0/Types</semanticResources>
 </viewpoint:DAnalysis>

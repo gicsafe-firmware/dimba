@@ -198,13 +198,14 @@
             <transition xmi:type="uml:Transition" xmi:id="_wWef4FRUEeiBd_DXg33BBQ" source="_vp674FRUEeiBd_DXg33BBQ" target="_oXkIkFRUEeiBd_DXg33BBQ"/>
             <transition xmi:type="uml:Transition" xmi:id="_8G7PIFRUEeiBd_DXg33BBQ" source="_oXkIkFRUEeiBd_DXg33BBQ" target="_z5Ec4FRUEeiBd_DXg33BBQ"/>
             <transition xmi:type="uml:Transition" xmi:id="_8wnFUFRUEeiBd_DXg33BBQ" source="_z5Ec4FRUEeiBd_DXg33BBQ" target="_3_2FAFRUEeiBd_DXg33BBQ"/>
-            <transition xmi:type="uml:Transition" xmi:id="_xg9rIFRWEeiBd_DXg33BBQ" source="_j1Ei4FRWEeiBd_DXg33BBQ" target="_YZ4HYFRVEeiBd_DXg33BBQ">
-              <trigger xmi:type="uml:Trigger" xmi:id="_Y1RYAFRXEeiBd_DXg33BBQ" event="_YnR_UFRXEeiBd_DXg33BBQ"/>
-            </transition>
             <subvertex xmi:type="uml:State" xmi:id="_oXkIkFRUEeiBd_DXg33BBQ" name="initialize">
               <region xmi:type="uml:Region" xmi:id="_YZ1EEFRVEeiBd_DXg33BBQ" name="Region1">
                 <transition xmi:type="uml:Transition" xmi:id="_fYoCMFRVEeiBd_DXg33BBQ" source="_d67VIFRVEeiBd_DXg33BBQ" target="_YZ4HYFRVEeiBd_DXg33BBQ"/>
                 <transition xmi:type="uml:Transition" xmi:id="_w2tNMFRWEeiBd_DXg33BBQ" source="_YZ4HYFRVEeiBd_DXg33BBQ" target="_j1Ei4FRWEeiBd_DXg33BBQ">
+                  <effect xmi:type="uml:OpaqueBehavior" xmi:id="_If1e4FhuEeiniPlogmuNzQ">
+                    <language>C</language>
+                    <body>sendPinCheck();</body>
+                  </effect>
                   <trigger xmi:type="uml:Trigger" xmi:id="__rXUUFRWEeiBd_DXg33BBQ" name="evSync" event="__gruUFRWEeiBd_DXg33BBQ"/>
                 </transition>
                 <subvertex xmi:type="uml:State" xmi:id="_YZ4HYFRVEeiBd_DXg33BBQ" name="sync">
@@ -214,7 +215,7 @@
                   </entry>
                 </subvertex>
                 <subvertex xmi:type="uml:Pseudostate" xmi:id="_d67VIFRVEeiBd_DXg33BBQ" name="Initial3"/>
-                <subvertex xmi:type="uml:State" xmi:id="_j1Ei4FRWEeiBd_DXg33BBQ" name="delay"/>
+                <subvertex xmi:type="uml:State" xmi:id="_j1Ei4FRWEeiBd_DXg33BBQ" name="pin"/>
               </region>
             </subvertex>
             <subvertex xmi:type="uml:Pseudostate" xmi:id="_vp674FRUEeiBd_DXg33BBQ" name="Initial2"/>
@@ -226,4 +227,10 @@
       </region>
     </packagedElement>
   </packagedElement>
+  <profileApplication xmi:type="uml:ProfileApplication" xmi:id="_4FlS8FhtEeiniPlogmuNzQ">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_4FnvMFhtEeiniPlogmuNzQ" source="http://www.eclipse.org/uml2/2.0.0/UML">
+      <references xmi:type="ecore:EPackage" href="pathmap://PAPYRUS_ACTIONLANGUAGE_PROFILE/ActionLanguage-Profile.profile.uml#_Kv8EIKFXEeS_KNX0nfvIVQ"/>
+    </eAnnotations>
+    <appliedProfile xmi:type="uml:Profile" href="pathmap://PAPYRUS_ACTIONLANGUAGE_PROFILE/ActionLanguage-Profile.profile.uml#ActionLanguage"/>
+  </profileApplication>
 </uml:Model>
