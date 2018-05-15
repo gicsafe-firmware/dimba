@@ -28,14 +28,21 @@ extern "C" {
 
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
-/* ................................ Signals ................................ */
-/* ........................ Declares active object ......................... */
+#define MAX_NUM_IO_CHG      256
+
 /* ------------------------------- Data types ------------------------------ */
-typedef struct IOCgh IOChg;
+typedef struct IOChg IOChg;
 struct IOChg
 {
     EpochTime timeStamp;
     unsigned char ioSignal; /** IO signal identification */
+};
+
+typedef struct IOChgDet IOChgDet;
+struct IOChgDet
+{
+    CirBuffer buffer;
+    IOChg values[MAX_NUM_IO_CHG];
 };
 
 /* -------------------------- External variables --------------------------- */

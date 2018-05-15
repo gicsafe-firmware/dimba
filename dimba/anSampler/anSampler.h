@@ -29,8 +29,7 @@ extern "C" {
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
 #define AN_SAMPLING_RATE_SEC        5           
-#define MAX_AN1_NUM_SAMPLES         128
-#define MAX_AN2_NUM_SAMPLES         128
+#define MAX_AN_NUM_SAMPLES          128
 
 /* ................................ Signals ................................ */
 /* ........................ Declares active object ......................... */
@@ -40,8 +39,8 @@ typedef unsigned short SampleValue;
 typedef AnSampleBuffer AnSampleBuffer;
 struct AnSampleBuffer
 {
-    int nSamples;
-    SampleValue samples[MAX_AN1_NUM_SAMPLES];
+    CirBuffer buffer;
+    SampleValue samples[MAX_AN_NUM_SAMPLES];
 };
 
 typedef AnSampler AnSampler;
