@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_Bvd3AFLLEei-ps2IrsePSA" name="DIMBA">
+  <packageImport xmi:type="uml:PackageImport" xmi:id="_B6_KgFLLEei-ps2IrsePSA">
+    <importedPackage xmi:type="uml:Model" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#_0"/>
+  </packageImport>
+  <packagedElement xmi:type="uml:Package" xmi:id="_Rf1_gFLLEei-ps2IrsePSA" name="Structure">
+    <packagedElement xmi:type="uml:Class" xmi:id="_tp__YFdxEeia3PgQtXbrog" name="ConMgr" isActive="true"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="_u3OAcFdxEeia3PgQtXbrog" name="ModCmd" isAbstract="true"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="_1hZZcFdxEeia3PgQtXbrog" name="ModMgr" isActive="true"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="__5Dw0FdxEeia3PgQtXbrog" name="Sim900"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="_A5sHYFdyEeia3PgQtXbrog" name="OtherModule"/>
+    <packagedElement xmi:type="uml:Realization" xmi:id="_vhtLEFd1Eeia3PgQtXbrog" client="__5Dw0FdxEeia3PgQtXbrog" supplier="_Rf1_gFLLEei-ps2IrsePSA"/>
+    <packagedElement xmi:type="uml:Realization" xmi:id="_0CPXAFd1Eeia3PgQtXbrog" client="_A5sHYFdyEeia3PgQtXbrog" supplier="_u3OAcFdxEeia3PgQtXbrog"/>
+    <packagedElement xmi:type="uml:Association" xmi:id="_yzkSgFd3Eeia3PgQtXbrog" memberEnd="_yztccld3Eeia3PgQtXbrog _yz3Ncld3Eeia3PgQtXbrog" navigableOwnedEnd="_yztccld3Eeia3PgQtXbrog">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_yztccFd3Eeia3PgQtXbrog" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_yztccVd3Eeia3PgQtXbrog" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_yz3Ncld3Eeia3PgQtXbrog" type="_tp__YFdxEeia3PgQtXbrog" association="_yzkSgFd3Eeia3PgQtXbrog"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_yztccld3Eeia3PgQtXbrog" type="_u3OAcFdxEeia3PgQtXbrog" association="_yzkSgFd3Eeia3PgQtXbrog">
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_yz3NcFd3Eeia3PgQtXbrog"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_yz3NcVd3Eeia3PgQtXbrog" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_96PE8Fd3Eeia3PgQtXbrog" memberEnd="_96PE81d3Eeia3PgQtXbrog _96PE9Fd3Eeia3PgQtXbrog" navigableOwnedEnd="_96PE81d3Eeia3PgQtXbrog">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_96PE8Vd3Eeia3PgQtXbrog" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_96PE8ld3Eeia3PgQtXbrog" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_96PE81d3Eeia3PgQtXbrog" type="_1hZZcFdxEeia3PgQtXbrog" association="_96PE8Fd3Eeia3PgQtXbrog"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_96PE9Fd3Eeia3PgQtXbrog" type="_u3OAcFdxEeia3PgQtXbrog" association="_96PE8Fd3Eeia3PgQtXbrog"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="_flHrMFd4Eeia3PgQtXbrog" name="ProtMgr" isAbstract="true"/>
+    <packagedElement xmi:type="uml:Association" xmi:id="_iTsKQFd4Eeia3PgQtXbrog" visibility="public" memberEnd="_iTsKQ1d4Eeia3PgQtXbrog _iTsKRFd4Eeia3PgQtXbrog">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_iTsKQVd4Eeia3PgQtXbrog" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_iTsKQld4Eeia3PgQtXbrog" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_iTsKQ1d4Eeia3PgQtXbrog" type="_flHrMFd4Eeia3PgQtXbrog" aggregation="composite" association="_iTsKQFd4Eeia3PgQtXbrog"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_iTsKRFd4Eeia3PgQtXbrog" type="_tp__YFdxEeia3PgQtXbrog" association="_iTsKQFd4Eeia3PgQtXbrog"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="_QQ4PoFd5Eeia3PgQtXbrog" name="MQTT"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="_W42CIFd5Eeia3PgQtXbrog" name="OtherProcol"/>
+    <packagedElement xmi:type="uml:Realization" xmi:id="_hHnjQFd5Eeia3PgQtXbrog" client="_QQ4PoFd5Eeia3PgQtXbrog" supplier="_flHrMFd4Eeia3PgQtXbrog"/>
+    <packagedElement xmi:type="uml:Realization" xmi:id="_hzvpcFd5Eeia3PgQtXbrog" client="_Rf1_gFLLEei-ps2IrsePSA" supplier="_Rf1_gFLLEei-ps2IrsePSA"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="_3vknkFd5Eeia3PgQtXbrog" name="IOChangerDetector" isActive="true"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="_6uZJIFd5Eeia3PgQtXbrog" name="AnSampler" isActive="true"/>
+    <packagedElement xmi:type="uml:Association" xmi:id="_99vaAFd5Eeia3PgQtXbrog" visibility="public" memberEnd="_99vaA1d5Eeia3PgQtXbrog _99vaBld5Eeia3PgQtXbrog" navigableOwnedEnd="_99vaA1d5Eeia3PgQtXbrog">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_99vaAVd5Eeia3PgQtXbrog" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_99vaAld5Eeia3PgQtXbrog" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_99vaBld5Eeia3PgQtXbrog" type="_3vknkFd5Eeia3PgQtXbrog" association="_99vaAFd5Eeia3PgQtXbrog"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_99vaA1d5Eeia3PgQtXbrog" type="_tp__YFdxEeia3PgQtXbrog" association="_99vaAFd5Eeia3PgQtXbrog">
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_99vaBFd5Eeia3PgQtXbrog"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_99vaBVd5Eeia3PgQtXbrog" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_-vSywFd5Eeia3PgQtXbrog" memberEnd="_-vSyw1d5Eeia3PgQtXbrog _-vSyxld5Eeia3PgQtXbrog" navigableOwnedEnd="_-vSyw1d5Eeia3PgQtXbrog">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_-vSywVd5Eeia3PgQtXbrog" source="org.eclipse.papyrus">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_-vSywld5Eeia3PgQtXbrog" key="nature" value="UML_Nature"/>
+      </eAnnotations>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_-vSyxld5Eeia3PgQtXbrog" type="_6uZJIFd5Eeia3PgQtXbrog" association="_-vSywFd5Eeia3PgQtXbrog"/>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_-vSyw1d5Eeia3PgQtXbrog" type="_tp__YFdxEeia3PgQtXbrog" association="_-vSywFd5Eeia3PgQtXbrog">
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_-vSyxFd5Eeia3PgQtXbrog"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_-vSyxVd5Eeia3PgQtXbrog" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Package" xmi:id="_Tkn6sFLLEei-ps2IrsePSA" name="Behavior">
+    <packagedElement xmi:type="uml:StateMachine" xmi:id="_Hs4wUFLOEei-ps2IrsePSA" name="ModMgr">
+      <region xmi:type="uml:Region" xmi:id="_JKmEcFLOEei-ps2IrsePSA" name="Region1">
+        <transition xmi:type="uml:Transition" xmi:id="_UuKiYFLbEei-ps2IrsePSA" source="_TiyUYFLbEei-ps2IrsePSA" target="_cYQ8wFLaEei-ps2IrsePSA">
+          <effect xmi:type="uml:OpaqueBehavior" xmi:id="_hWqyoFLpEei-ps2IrsePSA">
+            <language>C</language>
+            <body>initialization();</body>
+          </effect>
+        </transition>
+        <transition xmi:type="uml:Transition" xmi:id="_uEns8FLeEei-ps2IrsePSA" source="_cYQ8wFLaEei-ps2IrsePSA" target="_e6DkEFLaEei-ps2IrsePSA">
+          <trigger xmi:type="uml:Trigger" xmi:id="_KgdbcFLfEei-ps2IrsePSA" name="evOpen" event="_KXEO4FLfEei-ps2IrsePSA"/>
+        </transition>
+        <transition xmi:type="uml:Transition" xmi:id="_jva-QFLfEei-ps2IrsePSA" source="_8E174FLdEei-ps2IrsePSA" target="_cYQ8wFLaEei-ps2IrsePSA">
+          <trigger xmi:type="uml:Trigger" xmi:id="_rXmQkFLfEei-ps2IrsePSA" event="_rO3LUFLfEei-ps2IrsePSA"/>
+        </transition>
+        <transition xmi:type="uml:Transition" xmi:id="_K8y1UFLjEei-ps2IrsePSA" kind="internal" source="_e6DkEFLaEei-ps2IrsePSA" target="_e6DkEFLaEei-ps2IrsePSA">
+          <effect xmi:type="uml:OpaqueBehavior" xmi:id="_pou-MFLjEei-ps2IrsePSA">
+            <language>C</language>
+            <body>notifyURC();</body>
+          </effect>
+          <trigger xmi:type="uml:Trigger" xmi:id="_SzJGgFLjEei-ps2IrsePSA" event="_SqAYoFLjEei-ps2IrsePSA"/>
+        </transition>
+        <transition xmi:type="uml:Transition" xmi:id="_4yKbcFLjEei-ps2IrsePSA" source="_XXz90FLeEei-ps2IrsePSA" target="_8E174FLdEei-ps2IrsePSA">
+          <effect xmi:type="uml:OpaqueBehavior" xmi:id="_FlEGMFLkEei-ps2IrsePSA">
+            <language>C</language>
+            <body>noResponse();</body>
+          </effect>
+          <trigger xmi:type="uml:Trigger" xmi:id="_AQZuoFLkEei-ps2IrsePSA" name="evToutWaitResponse" event="_AIDq8FLkEei-ps2IrsePSA"/>
+        </transition>
+        <subvertex xmi:type="uml:State" xmi:id="_cYQ8wFLaEei-ps2IrsePSA" name="inactive"/>
+        <subvertex xmi:type="uml:State" xmi:id="_e6DkEFLaEei-ps2IrsePSA" name="active">
+          <deferrableTrigger xmi:type="uml:Trigger" xmi:id="_G6kWAFLjEei-ps2IrsePSA" name="evModCmd" event="_GU3IQFLgEei-ps2IrsePSA"/>
+          <deferrableTrigger xmi:type="uml:Trigger" xmi:id="_FRm6gFLrEei-ps2IrsePSA" event="_rO3LUFLfEei-ps2IrsePSA"/>
+          <region xmi:type="uml:Region" xmi:id="_8ExDYVLdEei-ps2IrsePSA" name="Region1">
+            <transition xmi:type="uml:Transition" xmi:id="_H2sZUFLeEei-ps2IrsePSA" source="_F_hcUFLeEei-ps2IrsePSA" target="_8E174FLdEei-ps2IrsePSA"/>
+            <transition xmi:type="uml:Transition" xmi:id="_p-XCMFLeEei-ps2IrsePSA" source="_8E174FLdEei-ps2IrsePSA" target="_XXz90FLeEei-ps2IrsePSA">
+              <effect xmi:type="uml:OpaqueBehavior" xmi:id="_o1IzgFLiEei-ps2IrsePSA">
+                <language>C</language>
+                <body>sendCmd();</body>
+              </effect>
+              <trigger xmi:type="uml:Trigger" xmi:id="_GhFmYFLgEei-ps2IrsePSA" name="evModCmd" event="_GU3IQFLgEei-ps2IrsePSA"/>
+            </transition>
+            <transition xmi:type="uml:Transition" xmi:id="_eMG38FLlEei-ps2IrsePSA" source="_XXz90FLeEei-ps2IrsePSA" target="_afCwUFLlEei-ps2IrsePSA">
+              <effect xmi:type="uml:OpaqueBehavior" xmi:id="_25b34FLmEei-ps2IrsePSA">
+                <language>C</language>
+                <body>sendResponse();</body>
+              </effect>
+              <trigger xmi:type="uml:Trigger" xmi:id="_mCygUFLlEei-ps2IrsePSA" name="evResponse" event="_l6ijQFLlEei-ps2IrsePSA"/>
+            </transition>
+            <transition xmi:type="uml:Transition" xmi:id="_pFJeEFLlEei-ps2IrsePSA" guard="_Cf2hYFLnEei-ps2IrsePSA" source="_afCwUFLlEei-ps2IrsePSA" target="_arIvwFLeEei-ps2IrsePSA">
+              <ownedRule xmi:type="uml:Constraint" xmi:id="_Cf2hYFLnEei-ps2IrsePSA" name="isInterComandTime">
+                <specification xmi:type="uml:OpaqueExpression" xmi:id="_Cf2hYVLnEei-ps2IrsePSA">
+                  <language>C</language>
+                  <body>isInterComandTime()</body>
+                </specification>
+              </ownedRule>
+              <effect xmi:type="uml:OpaqueBehavior" xmi:id="_GdteEFLnEei-ps2IrsePSA">
+                <language>C</language>
+                <body>startDelay();</body>
+              </effect>
+            </transition>
+            <transition xmi:type="uml:Transition" xmi:id="_8Al0YFLlEei-ps2IrsePSA" guard="_kZ1TkFLnEei-ps2IrsePSA" source="_afCwUFLlEei-ps2IrsePSA" target="_8E174FLdEei-ps2IrsePSA">
+              <ownedRule xmi:type="uml:Constraint" xmi:id="_kZ1TkFLnEei-ps2IrsePSA">
+                <specification xmi:type="uml:OpaqueExpression" xmi:id="_kZ1TkVLnEei-ps2IrsePSA">
+                  <language>C</language>
+                  <body>else</body>
+                </specification>
+              </ownedRule>
+              <effect xmi:type="uml:OpaqueBehavior" xmi:id="_sEMXMFLnEei-ps2IrsePSA">
+                <language>C</language>
+                <body>moreCmd();</body>
+              </effect>
+            </transition>
+            <transition xmi:type="uml:Transition" xmi:id="_4WDxcFLnEei-ps2IrsePSA" source="_arIvwFLeEei-ps2IrsePSA" target="_8E174FLdEei-ps2IrsePSA">
+              <effect xmi:type="uml:OpaqueBehavior" xmi:id="_IIYasFLoEei-ps2IrsePSA">
+                <language>C</language>
+                <body>moreCmd();</body>
+              </effect>
+              <trigger xmi:type="uml:Trigger" xmi:id="_EMzV8FLoEei-ps2IrsePSA" name="evToutInterCmdTime" event="_EDqoEFLoEei-ps2IrsePSA"/>
+            </transition>
+            <subvertex xmi:type="uml:State" xmi:id="_8E174FLdEei-ps2IrsePSA" name="idle"/>
+            <subvertex xmi:type="uml:Pseudostate" xmi:id="_F_hcUFLeEei-ps2IrsePSA" name="Initial2"/>
+            <subvertex xmi:type="uml:State" xmi:id="_XXz90FLeEei-ps2IrsePSA" name="inProgress"/>
+            <subvertex xmi:type="uml:State" xmi:id="_arIvwFLeEei-ps2IrsePSA" name="waitInterCmdDelay"/>
+            <subvertex xmi:type="uml:Pseudostate" xmi:id="_afCwUFLlEei-ps2IrsePSA" name="Junction1" kind="junction"/>
+          </region>
+        </subvertex>
+        <subvertex xmi:type="uml:Pseudostate" xmi:id="_TiyUYFLbEei-ps2IrsePSA" name="Initial1"/>
+      </region>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Package" xmi:id="_CNxzkFLfEei-ps2IrsePSA" name="Event">
+      <packagedElement xmi:type="uml:Signal" xmi:id="_KNs3gFLfEei-ps2IrsePSA" name="evOpen"/>
+      <packagedElement xmi:type="uml:SignalEvent" xmi:id="_KXEO4FLfEei-ps2IrsePSA" name="evOpen" signal="_KNs3gFLfEei-ps2IrsePSA"/>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_rBgEwFLfEei-ps2IrsePSA" name="evClose"/>
+      <packagedElement xmi:type="uml:SignalEvent" xmi:id="_rO3LUFLfEei-ps2IrsePSA" name="evClose" signal="_rBgEwFLfEei-ps2IrsePSA"/>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_GLfw4FLgEei-ps2IrsePSA" name="evCmd">
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_DKucoFLiEei-ps2IrsePSA" name="fmt"/>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_STDtsFLiEei-ps2IrsePSA" name="aoDest"/>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_VOiAUFLiEei-ps2IrsePSA" name="waitResponseTime"/>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_XNJpIFLiEei-ps2IrsePSA" name="interCmdTime"/>
+      </packagedElement>
+      <packagedElement xmi:type="uml:SignalEvent" xmi:id="_GU3IQFLgEei-ps2IrsePSA" name="evCmd" signal="_GLfw4FLgEei-ps2IrsePSA"/>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_SfaSMFLjEei-ps2IrsePSA" name="evURC"/>
+      <packagedElement xmi:type="uml:SignalEvent" xmi:id="_SqAYoFLjEei-ps2IrsePSA" name="evURC" signal="_SfaSMFLjEei-ps2IrsePSA"/>
+      <packagedElement xmi:type="uml:Signal" xmi:id="__-EogFLjEei-ps2IrsePSA" name="evToutWaitResponse"/>
+      <packagedElement xmi:type="uml:SignalEvent" xmi:id="_AIDq8FLkEei-ps2IrsePSA" name="evToutWaitResponse" signal="__-EogFLjEei-ps2IrsePSA"/>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_lyEjwFLlEei-ps2IrsePSA" name="evResponse">
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_o5bg0FLmEei-ps2IrsePSA" name="fwdEvt"/>
+      </packagedElement>
+      <packagedElement xmi:type="uml:SignalEvent" xmi:id="_l6ijQFLlEei-ps2IrsePSA" name="evResponse" signal="_lyEjwFLlEei-ps2IrsePSA"/>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_D7_SwFLoEei-ps2IrsePSA" name="evToutInterCommandTime"/>
+      <packagedElement xmi:type="uml:SignalEvent" xmi:id="_EDqoEFLoEei-ps2IrsePSA" name="evToutInterCommandTime" signal="_D7_SwFLoEei-ps2IrsePSA"/>
+      <packagedElement xmi:type="uml:Signal" xmi:id="__T8S0FRWEeiBd_DXg33BBQ" name="evSync"/>
+      <packagedElement xmi:type="uml:SignalEvent" xmi:id="__gruUFRWEeiBd_DXg33BBQ" name="evSync" signal="__T8S0FRWEeiBd_DXg33BBQ"/>
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_YnR_UFRXEeiBd_DXg33BBQ" name="evDelay" isRelative="true">
+        <when xmi:type="uml:TimeExpression" xmi:id="_YnR_UVRXEeiBd_DXg33BBQ">
+          <expr xmi:type="uml:LiteralString" xmi:id="_jZrx8FRXEeiBd_DXg33BBQ" value="SYNC_DELAY_TIME"/>
+        </when>
+      </packagedElement>
+    </packagedElement>
+    <packagedElement xmi:type="uml:StateMachine" xmi:id="_i1rp0FRTEeiBd_DXg33BBQ" name="ConMgr">
+      <region xmi:type="uml:Region" xmi:id="_kOIqgFRTEeiBd_DXg33BBQ" name="Region1">
+        <transition xmi:type="uml:Transition" xmi:id="_0NV5MFRTEeiBd_DXg33BBQ" source="_wul6YFRTEeiBd_DXg33BBQ" target="_ohc50FRTEeiBd_DXg33BBQ"/>
+        <transition xmi:type="uml:Transition" xmi:id="_5tMNEFRTEeiBd_DXg33BBQ" source="_ohc50FRTEeiBd_DXg33BBQ" target="_uCMlkFRTEeiBd_DXg33BBQ">
+          <trigger xmi:type="uml:Trigger" xmi:id="_IIh1QFRUEeiBd_DXg33BBQ" event="_KXEO4FLfEei-ps2IrsePSA"/>
+        </transition>
+        <transition xmi:type="uml:Transition" xmi:id="_7fUSAFRTEeiBd_DXg33BBQ" source="_uCMlkFRTEeiBd_DXg33BBQ" target="_ohc50FRTEeiBd_DXg33BBQ">
+          <trigger xmi:type="uml:Trigger" xmi:id="_KR9m8FRUEeiBd_DXg33BBQ" event="_rO3LUFLfEei-ps2IrsePSA"/>
+        </transition>
+        <subvertex xmi:type="uml:State" xmi:id="_ohc50FRTEeiBd_DXg33BBQ" name="inactive"/>
+        <subvertex xmi:type="uml:State" xmi:id="_uCMlkFRTEeiBd_DXg33BBQ" name="active">
+          <region xmi:type="uml:Region" xmi:id="_oXepAlRUEeiBd_DXg33BBQ" name="Region1">
+            <transition xmi:type="uml:Transition" xmi:id="_wWef4FRUEeiBd_DXg33BBQ" source="_vp674FRUEeiBd_DXg33BBQ" target="_oXkIkFRUEeiBd_DXg33BBQ"/>
+            <transition xmi:type="uml:Transition" xmi:id="_8G7PIFRUEeiBd_DXg33BBQ" source="_oXkIkFRUEeiBd_DXg33BBQ" target="_z5Ec4FRUEeiBd_DXg33BBQ"/>
+            <transition xmi:type="uml:Transition" xmi:id="_8wnFUFRUEeiBd_DXg33BBQ" source="_z5Ec4FRUEeiBd_DXg33BBQ" target="_3_2FAFRUEeiBd_DXg33BBQ"/>
+            <transition xmi:type="uml:Transition" xmi:id="_xg9rIFRWEeiBd_DXg33BBQ" source="_j1Ei4FRWEeiBd_DXg33BBQ" target="_YZ4HYFRVEeiBd_DXg33BBQ">
+              <trigger xmi:type="uml:Trigger" xmi:id="_Y1RYAFRXEeiBd_DXg33BBQ" event="_YnR_UFRXEeiBd_DXg33BBQ"/>
+            </transition>
+            <subvertex xmi:type="uml:State" xmi:id="_oXkIkFRUEeiBd_DXg33BBQ" name="initialize">
+              <region xmi:type="uml:Region" xmi:id="_YZ1EEFRVEeiBd_DXg33BBQ" name="Region1">
+                <transition xmi:type="uml:Transition" xmi:id="_fYoCMFRVEeiBd_DXg33BBQ" source="_d67VIFRVEeiBd_DXg33BBQ" target="_YZ4HYFRVEeiBd_DXg33BBQ"/>
+                <transition xmi:type="uml:Transition" xmi:id="_w2tNMFRWEeiBd_DXg33BBQ" source="_YZ4HYFRVEeiBd_DXg33BBQ" target="_j1Ei4FRWEeiBd_DXg33BBQ">
+                  <trigger xmi:type="uml:Trigger" xmi:id="__rXUUFRWEeiBd_DXg33BBQ" name="evSync" event="__gruUFRWEeiBd_DXg33BBQ"/>
+                </transition>
+                <subvertex xmi:type="uml:State" xmi:id="_YZ4HYFRVEeiBd_DXg33BBQ" name="sync">
+                  <entry xmi:type="uml:OpaqueBehavior" xmi:id="_hw8H8FRWEeiBd_DXg33BBQ">
+                    <language>C</language>
+                    <body>sendSync();</body>
+                  </entry>
+                </subvertex>
+                <subvertex xmi:type="uml:Pseudostate" xmi:id="_d67VIFRVEeiBd_DXg33BBQ" name="Initial3"/>
+                <subvertex xmi:type="uml:State" xmi:id="_j1Ei4FRWEeiBd_DXg33BBQ" name="delay"/>
+              </region>
+            </subvertex>
+            <subvertex xmi:type="uml:Pseudostate" xmi:id="_vp674FRUEeiBd_DXg33BBQ" name="Initial2"/>
+            <subvertex xmi:type="uml:State" xmi:id="_z5Ec4FRUEeiBd_DXg33BBQ" name="configure"/>
+            <subvertex xmi:type="uml:State" xmi:id="_3_2FAFRUEeiBd_DXg33BBQ" name="connect"/>
+          </region>
+        </subvertex>
+        <subvertex xmi:type="uml:Pseudostate" xmi:id="_wul6YFRTEeiBd_DXg33BBQ" name="Initial1"/>
+      </region>
+    </packagedElement>
+  </packagedElement>
+</uml:Model>
