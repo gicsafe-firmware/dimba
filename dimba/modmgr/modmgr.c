@@ -104,6 +104,7 @@ RKH_SMA_DEF_PTR(modMgr);
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
 static RKH_STATIC_EVENT(e_tout, evToutWaitResponse);
+static RKH_STATIC_EVENT(e_noResp, evNoResponse);
 static RKH_QUEUE_T queueReq;
 
 /* ----------------------- Local function prototypes ----------------------- */
@@ -123,8 +124,9 @@ initialization(ModMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_STATE(me, &ModMgr_chkInterCmdDelay);
     RKH_TR_FWK_STATE(me, &ModMgr_waitInterCmdDelay);
     RKH_TR_FWK_TIMER(&me->timer);
-    RKH_TR_FWK_SIG(evTerminate);
-	RKH_TR_FWK_SIG(evTimeout);
+    RKH_TR_FWK_SIG(evToutWaitResponse);
+    RKH_TR_FWK_SIG(evTimeout);
+    RKH_TR_FWK_SIG(evResponse);
 
     RKH_TMR_INIT(&me->timer, &e_tout, NULL);
 
@@ -162,8 +164,14 @@ sendCmd(ModMgr *const me, RKH_EVT_T *pe)
 static void
 sendResponse(ModMgr *const me, RKH_EVT_T *pe)
 {
-    (void)me;
-    (void)pe;
+    ModMgrResp *presp;
+
+    presp = (ModMgrResp *)(pe);
+
+    presp->evt.e = presp->fwdEvt;
+
+    RKH_SMA_POST_FIFO((RKH_SMA_T *)*(me->pCmd->args.aoDest), 
+                            (const RKH_EVT_T *)(presp), modMgr);
 }
 
 static void
@@ -180,7 +188,7 @@ startDelay(ModMgr *const me, RKH_EVT_T *pe)
 {
     (void)pe;
 
-    RKH_SET_STATIC_EVENT(&e_tout, evToutDelay);
+    RKH_SET_STATIC_EVENT(&e_tout, evTimeout);
     RKH_TMR_ONESHOT(&me->timer, RKH_UPCAST(RKH_SMA_T, me), 
                     me->pCmd->args.interCmdTime);
 }

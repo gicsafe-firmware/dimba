@@ -6,11 +6,13 @@
 /* -------------------------- Development history -------------------------- */
 /*
  *  2018.05.07  LeFr  v1.0.00  Initial version
+ *  2018.05.15  DaBa  v1.0.01  Efects implemented
  */
 
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci lf@vortexmakes.com
+ *  DaBa  Darío Baliña      db@vortexmakes.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
@@ -39,6 +41,7 @@ static void open(ConMgr *const me, RKH_EVT_T *pe);
 
 /* ......................... Declares entry actions ........................ */
 static void sendSync(ConMgr *const me, RKH_EVT_T *pe);
+static void delayStart(ConMgr *const me, RKH_EVT_T *pe);
 
 /* ......................... Declares exit actions ......................... */
 /* ............................ Declares guards ............................ */
@@ -66,7 +69,7 @@ RKH_CREATE_TRANS_TABLE(ConMgr_sync)
     RKH_TRREG(evSync, NULL, NULL, &ConMgr_delay),
 RKH_END_TRANS_TABLE
 
-RKH_CREATE_BASIC_STATE(ConMgr_delay, NULL, NULL, &ConMgr_initialize, NULL);
+RKH_CREATE_BASIC_STATE(ConMgr_delay, delayStart, NULL, &ConMgr_initialize, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_delay)
     RKH_TRREG(evToutDelay, NULL, NULL, &ConMgr_sync),
 RKH_END_TRANS_TABLE
@@ -100,7 +103,7 @@ RKH_SMA_DEF_PTR(conMgr);
  *  The 'e_tout' event with TIMEOUT signal never changes, so it can be
  *  statically allocated just once by means of RKH_ROM_STATIC_EVENT() macro.
  */
-static RKH_ROM_STATIC_EVENT(e_tout, 0);
+static RKH_ROM_STATIC_EVENT(e_tout, evToutDelay);
 
 static RKH_ROM_STATIC_EVENT(e_Open, evOpen);
 
@@ -115,7 +118,20 @@ init(ConMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_AO(me);
     RKH_TR_FWK_QUEUE(&RKH_UPCAST(RKH_SMA_T, me)->equeue);
     RKH_TR_FWK_STATE(me, &ConMgr_inactive);
+    RKH_TR_FWK_STATE(me, &ConMgr_active);
+    RKH_TR_FWK_STATE(me, &ConMgr_initialize);
+    RKH_TR_FWK_STATE(me, &ConMgr_sync);
+    RKH_TR_FWK_STATE(me, &ConMgr_delay);
+    RKH_TR_FWK_STATE(me, &ConMgr_configure);
+    RKH_TR_FWK_STATE(me, &ConMgr_connect);
     RKH_TR_FWK_TIMER(&me->timer);
+    RKH_TR_FWK_SIG(evSync);
+    RKH_TR_FWK_SIG(evOpen);
+    RKH_TR_FWK_SIG(evClose);
+    RKH_TR_FWK_SIG(evCmd);
+    RKH_TR_FWK_SIG(evURC);
+    RKH_TR_FWK_SIG(evToutDelay);
+    RKH_TR_FWK_SIG(evTerminate);
 
     RKH_TMR_INIT(&me->timer, &e_tout, NULL);
 }
@@ -127,7 +143,7 @@ open(ConMgr *const me, RKH_EVT_T *pe)
     (void)pe;
     (void)me;
 
-    RKH_SMA_POST_FIFO(modMgr, &e_Open, 0);
+    RKH_SMA_POST_FIFO(modMgr, &e_Open, conMgr);
 }
 
 /* ............................. Entry actions ............................. */
@@ -138,6 +154,14 @@ sendSync(ConMgr *const me, RKH_EVT_T *pe)
     (void)pe;
 
     ModCmd_sync();
+}
+
+static void
+delayStart(ConMgr *const me, RKH_EVT_T *pe)
+{
+    (void)pe;
+
+    RKH_TMR_ONESHOT(&me->timer, RKH_UPCAST(RKH_SMA_T, me), SYNC_DELAY_TIME); 
 }
 
 /* ............................. Exit actions .............................. */

@@ -38,6 +38,7 @@ enum Signals
 	evClose,
     evCmd,
     evResponse,
+    evNoResponse,
     evURC,
 	evTimeout,
     evToutWaitResponse,

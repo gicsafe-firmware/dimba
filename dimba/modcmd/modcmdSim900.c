@@ -6,11 +6,13 @@
 /* -------------------------- Development history -------------------------- */
 /*
  *  2018.05.07  LeFr  v1.0.00  Initial version
+ *  2018.05.15  DaBa  v1.0.01  sync
  */
 
 /* -------------------------------- Authors -------------------------------- */
 /*
- *  2018.05.07  LeFr  v1.0.00  Initial version
+ *  LeFr  Leandro Francucci lf@vortexmakes.com
+ *  DaBa  Darío Baliña      db@vortexmakes.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
@@ -69,9 +71,14 @@ ModCmd_sync(void)
     ModMgrEvt *evtCmd;
 
     sender = *cmdTbl.sync.aoDest;
-    evtCmd = RKH_ALLOC_EVT(ModMgrEvt, 0, sender);
+    evtCmd = RKH_ALLOC_EVT(ModMgrEvt, evCmd, sender);
+
     strcpy(evtCmd->cmd, cmdTbl.sync.fmt);
-    evtCmd->args = cmdTbl.sync;
+
+    evtCmd->args.fmt = cmdTbl.sync.fmt;
+    evtCmd->args.aoDest = cmdTbl.sync.aoDest;
+    evtCmd->args.waitResponseTime = cmdTbl.sync.waitResponseTime;
+    evtCmd->args.interCmdTime = cmdTbl.sync.interCmdTime;
 
     RKH_SMA_POST_FIFO(modMgr, RKH_UPCAST(RKH_EVT_T, evtCmd), sender);
 }
