@@ -44,6 +44,7 @@ struct CirBuffer
 int cirBuffer_init(CirBuffer *const me, unsigned char *sto, int elemSize,
                    int numElem);
 int cirBuffer_put(CirBuffer *const me, unsigned char *elem);
+int cirBuffer_get(CirBuffer *const me, unsigned char *elem);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus

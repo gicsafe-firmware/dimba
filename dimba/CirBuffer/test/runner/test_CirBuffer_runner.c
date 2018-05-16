@@ -29,7 +29,11 @@ TEST_GROUP_RUNNER(cirBuffer)
 {
 	RUN_TEST_CASE(cirBuffer, ClearAfterInit);
 	RUN_TEST_CASE(cirBuffer, WrongArgsOnInit);
-	RUN_TEST_CASE(cirBuffer, PutOneElem);
+	RUN_TEST_CASE(cirBuffer, PutOneElement);
+	RUN_TEST_CASE(cirBuffer, PutOneElementWrapAround);
+	RUN_TEST_CASE(cirBuffer, GetOneElement);
+	RUN_TEST_CASE(cirBuffer, GetFromEmpty);
+	RUN_TEST_CASE(cirBuffer, GetInOrderWrapAround);
 }
 
 /* ------------------------------ End of file ------------------------------ */

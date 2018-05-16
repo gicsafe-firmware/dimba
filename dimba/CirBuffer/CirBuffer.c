@@ -15,6 +15,7 @@
 
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
+#include <string.h>
 #include "CirBuffer.h"
 
 /* ----------------------------- Local macros ------------------------------ */
@@ -52,8 +53,41 @@ cirBuffer_put(CirBuffer *const me, unsigned char *elem)
     if ((me != (CirBuffer *)0) && (elem != (unsigned char *)0))
     {
         memcpy(me->in, elem, me->elemSize);
+        me->in += me->elemSize;
         ++me->qty;
+        if (me->in == me->end)
+        {
+            me->in = me->sto;
+        }
+
+        if (me->qty >= me->numElem)
+        {
+            me->qty = me->numElem;
+            me->out = me->in;
+        }
         result = 0;
+    }
+    return result;
+}
+
+int 
+cirBuffer_get(CirBuffer *const me, unsigned char *elem)
+{
+    int result = 1;
+
+    if ((me != (CirBuffer *)0) && (elem != (unsigned char *)0))
+    {
+        if (me->qty != 0)
+        {
+            memcpy(elem, me->out, me->elemSize);
+            me->out += me->elemSize;
+            --me->qty;
+            if (me->out >= me->end)
+            {
+                me->out = me->sto;
+            }
+            result = 0;
+        }
     }
     return result;
 }
