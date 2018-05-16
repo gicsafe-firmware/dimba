@@ -129,6 +129,7 @@ ModCmdRcvHandler
 ModCmd_init(void)
 {
   	ssp_init(&sim900Parser, &rootCmdParser);
+  	parser_init();
     return &doSearch;
 }
 

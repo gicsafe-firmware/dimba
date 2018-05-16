@@ -167,6 +167,8 @@ bsp_init(int argc, char *argv[])
 
     RKH_FILTER_ON_GROUP(RKH_TRC_ALL_GROUPS);
     RKH_FILTER_ON_EVENT(RKH_TRC_ALL_EVENTS);
+	RKH_FILTER_OFF_EVENT(MODCMD_USR_TRACE);
+	RKH_FILTER_OFF_GROUP_ALL_EVENTS(RKH_TG_USR);
     RKH_FILTER_OFF_EVENT(RKH_TE_TMR_TOUT);
     RKH_FILTER_OFF_EVENT(RKH_TE_SM_STATE);
     RKH_FILTER_OFF_EVENT(RKH_TE_SMA_FIFO);
@@ -190,10 +192,6 @@ bsp_keyParser(int c)
 
         case 'o':
             RKH_SMA_POST_FIFO(conMgr, &e_Open, 0);
-            break;
-
-        case 's':
-            RKH_SMA_POST_FIFO(conMgr, &e_Sync, 0);
             break;
     }
 }

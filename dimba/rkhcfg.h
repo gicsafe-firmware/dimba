@@ -386,7 +386,7 @@
  *	build and generate tracing information from the application-level code.
  *	This trace records are application-specific.
  */
-#define RKH_CFG_TRC_USER_TRACE_EN       RKH_DISABLED
+#define RKH_CFG_TRC_USER_TRACE_EN       RKH_ENABLED
 
 /**
  *	If the #RKH_CFG_TRC_ALL_EN is set to 1 then RKH will include all its own
@@ -536,7 +536,7 @@
  *	Specify the maximum number of trace events in the stream. The smaller
  *	this number, the lower the RAM consumption.
  */
-#define RKH_CFG_TRC_SIZEOF_STREAM       128u
+#define RKH_CFG_TRC_SIZEOF_STREAM       256u
 
 /* --- Configuration options related to queue (by reference) facility ----- */
 

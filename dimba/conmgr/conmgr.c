@@ -91,14 +91,16 @@ RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_pin, checkPin, NULL, &ConMgr_initialize, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_pin)
-    RKH_TRREG(evSimReady, NULL, NULL,   &ConMgr_reg),
-    RKH_TRREG(evSimPin,   NULL, setPin, &ConMgr_pin),
-    RKH_TRREG(evSimError, NULL, NULL,   &ConMgr_error),
+    RKH_TRREG(evSimReady,   NULL, NULL,   &ConMgr_reg),
+    RKH_TRREG(evSimPin,     NULL, setPin, &ConMgr_pin),
+    RKH_TRREG(evSimError,   NULL, NULL,   &ConMgr_error),
+    RKH_TRREG(evNoResponse, NULL, NULL,   &ConMgr_error),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_reg, checkReg, NULL, &ConMgr_initialize, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_reg)
-    RKH_TRREG(evNoReg, NULL, checkReg,   &ConMgr_reg),
+    RKH_TRREG(evNoReg, NULL, NULL,   &ConMgr_reg),
+    RKH_TRREG(evNoResponse, NULL, NULL,   &ConMgr_reg),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_COMP_REGION_STATE(ConMgr_registered, NULL, NULL, &ConMgr_active, 

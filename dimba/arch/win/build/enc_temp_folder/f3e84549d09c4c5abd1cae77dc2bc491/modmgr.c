@@ -145,6 +145,7 @@ initialization(ModMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_SIG(evTimeout);
     RKH_TR_FWK_SIG(evResponse);
     RKH_TR_FWK_SIG(evNoResponse);
+
 	RKH_TR_FWK_TUSR(MODCMD_USR_TRACE);
 
     rkh_queue_init(&qDefer, (const void **)qDefer_sto, SIZEOF_QDEFER, 

@@ -61,11 +61,22 @@ extern "C" {
 
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
+/*
+ * Serial Ports channels identifiers
+ */
 enum
 {
 	GSM_PORT, 
 
   	NUM_CHANNELS
+};
+
+/*
+ * User trace events id´s
+ */
+enum
+{
+    MODCMD_USR_TRACE = RKH_TE_USER,
 };
 
 /* ------------------------------- Data types ------------------------------ */
