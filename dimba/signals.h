@@ -44,6 +44,11 @@ enum Signals
     evToutWaitResponse,
     evSync,
     evToutDelay,
+    evSimReady,
+    evSimPin,
+    evSimError,
+    evNoReg,
+    evReg,
 	evTerminate     /* press the key escape on the keyboard */
 };
 

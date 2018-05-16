@@ -30,7 +30,9 @@ extern "C" {
 
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
-#define SYNC_DELAY_TIME    RKH_TIME_MS(1000)
+#define SYNC_DELAY_TIME     RKH_TIME_MS(1000)
+#define MAX_SYNC_RETRY      5
+#define SIM_PIN_NUMBER      9474
 
 /* ................................ Signals ................................ */
 /* ........................ Declares active object ......................... */
