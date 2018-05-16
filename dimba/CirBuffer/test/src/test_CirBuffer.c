@@ -169,4 +169,122 @@ TEST(cirBuffer, GetInOrderWrapAround)
     TEST_ASSERT_EQUAL(1, result);
 }
 
+TEST(cirBuffer, GetManyElemsLessThanStored)
+{
+    int nGetElem;
+    unsigned char expectedElem;
+    unsigned char block[8];
+
+    cirBuffer_init(&buf, storage, sizeof(char), 4);
+    expectedElem = 1;
+    cirBuffer_put(&buf, &expectedElem);
+    expectedElem = 2;
+    cirBuffer_put(&buf, &expectedElem);
+    expectedElem = 3;
+    cirBuffer_put(&buf, &expectedElem);
+
+    nGetElem = cirBuffer_getBlock(&buf, block, 2);
+    TEST_ASSERT_EQUAL(2, nGetElem);
+    TEST_ASSERT_EQUAL(1, block[0]);
+    TEST_ASSERT_EQUAL(2, block[1]);
+}
+
+TEST(cirBuffer, GetManyElemsEqualThanStored)
+{
+    int nGetElem;
+    unsigned char expectedElem;
+    unsigned char block[8];
+
+    cirBuffer_init(&buf, storage, sizeof(char), 4);
+    expectedElem = 1;
+    cirBuffer_put(&buf, &expectedElem);
+    expectedElem = 2;
+    cirBuffer_put(&buf, &expectedElem);
+    expectedElem = 3;
+    cirBuffer_put(&buf, &expectedElem);
+
+    nGetElem = cirBuffer_getBlock(&buf, block, 3);
+    TEST_ASSERT_EQUAL(3, nGetElem);
+    TEST_ASSERT_EQUAL(1, block[0]);
+    TEST_ASSERT_EQUAL(2, block[1]);
+    TEST_ASSERT_EQUAL(3, block[2]);
+}
+
+TEST(cirBuffer, GetManyElemsMoreThanStored)
+{
+    int nGetElem;
+    unsigned char expectedElem;
+    unsigned char block[8];
+
+    cirBuffer_init(&buf, storage, sizeof(char), 4);
+    expectedElem = 1;
+    cirBuffer_put(&buf, &expectedElem);
+    expectedElem = 2;
+    cirBuffer_put(&buf, &expectedElem);
+    expectedElem = 3;
+    cirBuffer_put(&buf, &expectedElem);
+
+    nGetElem = cirBuffer_getBlock(&buf, block, 4);
+    TEST_ASSERT_EQUAL(3, nGetElem);
+    TEST_ASSERT_EQUAL(1, block[0]);
+    TEST_ASSERT_EQUAL(2, block[1]);
+    TEST_ASSERT_EQUAL(3, block[2]);
+}
+
+TEST(cirBuffer, GetManyElemsEqualThanStoredWrapAround)
+{
+    int nGetElem;
+    unsigned char expectedElem;
+    unsigned char block[8];
+
+    cirBuffer_init(&buf, storage, sizeof(char), 4);
+    expectedElem = 1;
+    cirBuffer_put(&buf, &expectedElem);
+    expectedElem = 2;
+    cirBuffer_put(&buf, &expectedElem);
+    expectedElem = 3;
+    cirBuffer_put(&buf, &expectedElem);
+    expectedElem = 4;
+    cirBuffer_put(&buf, &expectedElem);
+    expectedElem = 5;
+    cirBuffer_put(&buf, &expectedElem);
+    expectedElem = 6;
+    cirBuffer_put(&buf, &expectedElem);
+    cirBuffer_get(&buf, &expectedElem);
+    cirBuffer_get(&buf, &expectedElem);
+
+    nGetElem = cirBuffer_getBlock(&buf, block, 4);
+    TEST_ASSERT_EQUAL(2, nGetElem);
+    TEST_ASSERT_EQUAL(5, block[0]);
+    TEST_ASSERT_EQUAL(6, block[1]);
+}
+
+TEST(cirBuffer, GetManyElemsInOrderWrapAround)
+{
+    int nGetElem;
+    unsigned char expectedElem;
+    unsigned char block[8];
+
+    cirBuffer_init(&buf, storage, sizeof(char), 4);
+    expectedElem = 1;
+    cirBuffer_put(&buf, &expectedElem);
+    expectedElem = 2;
+    cirBuffer_put(&buf, &expectedElem);
+    expectedElem = 3;
+    cirBuffer_put(&buf, &expectedElem);
+    expectedElem = 4;
+    cirBuffer_put(&buf, &expectedElem);
+    expectedElem = 5;
+    cirBuffer_put(&buf, &expectedElem);
+    expectedElem = 6;
+    cirBuffer_put(&buf, &expectedElem);
+
+    nGetElem = cirBuffer_getBlock(&buf, block, 4);
+    TEST_ASSERT_EQUAL(4, nGetElem);
+    TEST_ASSERT_EQUAL(3, block[0]);
+    TEST_ASSERT_EQUAL(4, block[1]);
+    TEST_ASSERT_EQUAL(5, block[2]);
+    TEST_ASSERT_EQUAL(6, block[3]);
+}
+
 /* ------------------------------ End of file ------------------------------ */

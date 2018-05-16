@@ -92,4 +92,38 @@ cirBuffer_get(CirBuffer *const me, unsigned char *elem)
     return result;
 }
 
+int 
+cirBuffer_getBlock(CirBuffer *const me, unsigned char *destBlock, 
+                   int numElem)
+{
+    int n, result = 1;
+
+    if ((me != (CirBuffer *)0) && (destBlock != (unsigned char *)0) &&
+         (numElem != 0))
+    {
+        /* Calculates the number of bytes to be retrieved */
+        n = (me->end - me->out) / me->elemSize; /* stored elements until */
+                                                /* the end */
+        if (n > me->qty)
+        {
+            n = me->qty;
+        }
+        if (n > numElem)
+        {
+            n = numElem;
+        }
+
+        memcpy(destBlock, me->out, me->elemSize * n);
+        result = n;
+        me->out += (n * me->elemSize);
+        me->qty -= n;
+
+        if (me->out >= me->end)
+        {
+            me->out = me->sto;
+        }
+    }
+    return result;
+}
+
 /* ------------------------------ End of file ------------------------------ */

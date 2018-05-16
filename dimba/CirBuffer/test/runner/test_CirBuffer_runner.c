@@ -34,6 +34,11 @@ TEST_GROUP_RUNNER(cirBuffer)
 	RUN_TEST_CASE(cirBuffer, GetOneElement);
 	RUN_TEST_CASE(cirBuffer, GetFromEmpty);
 	RUN_TEST_CASE(cirBuffer, GetInOrderWrapAround);
+	RUN_TEST_CASE(cirBuffer, GetManyElemsLessThanStored);
+	RUN_TEST_CASE(cirBuffer, GetManyElemsEqualThanStored);
+	RUN_TEST_CASE(cirBuffer, GetManyElemsMoreThanStored);
+	RUN_TEST_CASE(cirBuffer, GetManyElemsEqualThanStoredWrapAround);
+	RUN_TEST_CASE(cirBuffer, GetManyElemsInOrderWrapAround);
 }
 
 /* ------------------------------ End of file ------------------------------ */
