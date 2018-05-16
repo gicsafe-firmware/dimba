@@ -38,7 +38,6 @@ struct CmdTbl
     ModCmd getPinStatus;
     ModCmd setPin;
     ModCmd getRegStatus;
-    ModCmd enableUnsolicitedReg;
     /* other string commands */
 };
 
@@ -55,7 +54,7 @@ static const CmdTbl cmdTbl =
      RKH_TIME_MS(300), RKH_TIME_MS(100)},
 
     {RKH_INIT_STATIC_EVT(evCmd), 
-     "ATE1\r\n", 
+     "ATE1+CREG=1\r\n", 
      &conMgr, 
      RKH_TIME_MS(300), RKH_TIME_MS(100)},
 
@@ -71,11 +70,6 @@ static const CmdTbl cmdTbl =
 
     {RKH_INIT_STATIC_EVT(evCmd), 
      "AT+CREG?\r\n", 
-     &conMgr, 
-     RKH_TIME_MS(300), RKH_TIME_MS(100)},
-
-    {RKH_INIT_STATIC_EVT(evCmd), 
-     "AT+CREG=1\r\n", 
      &conMgr, 
      RKH_TIME_MS(300), RKH_TIME_MS(100)},
 };
@@ -161,12 +155,6 @@ void
 ModCmd_getRegStatus(void)
 {
     sendModCmd_noArgs(&cmdTbl.getRegStatus);
-}
-
-void 
-ModCmd_UnsolicitedRegStatus(void)
-{
-    sendModCmd_noArgs(&cmdTbl.enableUnsolicitedReg);
 }
 
 /* ------------------------------ End of file ------------------------------ */

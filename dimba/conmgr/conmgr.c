@@ -99,8 +99,8 @@ RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_reg, checkReg, NULL, &ConMgr_initialize, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_reg)
-    RKH_TRREG(evNoReg, NULL, NULL,   &ConMgr_reg),
-    RKH_TRREG(evNoResponse, NULL, NULL,   &ConMgr_reg),
+    RKH_TRREG(evNoReg,      NULL, NULL,   &ConMgr_reg),
+    RKH_TRREG(evNoResponse, NULL, NULL,   &ConMgr_error),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_COMP_REGION_STATE(ConMgr_registered, NULL, NULL, &ConMgr_active, 
@@ -242,15 +242,6 @@ checkReg(ConMgr *const me, RKH_EVT_T *pe)
     (void)pe;
 
     ModCmd_getRegStatus();
-}
-
-static void
-enableUnsolicitedRegStatus(ConMgr *const me, RKH_EVT_T *pe)
-{
-    (void)me;
-    (void)pe;
-
-    ModCmd_UnsolicitedRegStatus();
 }
 
 /* ............................. Exit actions .............................. */

@@ -52,7 +52,6 @@ void ModCmd_initStr(void);
 void ModCmd_getPinStatus(void);
 void ModCmd_setPin(rui16_t pin);
 void ModCmd_getRegStatus(void);
-void ModCmd_UnsolicitedRegStatus(void);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus

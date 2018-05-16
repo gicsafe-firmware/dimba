@@ -26,7 +26,7 @@
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
 static rui8_t sim900parser;
-SSP_DCLR_NORMAL_NODE plus_c, pin, reg;
+SSP_DCLR_NORMAL_NODE at, plus_c, pin, reg;
 
 /* ----------------------- Local function prototypes ----------------------- */
 static void cmd_ok(unsigned char pos);
@@ -40,14 +40,20 @@ static void no_registered(unsigned char pos);
 
 SSP_CREATE_NORMAL_NODE(rootCmdParser);
 SSP_CREATE_BR_TABLE(rootCmdParser)
-	SSPBR("OK\r\n", cmd_ok, &rootCmdParser),
-	SSPBR("+C",     NULL,   &plus_c),
+	SSPBR("AT", NULL,     &at),
+SSP_END_BR_TABLE
+
+SSP_CREATE_NORMAL_NODE(at);
+SSP_CREATE_BR_TABLE(at)
+	SSPBR("+C", NULL,       &plus_c),
+	SSPBR("\r\n\r\nOK\r\n", cmd_ok, &rootCmdParser),
 SSP_END_BR_TABLE
 
 SSP_CREATE_NORMAL_NODE(plus_c);
 SSP_CREATE_BR_TABLE(plus_c)
 	SSPBR("PIN: ",   NULL,  &pin),
 	SSPBR("REG: ",   NULL,  &reg),
+	SSPBR("\r\n\r\nOK\r\n", cmd_ok, &rootCmdParser),
 	SSPBR("\r\n",    NULL,  &rootCmdParser),
 SSP_END_BR_TABLE
 
