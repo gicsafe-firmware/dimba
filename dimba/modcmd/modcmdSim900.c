@@ -25,6 +25,7 @@
 #include "sim900parser.h"
 #include "signals.h"
 #include <string.h>
+#include <stdio.h>
 
 /* ----------------------------- Local macros ------------------------------ */
 /* ------------------------------- Constants ------------------------------- */
@@ -33,6 +34,11 @@ typedef struct CmdTbl CmdTbl;
 struct CmdTbl
 {
     ModCmd sync;
+    ModCmd initStr;
+    ModCmd getPinStatus;
+    ModCmd setPin;
+    ModCmd getRegStatus;
+    ModCmd enableUnsolicitedReg;
     /* other string commands */
 };
 
@@ -46,7 +52,32 @@ static const CmdTbl cmdTbl =
     {RKH_INIT_STATIC_EVT(evCmd), 
      "AT\r\n", 
      &conMgr, 
-     RKH_TIME_MS(300), RKH_TIME_MS(100)}
+     RKH_TIME_MS(300), RKH_TIME_MS(100)},
+
+    {RKH_INIT_STATIC_EVT(evCmd), 
+     "ATE1\r\n", 
+     &conMgr, 
+     RKH_TIME_MS(300), RKH_TIME_MS(100)},
+
+    {RKH_INIT_STATIC_EVT(evCmd), 
+     "AT+CPIN?\r\n", 
+     &conMgr, 
+     RKH_TIME_MS(1500), RKH_TIME_MS(100)},
+
+    {RKH_INIT_STATIC_EVT(evCmd), 
+     "AT+CPIN=%d\r\n", 
+     &conMgr, 
+     RKH_TIME_MS(300), RKH_TIME_MS(100)},
+
+    {RKH_INIT_STATIC_EVT(evCmd), 
+     "AT+CREG?\r\n", 
+     &conMgr, 
+     RKH_TIME_MS(300), RKH_TIME_MS(100)},
+
+    {RKH_INIT_STATIC_EVT(evCmd), 
+     "AT+CREG=1\r\n", 
+     &conMgr, 
+     RKH_TIME_MS(300), RKH_TIME_MS(100)},
 };
 
 /* ----------------------- Local function prototypes ----------------------- */
@@ -55,6 +86,42 @@ static void
 doSearch(unsigned char c)
 {
     ssp_doSearch(&sim900Parser, c);
+}
+
+static void
+sendModCmd_noArgs(const ModCmd *p)
+{
+    ModMgrEvt *evtCmd;
+
+    sender = *p->aoDest;
+    evtCmd = RKH_ALLOC_EVT(ModMgrEvt, evCmd, sender);
+
+    strcpy(evtCmd->cmd, p->fmt);
+
+    evtCmd->args.fmt = p->fmt;
+    evtCmd->args.aoDest = p->aoDest;
+    evtCmd->args.waitResponseTime = p->waitResponseTime;
+    evtCmd->args.interCmdTime = p->interCmdTime;
+
+    RKH_SMA_POST_FIFO(modMgr, RKH_UPCAST(RKH_EVT_T, evtCmd), sender);
+}
+
+static void
+sendModCmd_rui16(const ModCmd *p, rui16_t arg)
+{
+    ModMgrEvt *evtCmd;
+
+    sender = *p->aoDest;
+    evtCmd = RKH_ALLOC_EVT(ModMgrEvt, evCmd, sender);
+
+    sprintf(evtCmd->cmd, p->fmt, arg);
+
+    evtCmd->args.fmt = p->fmt;
+    evtCmd->args.aoDest = p->aoDest;
+    evtCmd->args.waitResponseTime = p->waitResponseTime;
+    evtCmd->args.interCmdTime = p->interCmdTime;
+
+    RKH_SMA_POST_FIFO(modMgr, RKH_UPCAST(RKH_EVT_T, evtCmd), sender);
 }
 
 /* ---------------------------- Global functions --------------------------- */
@@ -68,19 +135,37 @@ ModCmd_init(void)
 void 
 ModCmd_sync(void)
 {
-    ModMgrEvt *evtCmd;
+    sendModCmd_noArgs(&cmdTbl.sync);
+}
 
-    sender = *cmdTbl.sync.aoDest;
-    evtCmd = RKH_ALLOC_EVT(ModMgrEvt, evCmd, sender);
+void 
+ModCmd_initStr(void)
+{
+    sendModCmd_noArgs(&cmdTbl.initStr);
+}
 
-    strcpy(evtCmd->cmd, cmdTbl.sync.fmt);
+void 
+ModCmd_getPinStatus(void)
+{
+    sendModCmd_noArgs(&cmdTbl.getPinStatus);
+}
 
-    evtCmd->args.fmt = cmdTbl.sync.fmt;
-    evtCmd->args.aoDest = cmdTbl.sync.aoDest;
-    evtCmd->args.waitResponseTime = cmdTbl.sync.waitResponseTime;
-    evtCmd->args.interCmdTime = cmdTbl.sync.interCmdTime;
+void 
+ModCmd_setPin(rui16_t pin)
+{
+    sendModCmd_rui16(&cmdTbl.setPin, pin);
+}
 
-    RKH_SMA_POST_FIFO(modMgr, RKH_UPCAST(RKH_EVT_T, evtCmd), sender);
+void 
+ModCmd_getRegStatus(void)
+{
+    sendModCmd_noArgs(&cmdTbl.getRegStatus);
+}
+
+void 
+ModCmd_UnsolicitedRegStatus(void)
+{
+    sendModCmd_noArgs(&cmdTbl.enableUnsolicitedReg);
 }
 
 /* ------------------------------ End of file ------------------------------ */
