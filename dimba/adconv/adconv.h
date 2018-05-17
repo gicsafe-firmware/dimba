@@ -1,6 +1,6 @@
 /**
- *  \file       adConv.h
- *  \brief      Specification of adc module.
+ *  \file       adconv.h
+ *  \brief      Specification of ADC abstraction.
  */
 
 /* -------------------------- Development history -------------------------- */
@@ -15,10 +15,12 @@
 
 /* --------------------------------- Notes --------------------------------- */
 /* --------------------------------- Module -------------------------------- */
-#ifndef __ADC_H__
-#define __ADC_H__
+#ifndef __ADCONV_H__
+#define __ADCONV_H__
 
 /* ----------------------------- Include files ----------------------------- */
+#include "anSampler.h"
+
 /* ---------------------- External C language linkage ---------------------- */
 #ifdef __cplusplus
 extern "C" {
@@ -26,12 +28,15 @@ extern "C" {
 
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
+#define ADCONV_RESOLUTION       10  /* In bits */
+#define ADCONV_FULL_SCALE       15  /* In volts */
+#define ADCONV_DIG_FRACTION     100 /* Number of digits in fractional part */
+
 /* ------------------------------- Data types ------------------------------ */
-typedef unsigned short ADCSampleUnit;
 
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
-ADCSampleUnit ADConv_getSample(int channel);
+SampleValue ADConv_getSample(int channel);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus

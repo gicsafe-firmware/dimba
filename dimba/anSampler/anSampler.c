@@ -43,22 +43,6 @@ static AnSampler anSampler;
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
-SampleValue 
-convertToSampleValue(ADCSampleUnit sample)
-{
-    double value;
-    int whole, fraction, result;
-
-    value = ((double)(sample * 15) / (1<<10));
-    whole = (int)value;
-    fraction = (int)(value * 100);
-    fraction = fraction - (whole * 100);
-
-    result = fraction;
-    result |= whole << 8;
-    return (SampleValue)result;
-}
-
 /* ---------------------------- Global functions --------------------------- */
 int 
 anSampler_init(void)
@@ -84,15 +68,13 @@ anSampler_put(void)
     int i, result = 0;
     AnSampleBuffer *pAnSig;
     SampleValue value;
-    ADCSampleUnit adValue;
 
     anSampler.timeStamp = epoch_get();
     for (i = 0, pAnSig = anSampler.anSignals; 
          (i < NUM_AN_SIGNALS) && (result == 0); 
          ++i, ++pAnSig)
     {
-        adValue = ADConv_getSample(i);
-        value = convertToSampleValue(adValue);
+        value = ADConv_getSample(i);
         result = cirBuffer_put(&pAnSig->buffer, (unsigned char *)&value);
     }
     return result;
