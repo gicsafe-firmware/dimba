@@ -42,7 +42,7 @@ enum Signals
     evURC,
 	evTimeout,
     evToutWaitResponse,
-    evSync,
+    evOk,
     evToutDelay,
     evSimReady,
     evSimPin,

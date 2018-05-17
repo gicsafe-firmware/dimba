@@ -29,8 +29,9 @@
 typedef struct ConMgr ConMgr;
 
 /* ................... Declares states and pseudostates .................... */
-RKH_DCLR_BASIC_STATE ConMgr_inactive, ConMgr_sync, ConMgr_error,
-                     ConMgr_pin, ConMgr_reg, ConMgr_configure, ConMgr_connect, 
+RKH_DCLR_BASIC_STATE ConMgr_inactive, ConMgr_sync, ConMgr_initError,
+                     ConMgr_init, ConMgr_pin, ConMgr_setPin, ConMgr_waitReg,
+                     ConMgr_configure, ConMgr_connect, 
                      ConMgr_unregistered;
 RKH_DCLR_COMP_STATE ConMgr_active, ConMgr_initialize, ConMgr_registered;
 RKH_DCLR_COND_STATE ConMgr_checkSyncTry;
@@ -40,13 +41,13 @@ static void init(ConMgr *const me, RKH_EVT_T *pe);
 
 /* ........................ Declares effect actions ........................ */
 static void open(ConMgr *const me, RKH_EVT_T *pe);
-static void sendInit(ConMgr *const me, RKH_EVT_T *pe);
-static void setPin(ConMgr *const me, RKH_EVT_T *pe);
 static void enableUnsolicitedRegStatus(ConMgr *const me, RKH_EVT_T *pe);
 
 /* ......................... Declares entry actions ........................ */
 static void sendSync(ConMgr *const me, RKH_EVT_T *pe);
+static void sendInit(ConMgr *const me, RKH_EVT_T *pe);
 static void checkPin(ConMgr *const me, RKH_EVT_T *pe);
+static void setPin(ConMgr *const me, RKH_EVT_T *pe);
 static void checkReg(ConMgr *const me, RKH_EVT_T *pe);
 
 /* ......................... Declares exit actions ......................... */
@@ -75,32 +76,43 @@ RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_sync, sendSync, NULL, &ConMgr_initialize, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_sync)
-    RKH_TRREG(evSync, NULL, sendInit, &ConMgr_pin),
+    RKH_TRREG(evOk,         NULL, NULL, &ConMgr_pin),
     RKH_TRREG(evNoResponse, NULL, NULL, &ConMgr_checkSyncTry),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_COND_STATE(ConMgr_checkSyncTry);
 RKH_CREATE_BRANCH_TABLE(ConMgr_checkSyncTry)
     RKH_BRANCH(checkSyncTry,   NULL,   &ConMgr_sync),
-    RKH_BRANCH(ELSE,           NULL,   &ConMgr_error),
+    RKH_BRANCH(ELSE,           NULL,   &ConMgr_initError),
 RKH_END_BRANCH_TABLE
 
-RKH_CREATE_BASIC_STATE(ConMgr_error, NULL, NULL, &ConMgr_initialize, NULL);
-RKH_CREATE_TRANS_TABLE(ConMgr_error)
+RKH_CREATE_BASIC_STATE(ConMgr_initError, NULL, NULL, &ConMgr_initialize, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_initError)
+RKH_END_TRANS_TABLE
+
+RKH_CREATE_BASIC_STATE(ConMgr_init, sendInit, NULL, &ConMgr_initialize, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_init)
+    RKH_TRREG(evOk,         NULL, NULL, &ConMgr_pin),
+    RKH_TRREG(evNoResponse, NULL, NULL, &ConMgr_initError),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_pin, checkPin, NULL, &ConMgr_initialize, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_pin)
-    RKH_TRREG(evSimReady,   NULL, NULL,   &ConMgr_reg),
-    RKH_TRREG(evSimPin,     NULL, setPin, &ConMgr_pin),
-    RKH_TRREG(evSimError,   NULL, NULL,   &ConMgr_error),
-    RKH_TRREG(evNoResponse, NULL, NULL,   &ConMgr_error),
+    RKH_TRREG(evSimPin,     NULL, NULL, &ConMgr_setPin),
+    RKH_TRREG(evSimError,   NULL, NULL, &ConMgr_initError),
+    RKH_TRREG(evSimReady,   NULL, NULL, &ConMgr_waitReg),
+    RKH_TRREG(evNoResponse, NULL, NULL, &ConMgr_initError),
 RKH_END_TRANS_TABLE
 
-RKH_CREATE_BASIC_STATE(ConMgr_reg, checkReg, NULL, &ConMgr_initialize, NULL);
-RKH_CREATE_TRANS_TABLE(ConMgr_reg)
-    RKH_TRREG(evNoReg,      NULL, NULL,   &ConMgr_reg),
-    RKH_TRREG(evNoResponse, NULL, NULL,   &ConMgr_error),
+RKH_CREATE_BASIC_STATE(ConMgr_setPin, setPin, NULL, &ConMgr_initialize, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_setPin)
+    RKH_TRREG(evOk,         NULL, NULL,   &ConMgr_pin),
+    RKH_TRREG(evNoResponse, NULL, NULL,   &ConMgr_initError),
+RKH_END_TRANS_TABLE
+
+RKH_CREATE_BASIC_STATE(ConMgr_waitReg, checkReg, NULL, &ConMgr_initialize, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_waitReg)
+    RKH_TRREG(evNoResponse, NULL, NULL,   &ConMgr_initError),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_COMP_REGION_STATE(ConMgr_registered, NULL, NULL, &ConMgr_active, 
@@ -163,19 +175,21 @@ init(ConMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_STATE(me, &ConMgr_active);
     RKH_TR_FWK_STATE(me, &ConMgr_initialize);
     RKH_TR_FWK_STATE(me, &ConMgr_sync);
-    RKH_TR_FWK_STATE(me, &ConMgr_error);
+	RKH_TR_FWK_STATE(me, &ConMgr_init);
+    RKH_TR_FWK_STATE(me, &ConMgr_initError);
     RKH_TR_FWK_STATE(me, &ConMgr_pin);
-    RKH_TR_FWK_STATE(me, &ConMgr_reg);
+    RKH_TR_FWK_STATE(me, &ConMgr_setPin);
+    RKH_TR_FWK_STATE(me, &ConMgr_waitReg);
     RKH_TR_FWK_STATE(me, &ConMgr_registered);
     RKH_TR_FWK_STATE(me, &ConMgr_unregistered);
     RKH_TR_FWK_STATE(me, &ConMgr_configure);
     RKH_TR_FWK_STATE(me, &ConMgr_connect);
     RKH_TR_FWK_TIMER(&me->timer);
-    RKH_TR_FWK_SIG(evSync);
     RKH_TR_FWK_SIG(evOpen);
     RKH_TR_FWK_SIG(evClose);
     RKH_TR_FWK_SIG(evCmd);
-    RKH_TR_FWK_SIG(evURC);
+	RKH_TR_FWK_SIG(evOk);
+	RKH_TR_FWK_SIG(evURC);
     RKH_TR_FWK_SIG(evSimPin);
     RKH_TR_FWK_SIG(evSimError);
     RKH_TR_FWK_SIG(evSimReady);
@@ -244,7 +258,6 @@ checkReg(ConMgr *const me, RKH_EVT_T *pe)
     ModCmd_getRegStatus();
 }
 
-/* ............................. Exit actions .............................. */
 /* ................................ Guards ................................. */
 rbool_t
 checkSyncTry(ConMgr *const me, RKH_EVT_T *pe)

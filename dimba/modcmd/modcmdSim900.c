@@ -38,7 +38,6 @@ struct CmdTbl
     ModCmd getPinStatus;
     ModCmd setPin;
     ModCmd getRegStatus;
-    /* other string commands */
 };
 
 /* ---------------------------- Global variables --------------------------- */

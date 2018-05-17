@@ -95,7 +95,7 @@ static const char *helpMessage =
 
 static RKH_ROM_STATIC_EVENT(e_Term, evTerminate);
 static RKH_ROM_STATIC_EVENT(e_Open, evOpen);
-static RKH_ROM_STATIC_EVENT(e_Sync, evSync);
+static RKH_ROM_STATIC_EVENT(e_Ok, evOk);
 
 static void ser_rx_isr(unsigned char byte);
 static void ser_tx_isr(void);
@@ -173,7 +173,7 @@ bsp_init(int argc, char *argv[])
     RKH_FILTER_OFF_EVENT(RKH_TE_SM_STATE);
     RKH_FILTER_OFF_EVENT(RKH_TE_SMA_FIFO);
     RKH_FILTER_OFF_EVENT(RKH_TE_SMA_LIFO);
-    RKH_FILTER_OFF_SMA(modMgr);
+    //RKH_FILTER_OFF_SMA(modMgr);
     RKH_FILTER_OFF_SMA(conMgr);
     RKH_FILTER_OFF_ALL_SIGNALS();
 
