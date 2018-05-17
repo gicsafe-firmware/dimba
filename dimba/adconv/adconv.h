@@ -1,11 +1,11 @@
 /**
- *  \file       anSampler.h
- *  \brief      Specification of analog signal sampler.
+ *  \file       adConv.h
+ *  \brief      Specification of adc module.
  */
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2018.05.14  LeFr  v1.0.00  Initial version
+ *  2018.05.17  LeFr  v1.0.00  Initial version
  */
 
 /* -------------------------------- Authors -------------------------------- */
@@ -15,12 +15,10 @@
 
 /* --------------------------------- Notes --------------------------------- */
 /* --------------------------------- Module -------------------------------- */
-#ifndef __ANSAMPLER_H__
-#define __ANSAMPLER_H__
+#ifndef __ADC_H__
+#define __ADC_H__
 
 /* ----------------------------- Include files ----------------------------- */
-#include "CirBuffer.h"
-
 /* ---------------------- External C language linkage ---------------------- */
 #ifdef __cplusplus
 extern "C" {
@@ -28,19 +26,12 @@ extern "C" {
 
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
-#define AN_SAMPLING_RATE_SEC        5           
-#define MAX_AN_NUM_SAMPLES          128
-#define NUM_AN_SIGNALS              2
-
-/* ................................ Signals ................................ */
-/* ........................ Declares active object ......................... */
 /* ------------------------------- Data types ------------------------------ */
-typedef unsigned short SampleValue;
+typedef unsigned short ADCSampleUnit;
 
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
-int anSampler_init(void);
-int anSampler_put(void);
+ADCSampleUnit ADConv_getSample(int channel);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus
