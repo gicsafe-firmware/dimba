@@ -1,6 +1,6 @@
 /**
- *  \file       test_IoChgDet.c
- *  \brief      Unit test for IO change detector.
+ *  \file       all_tests.c
+ *  \brief      Test runner of IO change detector.
  */
 
 /* -------------------------- Development history -------------------------- */
@@ -15,29 +15,40 @@
 
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
+#include <stdio.h>
 #include "unity_fixture.h"
-#include "ioChgDet.h"
 
 /* ----------------------------- Local macros ------------------------------ */
 /* ------------------------------- Constants ------------------------------- */
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
-TEST_GROUP(IoChgDet);
-
 /* ---------------------------- Local variables ---------------------------- */
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
+static void 
+runAllTests(void)
+{
+	RUN_TEST_GROUP(IoChgDet);
+}
+
 /* ---------------------------- Global functions --------------------------- */
-TEST_SETUP(IoChgDet)
+int
+main(int argc, char *argv[])
 {
-}
+    static char *args[8];
+    int nArgs;
 
-TEST_TEAR_DOWN(IoChgDet)
-{
-}
+    args[0] = argv[0];
+#if 0
+    args[1] = "-g";
+    args[2] = "trace_args";
+    nArgs = 3;
+#else
+    nArgs = 1;
+#endif
 
-TEST(IoChgDet, ClearAfterInit)
-{
+	UnityMain(nArgs, args, runAllTests);
+    getchar();
 }
 
 /* ------------------------------ End of file ------------------------------ */

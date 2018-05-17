@@ -1,11 +1,11 @@
 /**
- *  \file       ioChgDet.h
- *  \brief      Specification of I/O change detector
+ *  \file       epoch.h
+ *  \brief      Specification of epoch time management.
  */
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2018.05.14  LeFr  v1.0.00  Initial version
+ *  2018.05.17  LeFr  v1.0.00  Initial version
  */
 
 /* -------------------------------- Authors -------------------------------- */
@@ -15,12 +15,10 @@
 
 /* --------------------------------- Notes --------------------------------- */
 /* --------------------------------- Module -------------------------------- */
-#ifndef __IOCHGDET_H__
-#define __IOCHGDET_H__
+#ifndef __EPOCH_H__
+#define __EPOCH_H__
 
 /* ----------------------------- Include files ----------------------------- */
-#include "epoch.h"
-
 /* ---------------------- External C language linkage ---------------------- */
 #ifdef __cplusplus
 extern "C" {
@@ -28,22 +26,12 @@ extern "C" {
 
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
-#define MAX_NUM_IO_CHANGES      256
-
 /* ------------------------------- Data types ------------------------------ */
-typedef struct IOChg IOChg;
-struct IOChg
-{
-    Epoch timeStamp;
-    unsigned char signalId;
-    unsigned char signalValue;
-};
+typedef long Epoch;
 
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
-int IOChgDet_init(void);
-int IOChgDet_put(unsigned char signalId, unsigned char siganlValue);
-int IOChgDet_get(IOChg *destBlock, int nChanges);
+Epoch epoch_get(void);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus
