@@ -42,11 +42,11 @@ struct CirBuffer
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
 int cirBuffer_init(CirBuffer *const me, unsigned char *sto, int elemSize,
-                   int numElem);
+                   int nElem);
 int cirBuffer_put(CirBuffer *const me, unsigned char *elem);
 int cirBuffer_get(CirBuffer *const me, unsigned char *elem);
 int cirBuffer_getBlock(CirBuffer *const me, unsigned char *destBlock, 
-                       int numElem);
+                       int nElem);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus

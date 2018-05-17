@@ -27,6 +27,7 @@ TEST_GROUP(cirBuffer);
 /* ---------------------------- Local variables ---------------------------- */
 static CirBuffer buf;
 static unsigned char storage[128];
+static unsigned char block[8];
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
@@ -173,7 +174,6 @@ TEST(cirBuffer, GetManyElemsLessThanStored)
 {
     int nGetElem;
     unsigned char expectedElem;
-    unsigned char block[8];
 
     cirBuffer_init(&buf, storage, sizeof(char), 4);
     expectedElem = 1;
@@ -193,7 +193,6 @@ TEST(cirBuffer, GetManyElemsEqualThanStored)
 {
     int nGetElem;
     unsigned char expectedElem;
-    unsigned char block[8];
 
     cirBuffer_init(&buf, storage, sizeof(char), 4);
     expectedElem = 1;
@@ -214,7 +213,6 @@ TEST(cirBuffer, GetManyElemsMoreThanStored)
 {
     int nGetElem;
     unsigned char expectedElem;
-    unsigned char block[8];
 
     cirBuffer_init(&buf, storage, sizeof(char), 4);
     expectedElem = 1;
@@ -235,7 +233,6 @@ TEST(cirBuffer, GetManyElemsEqualThanStoredWrapAround)
 {
     int nGetElem;
     unsigned char expectedElem;
-    unsigned char block[8];
 
     cirBuffer_init(&buf, storage, sizeof(char), 4);
     expectedElem = 1;
@@ -263,7 +260,6 @@ TEST(cirBuffer, GetManyElemsInOrderWrapAround)
 {
     int nGetElem;
     unsigned char expectedElem;
-    unsigned char block[8];
 
     cirBuffer_init(&buf, storage, sizeof(char), 4);
     expectedElem = 1;
@@ -285,6 +281,16 @@ TEST(cirBuffer, GetManyElemsInOrderWrapAround)
     TEST_ASSERT_EQUAL(4, block[1]);
     TEST_ASSERT_EQUAL(5, block[2]);
     TEST_ASSERT_EQUAL(6, block[3]);
+}
+
+TEST(cirBuffer, GetManyFromEmpty)
+{
+    int nGetElem;
+
+    cirBuffer_init(&buf, storage, sizeof(char), 4);
+    nGetElem = cirBuffer_getBlock(&buf, block, 4);
+
+    TEST_ASSERT_EQUAL(0, nGetElem);
 }
 
 /* ------------------------------ End of file ------------------------------ */

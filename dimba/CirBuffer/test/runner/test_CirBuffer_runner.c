@@ -39,6 +39,7 @@ TEST_GROUP_RUNNER(cirBuffer)
 	RUN_TEST_CASE(cirBuffer, GetManyElemsMoreThanStored);
 	RUN_TEST_CASE(cirBuffer, GetManyElemsEqualThanStoredWrapAround);
 	RUN_TEST_CASE(cirBuffer, GetManyElemsInOrderWrapAround);
+	RUN_TEST_CASE(cirBuffer, GetManyFromEmpty);
 }
 
 /* ------------------------------ End of file ------------------------------ */

@@ -28,18 +28,18 @@
 /* ---------------------------- Global functions --------------------------- */
 int 
 cirBuffer_init(CirBuffer *const me, unsigned char *sto, int elemSize,
-               int numElem)
+               int nElem)
 {
     int result = 1;
 
     if ((me != (CirBuffer *)0) && (sto != (unsigned char *)0) &&
-        (elemSize != 0) && (numElem != 0))
+        (elemSize != 0) && (nElem != 0))
     {
         me->qty = 0;
         me->elemSize = elemSize;
-        me->numElem = numElem;
+        me->numElem = nElem;
         me->sto = me->in = me->out = sto;
-        me->end = sto + (elemSize * numElem);
+        me->end = sto + (elemSize * nElem);
         result = 0;
     }
     return result;
@@ -94,33 +94,39 @@ cirBuffer_get(CirBuffer *const me, unsigned char *elem)
 
 int 
 cirBuffer_getBlock(CirBuffer *const me, unsigned char *destBlock, 
-                   int numElem)
+                   int nElem)
 {
-    int n, result = 1;
+    int n, nConsumed, result = 0, offset = 0;
 
     if ((me != (CirBuffer *)0) && (destBlock != (unsigned char *)0) &&
-         (numElem != 0))
+        (nElem != 0))
     {
-        /* Calculates the number of bytes to be retrieved */
-        n = (me->end - me->out) / me->elemSize; /* stored elements until */
-                                                /* the end */
-        if (n > me->qty)
+        if (me->qty != 0)
         {
-            n = me->qty;
-        }
-        if (n > numElem)
-        {
-            n = numElem;
-        }
+            nConsumed = (nElem >= me->qty) ? me->qty : nElem;
+            do
+            {
+                n = (me->end - me->out) / me->elemSize; 
+                if (n > me->qty)
+                {
+                    n = me->qty;
+                }
+                if (n > nElem)
+                {
+                    n = nElem;
+                }
 
-        memcpy(destBlock, me->out, me->elemSize * n);
-        result = n;
-        me->out += (n * me->elemSize);
-        me->qty -= n;
+                memcpy(destBlock + offset, me->out, me->elemSize * n);
+                me->out += offset = (n * me->elemSize);
+                me->qty -= n;
+                result += n;
 
-        if (me->out >= me->end)
-        {
-            me->out = me->sto;
+                if (me->out >= me->end)
+                {
+                    me->out = me->sto;
+                }
+                nConsumed -= n;
+            } while (nConsumed);
         }
     }
     return result;
