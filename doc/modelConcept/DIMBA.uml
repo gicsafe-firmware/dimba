@@ -198,6 +198,10 @@
       <packagedElement xmi:type="uml:SignalEvent" xmi:id="_cCsw8FlzEeioMqgkRul4rQ" name="evOk" signal="_b6zZMFlzEeioMqgkRul4rQ"/>
       <packagedElement xmi:type="uml:Signal" xmi:id="_Hr5acFl0EeioMqgkRul4rQ" name="evError"/>
       <packagedElement xmi:type="uml:SignalEvent" xmi:id="_H0brYFl0EeioMqgkRul4rQ" name="evError" signal="_Hr5acFl0EeioMqgkRul4rQ"/>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_RdkG0FmKEeiFFviyqWdp8w" name="evIP"/>
+      <packagedElement xmi:type="uml:SignalEvent" xmi:id="_R8vWIFmKEeiFFviyqWdp8w" name="evIP" signal="_RdkG0FmKEeiFFviyqWdp8w"/>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_dOzDwFmLEeiFFviyqWdp8w" name="evConnected"/>
+      <packagedElement xmi:type="uml:SignalEvent" xmi:id="_dWhcYFmLEeiFFviyqWdp8w" name="evConnected" signal="_dOzDwFmLEeiFFviyqWdp8w"/>
     </packagedElement>
     <packagedElement xmi:type="uml:StateMachine" xmi:id="_i1rp0FRTEeiBd_DXg33BBQ" name="ConMgr">
       <ownedRule xmi:type="uml:Constraint" xmi:id="_yA2HgFioEeiQLo5rqCRH8w">
@@ -283,7 +287,7 @@
                 </subvertex>
                 <subvertex xmi:type="uml:Pseudostate" xmi:id="_d67VIFRVEeiBd_DXg33BBQ" name=""/>
                 <subvertex xmi:type="uml:Pseudostate" xmi:id="_1Z3ZIFilEeiQLo5rqCRH8w" name="" kind="junction"/>
-                <subvertex xmi:type="uml:State" xmi:id="_1HrngFimEeiQLo5rqCRH8w" name="error"/>
+                <subvertex xmi:type="uml:State" xmi:id="_1HrngFimEeiQLo5rqCRH8w" name="initError"/>
                 <subvertex xmi:type="uml:State" xmi:id="_Bd0PAFitEeiQLo5rqCRH8w" name="pin">
                   <entry xmi:type="uml:OpaqueBehavior" xmi:id="_HiREwFitEeiQLo5rqCRH8w" name="checkPin();">
                     <language>C</language>
@@ -303,16 +307,81 @@
             <subvertex xmi:type="uml:State" xmi:id="_tuf50FiuEeiQLo5rqCRH8w" name="registered">
               <region xmi:type="uml:Region" xmi:id="_4UdL4liuEeiQLo5rqCRH8w" name="Region1">
                 <transition xmi:type="uml:Transition" xmi:id="_Ow-C8Fi0EeiQLo5rqCRH8w" source="_BJx0gFi0EeiQLo5rqCRH8w" target="_6a4F0FiuEeiQLo5rqCRH8w"/>
-                <transition xmi:type="uml:Transition" xmi:id="_QdkusFi0EeiQLo5rqCRH8w" source="_6a4F0FiuEeiQLo5rqCRH8w" target="_4UfoIFiuEeiQLo5rqCRH8w"/>
-                <subvertex xmi:type="uml:State" xmi:id="_4UfoIFiuEeiQLo5rqCRH8w" name="connect"/>
-                <subvertex xmi:type="uml:State" xmi:id="_6a4F0FiuEeiQLo5rqCRH8w" name="configure"/>
-                <subvertex xmi:type="uml:Pseudostate" xmi:id="_BJx0gFi0EeiQLo5rqCRH8w" name="Initial3"/>
+                <transition xmi:type="uml:Transition" xmi:id="_QdkusFi0EeiQLo5rqCRH8w" source="_6a4F0FiuEeiQLo5rqCRH8w" target="_4UfoIFiuEeiQLo5rqCRH8w">
+                  <trigger xmi:type="uml:Trigger" xmi:id="_erPpEFmKEeiFFviyqWdp8w" event="_R8vWIFmKEeiFFviyqWdp8w"/>
+                </transition>
+                <transition xmi:type="uml:Transition" xmi:id="_4hQIUFmLEeiFFviyqWdp8w" source="_4UfoIFiuEeiQLo5rqCRH8w" target="_zjTnoFmLEeiFFviyqWdp8w"/>
+                <subvertex xmi:type="uml:State" xmi:id="_4UfoIFiuEeiQLo5rqCRH8w" name="connect">
+                  <region xmi:type="uml:Region" xmi:id="_k7XjUlmKEeiFFviyqWdp8w" name="Region1">
+                    <transition xmi:type="uml:Transition" xmi:id="_6Sw-sFmKEeiFFviyqWdp8w" source="_5mBNcFmKEeiFFviyqWdp8w" target="_k7ZYgFmKEeiFFviyqWdp8w"/>
+                    <transition xmi:type="uml:Transition" xmi:id="_EFQMcFmLEeiFFviyqWdp8w" source="_k7ZYgFmKEeiFFviyqWdp8w" target="__45gwFmKEeiFFviyqWdp8w">
+                      <trigger xmi:type="uml:Trigger" xmi:id="_ddfAAFmLEeiFFviyqWdp8w" event="_dWhcYFmLEeiFFviyqWdp8w"/>
+                    </transition>
+                    <transition xmi:type="uml:Transition" xmi:id="_Q5bCgFmLEeiFFviyqWdp8w" source="_k7ZYgFmKEeiFFviyqWdp8w" target="_LcAXkFmLEeiFFviyqWdp8w">
+                      <trigger xmi:type="uml:Trigger" xmi:id="_SafzsFmLEeiFFviyqWdp8w" event="_9rJ44FiwEeiQLo5rqCRH8w"/>
+                    </transition>
+                    <subvertex xmi:type="uml:State" xmi:id="_k7ZYgFmKEeiFFviyqWdp8w" name="start">
+                      <entry xmi:type="uml:OpaqueBehavior" xmi:id="_4Tl8QFmKEeiFFviyqWdp8w">
+                        <language>C</language>
+                        <body>startConnection();</body>
+                      </entry>
+                    </subvertex>
+                    <subvertex xmi:type="uml:Pseudostate" xmi:id="_5mBNcFmKEeiFFviyqWdp8w" name=""/>
+                    <subvertex xmi:type="uml:State" xmi:id="__45gwFmKEeiFFviyqWdp8w" name="connected"/>
+                    <subvertex xmi:type="uml:State" xmi:id="_LcAXkFmLEeiFFviyqWdp8w" name="connectError"/>
+                  </region>
+                </subvertex>
+                <subvertex xmi:type="uml:State" xmi:id="_6a4F0FiuEeiQLo5rqCRH8w" name="configure">
+                  <region xmi:type="uml:Region" xmi:id="_v9DPcVmHEeiFFviyqWdp8w" name="Region1">
+                    <transition xmi:type="uml:Transition" xmi:id="_4LIEIFmHEeiFFviyqWdp8w" source="_2j2kUFmHEeiFFviyqWdp8w" target="_v9QDwFmHEeiFFviyqWdp8w"/>
+                    <transition xmi:type="uml:Transition" xmi:id="_P46vIFmIEeiFFviyqWdp8w" source="_v9QDwFmHEeiFFviyqWdp8w" target="_uEjAQFmIEeiFFviyqWdp8w">
+                      <trigger xmi:type="uml:Trigger" xmi:id="_Tqkb0FmIEeiFFviyqWdp8w" event="_cCsw8FlzEeioMqgkRul4rQ"/>
+                    </transition>
+                    <transition xmi:type="uml:Transition" xmi:id="_DaMIIFmJEeiFFviyqWdp8w" source="_uEjAQFmIEeiFFviyqWdp8w" target="_NXDPUFmIEeiFFviyqWdp8w">
+                      <trigger xmi:type="uml:Trigger" xmi:id="_E_4TkFmJEeiFFviyqWdp8w" event="_cCsw8FlzEeioMqgkRul4rQ"/>
+                    </transition>
+                    <transition xmi:type="uml:Transition" xmi:id="_UcZE4FmJEeiFFviyqWdp8w" source="_v9QDwFmHEeiFFviyqWdp8w" target="_MaH3kFmJEeiFFviyqWdp8w">
+                      <trigger xmi:type="uml:Trigger" xmi:id="_V8x5kFmJEeiFFviyqWdp8w" event="_9rJ44FiwEeiQLo5rqCRH8w"/>
+                    </transition>
+                    <transition xmi:type="uml:Transition" xmi:id="_lBaWYFmJEeiFFviyqWdp8w" source="_uEjAQFmIEeiFFviyqWdp8w" target="_MaH3kFmJEeiFFviyqWdp8w">
+                      <trigger xmi:type="uml:Trigger" xmi:id="_mavg0FmJEeiFFviyqWdp8w" event="_9rJ44FiwEeiQLo5rqCRH8w"/>
+                    </transition>
+                    <transition xmi:type="uml:Transition" xmi:id="_xttp4FmJEeiFFviyqWdp8w" source="_NXDPUFmIEeiFFviyqWdp8w" target="_NXDPUFmIEeiFFviyqWdp8w">
+                      <trigger xmi:type="uml:Trigger" xmi:id="_2FgJgFmJEeiFFviyqWdp8w" event="_H0brYFl0EeioMqgkRul4rQ"/>
+                    </transition>
+                    <transition xmi:type="uml:Transition" xmi:id="_43GHYFmJEeiFFviyqWdp8w" source="_NXDPUFmIEeiFFviyqWdp8w" target="_MaH3kFmJEeiFFviyqWdp8w">
+                      <trigger xmi:type="uml:Trigger" xmi:id="_6K__QFmJEeiFFviyqWdp8w" event="_9rJ44FiwEeiQLo5rqCRH8w"/>
+                    </transition>
+                    <subvertex xmi:type="uml:State" xmi:id="_v9QDwFmHEeiFFviyqWdp8w" name="setAPN">
+                      <entry xmi:type="uml:OpaqueBehavior" xmi:id="_CQ1v4FmIEeiFFviyqWdp8w">
+                        <language>C</language>
+                        <body>setupAPN</body>
+                      </entry>
+                    </subvertex>
+                    <subvertex xmi:type="uml:Pseudostate" xmi:id="_2j2kUFmHEeiFFviyqWdp8w" name=""/>
+                    <subvertex xmi:type="uml:State" xmi:id="_NXDPUFmIEeiFFviyqWdp8w" name="checkIP">
+                      <entry xmi:type="uml:OpaqueBehavior" xmi:id="_qOOO8FmIEeiFFviyqWdp8w">
+                        <language>C</language>
+                        <body>getIPAddress();</body>
+                      </entry>
+                    </subvertex>
+                    <subvertex xmi:type="uml:State" xmi:id="_uEjAQFmIEeiFFviyqWdp8w" name="enableGPRS">
+                      <entry xmi:type="uml:OpaqueBehavior" xmi:id="_5z90wFmIEeiFFviyqWdp8w">
+                        <language>C</language>
+                        <body>startGPRS();</body>
+                      </entry>
+                    </subvertex>
+                    <subvertex xmi:type="uml:State" xmi:id="_MaH3kFmJEeiFFviyqWdp8w" name="configureError"/>
+                  </region>
+                </subvertex>
+                <subvertex xmi:type="uml:Pseudostate" xmi:id="_BJx0gFi0EeiQLo5rqCRH8w"/>
+                <subvertex xmi:type="uml:State" xmi:id="_zjTnoFmLEeiFFviyqWdp8w" name="disconnect"/>
               </region>
             </subvertex>
             <subvertex xmi:type="uml:State" xmi:id="_JgDVMFivEeiQLo5rqCRH8w" name="unregistered"/>
           </region>
         </subvertex>
-        <subvertex xmi:type="uml:Pseudostate" xmi:id="_wul6YFRTEeiBd_DXg33BBQ" name="Initial1"/>
+        <subvertex xmi:type="uml:Pseudostate" xmi:id="_wul6YFRTEeiBd_DXg33BBQ"/>
       </region>
     </packagedElement>
   </packagedElement>
