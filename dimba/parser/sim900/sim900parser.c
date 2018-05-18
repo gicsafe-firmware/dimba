@@ -26,9 +26,9 @@
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
 static rui8_t sim900parser;
-SSP_DCLR_NORMAL_NODE at, initStr, at_plus_c, 
+SSP_DCLR_NORMAL_NODE at, waitOK, at_plus_c, at_plus_ci,
                      at_plus_cpin, at_plus_creg, pinStatus, wpinSet, pinSet,
-                     plus_c, plus_creg;
+                     plus_c, plus_creg, at_plus_cipstatus, at_plus_cifsr;
 
 static rui8_t isURC;
 
@@ -41,6 +41,11 @@ static void isURC_set(unsigned char pos);
 static void registered(unsigned char pos);
 static void registered(unsigned char pos);
 static void no_registered(unsigned char pos);
+static void ipInitial(unsigned char pos);
+static void ipStart(unsigned char pos);
+static void ipStatus(unsigned char pos);
+static void ipGprsAct(unsigned char pos);
+static void ipDone(unsigned char pos);
 
 /* ---------------------------- Local functions ---------------------------- */
 
@@ -52,13 +57,8 @@ SSP_END_BR_TABLE
 
 SSP_CREATE_NORMAL_NODE(at);
 SSP_CREATE_BR_TABLE(at)
-	SSPBR("E",  NULL,       &initStr),
+	SSPBR("E",  NULL,       &waitOK),
 	SSPBR("+C", NULL,       &at_plus_c),
-	SSPBR("OK\r\n", cmd_ok, &rootCmdParser),
-SSP_END_BR_TABLE
-
-SSP_CREATE_NORMAL_NODE(initStr);
-SSP_CREATE_BR_TABLE(initStr)
 	SSPBR("OK\r\n", cmd_ok, &rootCmdParser),
 SSP_END_BR_TABLE
 
@@ -66,7 +66,17 @@ SSP_CREATE_NORMAL_NODE(at_plus_c);
 SSP_CREATE_BR_TABLE(at_plus_c)
 	SSPBR("PIN",            NULL,   &at_plus_cpin),
 	SSPBR("REG?\r\n\r\n",   NULL,   &at_plus_creg),
+	SSPBR("STT=",           NULL,   &waitOK),
+	SSPBR("I",              NULL,   &at_plus_ci),
 	SSPBR("\r\n",   NULL,  &rootCmdParser),
+SSP_END_BR_TABLE
+
+SSP_CREATE_NORMAL_NODE(at_plus_ci);
+SSP_CREATE_BR_TABLE(at_plus_ci)
+	SSPBR("FSR\r\n",      NULL,  &at_plus_cifsr),
+	SSPBR("ICR\r\n",      NULL,  &waitOK),
+	SSPBR("PSTATUS\r\n",  NULL,  &at_plus_cipstatus),
+	SSPBR("\r\n",         NULL,  &rootCmdParser),
 SSP_END_BR_TABLE
 
 /* --------------------------------------------------------------- */
@@ -103,6 +113,32 @@ SSP_CREATE_NORMAL_NODE(at_plus_creg);
 SSP_CREATE_BR_TABLE(at_plus_creg)
 	SSPBR("1,",      NULL,  &plus_creg),
 	SSPBR("\r\n",    NULL,  &rootCmdParser),
+SSP_END_BR_TABLE
+
+/* --------------------------------------------------------------- */
+/* ------------------------ AT+CIPSTATUS ------------------------- */
+SSP_CREATE_NORMAL_NODE(at_plus_cipstatus);
+SSP_CREATE_BR_TABLE(at_plus_cipstatus)
+	SSPBR("INITIAL", ipInitial,  &rootCmdParser),
+	SSPBR("START",   ipStart,    &rootCmdParser),
+	SSPBR("STATUS",  ipStatus,   &rootCmdParser),
+	SSPBR("GPRSACT", ipGprsAct,  &rootCmdParser),
+SSP_END_BR_TABLE
+
+/* --------------------------------------------------------------- */
+/* -------------------------- AT+CIFSR --------------------------- */
+SSP_CREATE_NORMAL_NODE(at_plus_cifsr);
+SSP_CREATE_BR_TABLE(at_plus_cifsr)
+	SSPBR(".",       ipDone,      &rootCmdParser),
+SSP_END_BR_TABLE
+
+/* --------------------------------------------------------------- */
+/* --------------------------- initStr --------------------------- */
+/* --------------------------- AT+CSTT --------------------------- */
+/* --------------------------- AT+CIICT -------------------------- */
+SSP_CREATE_NORMAL_NODE(waitOK);
+SSP_CREATE_BR_TABLE(waitOK)
+	SSPBR("OK\r\n",  cmd_ok,  &rootCmdParser),
 SSP_END_BR_TABLE
 
 /* --------------------------------------------------------------- */
@@ -196,6 +232,46 @@ no_registered(unsigned char pos)
     (void)pos;
     
     sendModResp_noArgs(evNoReg);
+}
+
+static void
+ipInitial(unsigned char pos)
+{
+    (void)pos;
+    
+    sendModResp_noArgs(evIPInitial);
+}
+
+static void
+ipStart(unsigned char pos)
+{
+    (void)pos;
+    
+    sendModResp_noArgs(evIPStart);
+}
+
+static void
+ipStatus(unsigned char pos)
+{
+    (void)pos;
+    
+    sendModResp_noArgs(evIPStatus);
+}
+
+static void
+ipGprsAct(unsigned char pos)
+{
+    (void)pos;
+    
+    sendModResp_noArgs(evIPGprsAct);
+}
+
+static void
+ipDone(unsigned char pos)
+{
+    (void)pos;
+
+    sendModResp_noArgs(evIP);
 }
 
 /* ---------------------------- Global functions --------------------------- */

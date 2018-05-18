@@ -49,6 +49,11 @@ enum Signals
     evSimError,
     evNoReg,
     evReg,
+    evIP,
+    evIPInitial,
+    evIPStart,
+    evIPStatus,
+    evIPGprsAct,
 	evTerminate     /* press the key escape on the keyboard */
 };
 

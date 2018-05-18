@@ -31,9 +31,14 @@ typedef struct ConMgr ConMgr;
 /* ................... Declares states and pseudostates .................... */
 RKH_DCLR_BASIC_STATE ConMgr_inactive, ConMgr_sync, ConMgr_initError,
                      ConMgr_init, ConMgr_pin, ConMgr_setPin, ConMgr_waitReg,
-                     ConMgr_configure, ConMgr_connect, 
-                     ConMgr_unregistered;
-RKH_DCLR_COMP_STATE ConMgr_active, ConMgr_initialize, ConMgr_registered;
+                     ConMgr_unregistered,
+                     ConMgr_setAPN, ConMgr_enableGPRS, ConMgr_checkIP,
+                     ConMgr_configureError,
+                     ConMgr_start;
+
+RKH_DCLR_COMP_STATE ConMgr_active, ConMgr_initialize, ConMgr_registered,
+                    ConMgr_configure, ConMgr_connect;
+RKH_DCLR_FINAL_STATE ConMgr_initializeFinal, ConMgr_configureFinal;
 RKH_DCLR_COND_STATE ConMgr_checkSyncTry;
 
 /* ........................ Declares initial action ........................ */
@@ -42,6 +47,7 @@ static void init(ConMgr *const me, RKH_EVT_T *pe);
 /* ........................ Declares effect actions ........................ */
 static void open(ConMgr *const me, RKH_EVT_T *pe);
 static void enableUnsolicitedRegStatus(ConMgr *const me, RKH_EVT_T *pe);
+static void requestIp(ConMgr *const me, RKH_EVT_T *pe);
 
 /* ......................... Declares entry actions ........................ */
 static void sendSync(ConMgr *const me, RKH_EVT_T *pe);
@@ -49,6 +55,10 @@ static void sendInit(ConMgr *const me, RKH_EVT_T *pe);
 static void checkPin(ConMgr *const me, RKH_EVT_T *pe);
 static void setPin(ConMgr *const me, RKH_EVT_T *pe);
 static void checkReg(ConMgr *const me, RKH_EVT_T *pe);
+static void setupAPN(ConMgr *const me, RKH_EVT_T *pe);
+static void startGPRS(ConMgr *const me, RKH_EVT_T *pe);
+static void getConnStatus(ConMgr *const me, RKH_EVT_T *pe);
+static void startConnection(ConMgr *const me, RKH_EVT_T *pe);
 
 /* ......................... Declares exit actions ......................... */
 /* ............................ Declares guards ............................ */
@@ -71,12 +81,12 @@ RKH_CREATE_COMP_REGION_STATE(ConMgr_initialize, NULL, NULL, &ConMgr_active,
                              &ConMgr_sync, NULL,
                              RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_initialize)
-    RKH_TRREG(evReg, NULL, NULL,   &ConMgr_registered),
+    RKH_TRCOMPLETION(NULL, NULL, &ConMgr_registered),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_sync, sendSync, NULL, &ConMgr_initialize, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_sync)
-    RKH_TRREG(evOk,         NULL, NULL, &ConMgr_pin),
+    RKH_TRREG(evOk,         NULL, NULL, &ConMgr_init),
     RKH_TRREG(evNoResponse, NULL, NULL, &ConMgr_checkSyncTry),
 RKH_END_TRANS_TABLE
 
@@ -112,6 +122,7 @@ RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_waitReg, checkReg, NULL, &ConMgr_initialize, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_waitReg)
+    RKH_TRREG(evReg,        NULL, NULL,   &ConMgr_initializeFinal),
     RKH_TRREG(evNoResponse, NULL, NULL,   &ConMgr_initError),
 RKH_END_TRANS_TABLE
 
@@ -122,12 +133,47 @@ RKH_CREATE_TRANS_TABLE(ConMgr_registered)
     RKH_TRREG(evNoReg, NULL, NULL,   &ConMgr_unregistered),
 RKH_END_TRANS_TABLE
 
-RKH_CREATE_BASIC_STATE(ConMgr_configure, NULL, NULL, &ConMgr_registered, NULL);
+RKH_CREATE_COMP_REGION_STATE(ConMgr_configure, NULL, NULL, &ConMgr_registered, 
+                             &ConMgr_setAPN, NULL,
+                             RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_configure)
+    RKH_TRCOMPLETION(NULL, NULL, &ConMgr_connect),
 RKH_END_TRANS_TABLE
 
-RKH_CREATE_BASIC_STATE(ConMgr_connect, NULL, NULL, &ConMgr_registered, NULL);
+RKH_CREATE_BASIC_STATE(ConMgr_setAPN, setupAPN, NULL, &ConMgr_configure, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_setAPN)
+    RKH_TRREG(evOk,         NULL, NULL, &ConMgr_enableGPRS),
+    RKH_TRREG(evNoResponse, NULL, NULL, &ConMgr_configureError),
+RKH_END_TRANS_TABLE
+
+RKH_CREATE_BASIC_STATE(ConMgr_enableGPRS, startGPRS, NULL, &ConMgr_configure, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_enableGPRS)
+    RKH_TRREG(evOk,         NULL, NULL, &ConMgr_checkIP),
+    RKH_TRREG(evNoResponse, NULL, NULL, &ConMgr_configureError),
+RKH_END_TRANS_TABLE
+
+RKH_CREATE_BASIC_STATE(ConMgr_checkIP, getConnStatus, NULL, &ConMgr_configure, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_checkIP)
+    RKH_TRREG(evIPGprsAct,  requestIp,    NULL, &ConMgr_checkIP),
+    RKH_TRREG(evIP,         getConnStatus,NULL, &ConMgr_checkIP),
+    RKH_TRREG(evIPInitial,  NULL,         NULL, &ConMgr_checkIP),
+    RKH_TRREG(evIPStart,    NULL,         NULL, &ConMgr_configureFinal),
+    RKH_TRREG(evIPStatus,   NULL,         NULL, &ConMgr_configureFinal),
+    RKH_TRREG(evNoResponse, NULL,         NULL, &ConMgr_configureError),
+RKH_END_TRANS_TABLE
+
+RKH_CREATE_BASIC_STATE(ConMgr_configureError, NULL, NULL, &ConMgr_configure, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_configureError)
+RKH_END_TRANS_TABLE
+
+RKH_CREATE_COMP_REGION_STATE(ConMgr_connect, NULL, NULL, &ConMgr_registered, 
+                             &ConMgr_start, NULL,
+                             RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_connect)
+RKH_END_TRANS_TABLE
+
+RKH_CREATE_BASIC_STATE(ConMgr_start, startConnection, NULL, &ConMgr_connect, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_start)
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_unregistered, NULL, NULL, &ConMgr_active, NULL);
@@ -180,10 +226,17 @@ init(ConMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_STATE(me, &ConMgr_pin);
     RKH_TR_FWK_STATE(me, &ConMgr_setPin);
     RKH_TR_FWK_STATE(me, &ConMgr_waitReg);
+    RKH_TR_FWK_STATE(me, &ConMgr_initializeFinal);
     RKH_TR_FWK_STATE(me, &ConMgr_registered);
     RKH_TR_FWK_STATE(me, &ConMgr_unregistered);
     RKH_TR_FWK_STATE(me, &ConMgr_configure);
+    RKH_TR_FWK_STATE(me, &ConMgr_setAPN);
+    RKH_TR_FWK_STATE(me, &ConMgr_enableGPRS);
+    RKH_TR_FWK_STATE(me, &ConMgr_checkIP);
+    RKH_TR_FWK_STATE(me, &ConMgr_configureError);
+//    RKH_TR_FWK_STATE(me, &ConMgr_configFinal);
     RKH_TR_FWK_STATE(me, &ConMgr_connect);
+    RKH_TR_FWK_STATE(me, &ConMgr_start);
     RKH_TR_FWK_TIMER(&me->timer);
     RKH_TR_FWK_SIG(evOpen);
     RKH_TR_FWK_SIG(evClose);
@@ -195,6 +248,9 @@ init(ConMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_SIG(evSimReady);
     RKH_TR_FWK_SIG(evReg);
     RKH_TR_FWK_SIG(evNoReg);
+    RKH_TR_FWK_SIG(evIPInitial);
+    RKH_TR_FWK_SIG(evIPStart);
+    RKH_TR_FWK_SIG(evIPGprsAct);
     RKH_TR_FWK_SIG(evTerminate);
 
     RKH_TMR_INIT(&me->timer, &e_tout, NULL);
@@ -209,6 +265,15 @@ open(ConMgr *const me, RKH_EVT_T *pe)
     (void)me;
 
     RKH_SMA_POST_FIFO(modMgr, &e_Open, conMgr);
+}
+
+void 
+requestIp(ConMgr *const me, RKH_EVT_T *pe)
+{
+    (void)pe;
+    (void)me;
+
+    ModCmd_requestIP();
 }
 
 /* ............................. Entry actions ............................. */
@@ -256,6 +321,42 @@ checkReg(ConMgr *const me, RKH_EVT_T *pe)
     (void)pe;
 
     ModCmd_getRegStatus();
+}
+
+static void
+setupAPN(ConMgr *const me, RKH_EVT_T *pe)
+{
+    (void)me;
+    (void)pe;
+
+    ModCmd_setupAPN(CONNECTION_APN, CONNECTION_USER, CONNECTION_PASSWORD);
+}
+   
+static void
+startGPRS(ConMgr *const me, RKH_EVT_T *pe)
+{
+    (void)me;
+    (void)pe;
+
+    ModCmd_startGPRS();
+}
+
+static void
+getConnStatus(ConMgr *const me, RKH_EVT_T *pe)
+{
+    (void)me;
+    (void)pe;
+
+    ModCmd_getConnStatus();
+}
+
+static void
+startConnection(ConMgr *const me, RKH_EVT_T *pe)
+{
+    (void)me;
+    (void)pe;
+
+    ModCmd_connect(CONNECTION_PROT, CONNECTION_DOMAIN, CONNECTION_PORT);
 }
 
 /* ................................ Guards ................................. */

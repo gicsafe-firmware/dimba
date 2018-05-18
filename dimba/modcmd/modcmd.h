@@ -52,6 +52,11 @@ void ModCmd_initStr(void);
 void ModCmd_getPinStatus(void);
 void ModCmd_setPin(rui16_t pin);
 void ModCmd_getRegStatus(void);
+void ModCmd_setupAPN(char *apn, char *usr, char *nm);
+void ModCmd_startGPRS(void);
+void ModCmd_requestIP(void);
+void ModCmd_getConnStatus(void);
+void ModCmd_connect(char *prot, char *dmn, char *port);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus
