@@ -1,11 +1,11 @@
 /**
- *  \file       epoch.h
- *  \brief      Specification of epoch time of Unix.
+ *  \file       rtime.h
+ *  \brief      Specification of RTC abstraction.
  */
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2018.05.17  LeFr  v1.0.00  Initial version
+ *  2018.05.18  LeFr  v1.0.00  Initial version
  */
 
 /* -------------------------------- Authors -------------------------------- */
@@ -15,10 +15,12 @@
 
 /* --------------------------------- Notes --------------------------------- */
 /* --------------------------------- Module -------------------------------- */
-#ifndef __EPOCH_H__
-#define __EPOCH_H__
+#ifndef __RTIME_H__
+#define __RTIME_H__
 
 /* ----------------------------- Include files ----------------------------- */
+#include "epoch.h"
+
 /* ---------------------- External C language linkage ---------------------- */
 #ifdef __cplusplus
 extern "C" {
@@ -27,26 +29,9 @@ extern "C" {
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
 /* ------------------------------- Data types ------------------------------ */
-typedef long Epoch;
-
-typedef struct Time Time;
-struct Time
-{
-    unsigned char tm_sec;       /* Seconds after minute (0,59) */
-    unsigned char tm_min;       /* Minutes after hour   (0,59) */
-    unsigned char tm_hour;      /* Hours after midnight (0,23) */
-    unsigned char tm_mday;      /* Month day            (1,31) */
-    unsigned char tm_mon;       /* Months from January  (1,12) */
-    short         tm_year;      /* From year 1900 */
-    unsigned char tm_wday;      /* Days from Sunday     (1,7)  */
-    unsigned char tm_isdst;     /* Daylight saving time flag   */
-};
-
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
-Epoch epoch_init(void);
-Epoch epoch_get(void);
-void epoch_mkTime(void);
+Time *rtime_get(void);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus
