@@ -17,6 +17,7 @@
 /* ----------------------------- Include files ----------------------------- */
 #include "unity_fixture.h"
 #include "AnSampler.h"
+#include "Spy_AnSampler.h"
 #include "Mock_CirBuffer.h"
 #include "Mock_epoch.h"
 #include "Mock_adconv.h"
@@ -117,6 +118,22 @@ TEST(AnSampler, StoreOneAnSample)
 
     result = anSampler_put();
     TEST_ASSERT_EQUAL(0, result);
+}
+
+TEST(AnSampler, GetAnSampleSet)
+{
+    AnSampleSet set;
+    int i, result;
+
+    for (i = 0; i < NUM_AN_SIGNALS; ++i)
+    {
+        cirBuffer_getBlock_ExpectAndReturn(0, 0, 32, 8);
+        cirBuffer_getBlock_IgnoreArg_me();
+        cirBuffer_getBlock_IgnoreArg_destBlock();
+    }
+
+    result = anSampler_getSet(&set, 32);
+    TEST_ASSERT_EQUAL(8, result);
 }
 
 /* ------------------------------ End of file ------------------------------ */

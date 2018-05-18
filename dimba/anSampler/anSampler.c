@@ -43,6 +43,12 @@ static AnSampler anSampler;
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
+int
+Spy_AnSampler_getAnSampler(void)
+{
+    return 0;
+}
+
 /* ---------------------------- Global functions --------------------------- */
 int 
 anSampler_init(void)
@@ -76,6 +82,24 @@ anSampler_put(void)
     {
         value = ADConv_getSample(i);
         result = cirBuffer_put(&pAnSig->buffer, (unsigned char *)&value);
+    }
+    return result;
+}
+
+int 
+anSampler_getSet(AnSampleSet *set, int nSamples)
+{
+    int i, result = 0;
+    AnSampleBuffer *pAnSig;
+
+    set->timeStamp = anSampler.timeStamp;
+    for (i = 0, pAnSig = anSampler.anSignals; 
+         i < NUM_AN_SIGNALS; 
+         ++i, ++pAnSig)
+    {
+        result = cirBuffer_getBlock(&pAnSig->buffer,
+                                    (unsigned char *)set->anSignal[i],
+                                    nSamples);
     }
     return result;
 }

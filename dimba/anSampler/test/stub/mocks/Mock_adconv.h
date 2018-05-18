@@ -24,10 +24,10 @@ void Mock_adconv_Verify(void);
 
 
 #define ADConv_getSample_IgnoreAndReturn(cmock_retval) ADConv_getSample_CMockIgnoreAndReturn(__LINE__, cmock_retval)
-void ADConv_getSample_CMockIgnoreAndReturn(UNITY_LINE_TYPE cmock_line, ADCSampleUnit cmock_to_return);
+void ADConv_getSample_CMockIgnoreAndReturn(UNITY_LINE_TYPE cmock_line, SampleValue cmock_to_return);
 #define ADConv_getSample_ExpectAndReturn(channel, cmock_retval) ADConv_getSample_CMockExpectAndReturn(__LINE__, channel, cmock_retval)
-void ADConv_getSample_CMockExpectAndReturn(UNITY_LINE_TYPE cmock_line, int channel, ADCSampleUnit cmock_to_return);
-typedef ADCSampleUnit (* CMOCK_ADConv_getSample_CALLBACK)(int channel, int cmock_num_calls);
+void ADConv_getSample_CMockExpectAndReturn(UNITY_LINE_TYPE cmock_line, int channel, SampleValue cmock_to_return);
+typedef SampleValue (* CMOCK_ADConv_getSample_CALLBACK)(int channel, int cmock_num_calls);
 void ADConv_getSample_StubWithCallback(CMOCK_ADConv_getSample_CALLBACK Callback);
 #define ADConv_getSample_IgnoreArg_channel() ADConv_getSample_CMockIgnoreArg_channel(__LINE__)
 void ADConv_getSample_CMockIgnoreArg_channel(UNITY_LINE_TYPE cmock_line);

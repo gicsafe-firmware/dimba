@@ -30,6 +30,7 @@ TEST_GROUP_RUNNER(AnSampler)
 	RUN_TEST_CASE(AnSampler, ClearAfterInit);
 	RUN_TEST_CASE(AnSampler, FailsOneAnSamplerOnInit);
 	RUN_TEST_CASE(AnSampler, StoreOneAnSample);
+	RUN_TEST_CASE(AnSampler, GetAnSampleSet);
 }
 
 /* ------------------------------ End of file ------------------------------ */
