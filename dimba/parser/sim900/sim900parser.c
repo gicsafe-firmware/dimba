@@ -26,7 +26,9 @@
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
 static rui8_t sim900parser;
-SSP_DCLR_NORMAL_NODE at, waitOK, at_plus_c, at_plus_ci,
+SSP_DCLR_NORMAL_NODE at, waitOK, at_plus_c, at_plus_ci, at_plus_cip, 
+                     at_plus_cipsta, at_plus_cipstart, at_plus_cipstatus, 
+                     at_plus_cipclose,
                      at_plus_cpin, at_plus_creg, pinStatus, wpinSet, pinSet,
                      plus_c, plus_creg, at_plus_cipstatus, at_plus_cifsr;
 
@@ -46,6 +48,8 @@ static void ipStart(unsigned char pos);
 static void ipStatus(unsigned char pos);
 static void ipGprsAct(unsigned char pos);
 static void ipDone(unsigned char pos);
+static void connected(unsigned char pos);
+static void disconnected(unsigned char pos);
 
 /* ---------------------------- Local functions ---------------------------- */
 
@@ -75,7 +79,21 @@ SSP_CREATE_NORMAL_NODE(at_plus_ci);
 SSP_CREATE_BR_TABLE(at_plus_ci)
 	SSPBR("FSR\r\n",      NULL,  &at_plus_cifsr),
 	SSPBR("ICR\r\n",      NULL,  &waitOK),
-	SSPBR("PSTATUS\r\n",  NULL,  &at_plus_cipstatus),
+	SSPBR("P",            NULL,  &at_plus_cip),
+	SSPBR("\r\n",         NULL,  &rootCmdParser),
+SSP_END_BR_TABLE
+
+SSP_CREATE_NORMAL_NODE(at_plus_cip);
+SSP_CREATE_BR_TABLE(at_plus_cip)
+	SSPBR("STA",          NULL,  &at_plus_cipsta),
+	SSPBR("CLOSE",        NULL,  &at_plus_cipclose),
+	SSPBR("\r\n",         NULL,  &rootCmdParser),
+SSP_END_BR_TABLE
+
+SSP_CREATE_NORMAL_NODE(at_plus_cipsta);
+SSP_CREATE_BR_TABLE(at_plus_cipsta)
+	SSPBR("TUS\r\n",      NULL,  &at_plus_cipstatus),
+	SSPBR("RT",           NULL,  &at_plus_cipstart),
 	SSPBR("\r\n",         NULL,  &rootCmdParser),
 SSP_END_BR_TABLE
 
@@ -120,9 +138,23 @@ SSP_END_BR_TABLE
 SSP_CREATE_NORMAL_NODE(at_plus_cipstatus);
 SSP_CREATE_BR_TABLE(at_plus_cipstatus)
 	SSPBR("INITIAL", ipInitial,  &rootCmdParser),
-	SSPBR("START",   ipStart,    &rootCmdParser),
 	SSPBR("STATUS",  ipStatus,   &rootCmdParser),
+	SSPBR("TART",   ipStart,    &rootCmdParser),
 	SSPBR("GPRSACT", ipGprsAct,  &rootCmdParser),
+SSP_END_BR_TABLE
+
+/* --------------------------------------------------------------- */
+/* ------------------------- AT+CIPSTART ------------------------- */
+SSP_CREATE_NORMAL_NODE(at_plus_cipstart);
+SSP_CREATE_BR_TABLE(at_plus_cipstart)
+	SSPBR("CONNECT OK", connected,  &rootCmdParser),
+SSP_END_BR_TABLE
+
+/* --------------------------------------------------------------- */
+/* ------------------------- AT+CIPCLOSE ------------------------- */
+SSP_CREATE_NORMAL_NODE(at_plus_cipclose);
+SSP_CREATE_BR_TABLE(at_plus_cipclose)
+	SSPBR("CLOSE OK", disconnected,  &rootCmdParser),
 SSP_END_BR_TABLE
 
 /* --------------------------------------------------------------- */
@@ -272,6 +304,22 @@ ipDone(unsigned char pos)
     (void)pos;
 
     sendModResp_noArgs(evIP);
+}
+
+static void
+connected(unsigned char pos)
+{
+    (void)pos;
+
+    sendModResp_noArgs(evConnected);
+}
+
+static void
+disconnected(unsigned char pos)
+{
+    (void)pos;
+
+    sendModResp_noArgs(evDisconnected);
 }
 
 /* ---------------------------- Global functions --------------------------- */

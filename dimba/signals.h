@@ -54,6 +54,8 @@ enum Signals
     evIPStart,
     evIPStatus,
     evIPGprsAct,
+    evConnected,
+    evDisconnected,
 	evTerminate     /* press the key escape on the keyboard */
 };
 

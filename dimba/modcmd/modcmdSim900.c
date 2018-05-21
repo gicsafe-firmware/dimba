@@ -43,6 +43,7 @@ struct CmdTbl
     ModCmd requestIP;
     ModCmd getConnStatus;
     ModCmd connect;
+    ModCmd disconnect;
 };
 
 /* ---------------------------- Global variables --------------------------- */
@@ -59,6 +60,7 @@ static const CmdTbl cmdTbl =
 
     {RKH_INIT_STATIC_EVT(evCmd), 
      "ATE1+CREG=1;+CIPSHUT\r\n", 
+     //"ATE1+CREG=1\r\n", 
      &conMgr, 
      RKH_TIME_MS(300), RKH_TIME_MS(100)},
 
@@ -100,7 +102,12 @@ static const CmdTbl cmdTbl =
     {RKH_INIT_STATIC_EVT(evCmd), 
      "AT+CIPSTART=\"%s\",\"%s\",\"%s\"\r\n", 
      &conMgr, 
-     RKH_TIME_MS(300), RKH_TIME_MS(100)},
+     RKH_TIME_MS(3000), RKH_TIME_MS(100)},
+
+    {RKH_INIT_STATIC_EVT(evCmd), 
+     "AT+CIPCLOSE\r\n", 
+     &conMgr, 
+     RKH_TIME_MS(3000), RKH_TIME_MS(100)},
 };
 
 /* ----------------------- Local function prototypes ----------------------- */
@@ -236,8 +243,13 @@ ModCmd_getConnStatus(void)
 void 
 ModCmd_connect(char *prot, char *dmn, char *port)
 {
-    sendModCmd_3StrArgs(&cmdTbl.setAPN, prot, dmn, port);
+    sendModCmd_3StrArgs(&cmdTbl.connect, prot, dmn, port);
 }
 
+void 
+ModCmd_disconnect(void)
+{
+    sendModCmd_noArgs(&cmdTbl.disconnect);
+}
 
 /* ------------------------------ End of file ------------------------------ */
