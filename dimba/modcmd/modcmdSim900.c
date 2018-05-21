@@ -134,17 +134,11 @@ sendModCmd_noArgs(const ModCmd *p)
 {
     ModMgrEvt *evtCmd;
 
-    sender = *p->aoDest;
-    evtCmd = RKH_ALLOC_EVT(ModMgrEvt, evCmd, sender);
+    evtCmd = RKH_ALLOC_EVT(ModMgrEvt, evCmd, *p->aoDest);
 
     strncpy(evtCmd->cmd, p->fmt, MODMGR_MAX_SIZEOF_CMDSTR);
 
-    evtCmd->args.fmt = p->fmt;
-    evtCmd->args.aoDest = p->aoDest;
-    evtCmd->args.waitResponseTime = p->waitResponseTime;
-    evtCmd->args.interCmdTime = p->interCmdTime;
-
-    RKH_SMA_POST_FIFO(modMgr, RKH_UPCAST(RKH_EVT_T, evtCmd), sender);
+    postFIFOEvtCmd(evtCmd, p);
 }
 
 static void
@@ -152,17 +146,11 @@ sendModCmd_rui16(const ModCmd *p, rui16_t arg)
 {
     ModMgrEvt *evtCmd;
 
-    sender = *p->aoDest;
-    evtCmd = RKH_ALLOC_EVT(ModMgrEvt, evCmd, sender);
+    evtCmd = RKH_ALLOC_EVT(ModMgrEvt, evCmd, *p->aoDest);
 
     snprintf(evtCmd->cmd, MODMGR_MAX_SIZEOF_CMDSTR, p->fmt, arg);
 
-    evtCmd->args.fmt = p->fmt;
-    evtCmd->args.aoDest = p->aoDest;
-    evtCmd->args.waitResponseTime = p->waitResponseTime;
-    evtCmd->args.interCmdTime = p->interCmdTime;
-
-    RKH_SMA_POST_FIFO(modMgr, RKH_UPCAST(RKH_EVT_T, evtCmd), sender);
+    postFIFOEvtCmd(evtCmd, p);
 }
 
 static void
