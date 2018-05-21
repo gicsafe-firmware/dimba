@@ -46,7 +46,8 @@ struct Time
 /* -------------------------- Function prototypes -------------------------- */
 Epoch epoch_init(void);
 Epoch epoch_get(void);
-void epoch_mkTime(void);
+void epoch_updateNow(void);
+Epoch epoch_updateByStep(void);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus
