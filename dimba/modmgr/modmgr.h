@@ -29,7 +29,7 @@ extern "C" {
 
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
-#define MODMGR_MAX_SIZEOF_CMDSTR    32
+#define MODMGR_MAX_SIZEOF_CMDSTR    64
 
 /* ................................ Signals ................................ */
 /* ........................ Declares active object ......................... */
@@ -43,6 +43,13 @@ struct ModMgrEvt
     char cmd[MODMGR_MAX_SIZEOF_CMDSTR];
     unsigned char *data;
     unsigned char nData;
+};
+
+typedef struct ModMgrResp ModMgrResp;
+struct ModMgrResp
+{
+    RKH_EVT_T evt;
+    RKH_SIG_T fwdEvt;
 };
 
 /* -------------------------- External variables --------------------------- */

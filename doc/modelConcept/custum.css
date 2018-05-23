@@ -1,0 +1,29 @@
+Transition > Label {
+	bodyCutLength: 4;
+	indicateParameters: true;
+}
+
+Transition {
+	bodyCutLength: 4;
+	indicateParameters: true;
+	routing: Rectilinear;
+	roundedBendpointsRadius: 5;
+}
+
+State > OpaqueBehavior {
+	bodyCutLength: 4;
+	indicateParameters: true;
+}
+
+State > FunctionalBehavior {
+	bodyCutLength: 4;
+	indicateParameters: true;
+}
+
+State {
+    fillColor:#9BC7CC;
+}
+
+Comment {
+	fillcolor:#E1E187;
+}

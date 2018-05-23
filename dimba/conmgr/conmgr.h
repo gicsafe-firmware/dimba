@@ -6,11 +6,13 @@
 /* -------------------------- Development history -------------------------- */
 /*
  *  2018.05.07  LeFr  v1.0.00  Initial version
+ *  2018.05.15  DaBa  v1.0.01  Efects implemented
  */
 
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci lf@vortexmakes.com
+ *  DaBa  Darío Baliña      db@vortexmakes.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
@@ -28,6 +30,16 @@ extern "C" {
 
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
+#define SYNC_DELAY_TIME     RKH_TIME_MS(1000)
+#define MAX_SYNC_RETRY      5
+#define SIM_PIN_NUMBER      9474
+#define CONNECTION_APN      "INTERNER.GPRS.UNIFON.COM.AR"
+#define CONNECTION_USER     "WAP"
+#define CONNECTION_PASSWORD "WAP"
+#define CONNECTION_PROT     "TCP"
+#define CONNECTION_DOMAIN   "71.6.135.77"
+#define CONNECTION_PORT     "33499"
+
 /* ................................ Signals ................................ */
 /* ........................ Declares active object ......................... */
 RKH_SMA_DCLR(conMgr);

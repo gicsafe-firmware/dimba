@@ -76,7 +76,7 @@ RKH_THIS_MODULE
 /* ---------------------------- Global variables --------------------------- */
 SERIAL_T serials[ NUM_CHANNELS ] =
 {
-	{	"COM8",	115200, 8, PAR_NONE, STOP_1, 0 },	// COM1
+	{	"COM8",	19200, 8, PAR_NONE, STOP_1, 0 },	// COM1
 };
 
 /* ---------------------------- Local variables ---------------------------- */
@@ -95,7 +95,8 @@ static const char *helpMessage =
 
 static RKH_ROM_STATIC_EVENT(e_Term, evTerminate);
 static RKH_ROM_STATIC_EVENT(e_Open, evOpen);
-static RKH_ROM_STATIC_EVENT(e_Sync, evSync);
+static RKH_ROM_STATIC_EVENT(e_Close, evClose);
+static RKH_ROM_STATIC_EVENT(e_Ok, evOk);
 
 static void ser_rx_isr(unsigned char byte);
 static void ser_tx_isr(void);
@@ -167,9 +168,14 @@ bsp_init(int argc, char *argv[])
 
     RKH_FILTER_ON_GROUP(RKH_TRC_ALL_GROUPS);
     RKH_FILTER_ON_EVENT(RKH_TRC_ALL_EVENTS);
+	RKH_FILTER_OFF_EVENT(MODCMD_USR_TRACE);
+	RKH_FILTER_OFF_GROUP_ALL_EVENTS(RKH_TG_USR);
     RKH_FILTER_OFF_EVENT(RKH_TE_TMR_TOUT);
     RKH_FILTER_OFF_EVENT(RKH_TE_SM_STATE);
-    RKH_FILTER_OFF_SMA(modMgr);
+    RKH_FILTER_OFF_EVENT(RKH_TE_SMA_FIFO);
+    RKH_FILTER_OFF_EVENT(RKH_TE_SMA_LIFO);
+    //RKH_FILTER_OFF_SMA(modMgr);
+    RKH_FILTER_OFF_SMA(conMgr);
     RKH_FILTER_OFF_ALL_SIGNALS();
 
     RKH_TRC_OPEN();
@@ -189,8 +195,8 @@ bsp_keyParser(int c)
             RKH_SMA_POST_FIFO(conMgr, &e_Open, 0);
             break;
 
-        case 's':
-            RKH_SMA_POST_FIFO(conMgr, &e_Sync, 0);
+        case 'c':
+            RKH_SMA_POST_FIFO(conMgr, &e_Close, 0);
             break;
     }
 }
@@ -205,6 +211,7 @@ void
 ser_rx_isr( unsigned char byte )
 {
     cmdParser(byte);
+	putchar(byte);
 }
 
 static
@@ -218,7 +225,6 @@ bsp_serial_open(int ch)
 {
     init_serial_hard(ch, &ser_cback );
     connect_serial(ch);
-    tx_data(ch, 'O');
     cmdParser = ModCmd_init();
 }
 
