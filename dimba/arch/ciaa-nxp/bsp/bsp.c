@@ -40,22 +40,21 @@
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2017.04.14  LeFr  v2.4.05  Initial version
+ *  2017.04.14  DaBa  v2.4.05  Initial version
  */
 
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci  lf@vortexmakes.com
- *  DaBa  Dario Baliña       dariosb@vortexmakes.com
+ *  DaBa  Dario Baliña       dariosb@gmail.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
 #include <stdio.h>
 
-#include "signals.h"
+#include "dimbaevt.h"
 #include "modmgr.h"
-#include "conmgr.h"
 
 #include "bsp.h"
 #include "getopt.h"
@@ -63,7 +62,7 @@
 #include "trace_io_cfg.h"
 #include "wserial.h"
 #include "wserdefs.h"
-#include "modcmd.h"
+#include "ssp.h"
 
 RKH_THIS_MODULE
 
@@ -80,7 +79,6 @@ SERIAL_T serials[ NUM_CHANNELS ] =
 };
 
 /* ---------------------------- Local variables ---------------------------- */
-static ModCmdRcvHandler cmdParser;
 static char *opts = (char *)DIMBA_CFG_OPTIONS;
 static const char *helpMessage =
 {
@@ -94,13 +92,17 @@ static const char *helpMessage =
 };
 
 static RKH_ROM_STATIC_EVENT(e_Term, evTerminate);
-static RKH_ROM_STATIC_EVENT(e_Open, evOpen);
-static RKH_ROM_STATIC_EVENT(e_Sync, evSync);
+static SSP sim900Parser;
 
 static void ser_rx_isr(unsigned char byte);
 static void ser_tx_isr(void);
 static SERIAL_CBACK_T ser_cback =
 { ser_rx_isr, NULL, NULL, ser_tx_isr, NULL, NULL, NULL };
+
+SSP_CREATE_NORMAL_NODE(root);
+SSP_CREATE_BR_TABLE(root)
+	SSPBR("OK\r\n", NULL,   &root),
+SSP_END_BR_TABLE
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
@@ -169,7 +171,7 @@ bsp_init(int argc, char *argv[])
     RKH_FILTER_ON_EVENT(RKH_TRC_ALL_EVENTS);
     RKH_FILTER_OFF_EVENT(RKH_TE_TMR_TOUT);
     RKH_FILTER_OFF_EVENT(RKH_TE_SM_STATE);
-    RKH_FILTER_OFF_SMA(modMgr);
+    RKH_FILTER_OFF_SMA(modmgr);
     RKH_FILTER_OFF_ALL_SIGNALS();
 
     RKH_TRC_OPEN();
@@ -178,20 +180,10 @@ bsp_init(int argc, char *argv[])
 void
 bsp_keyParser(int c)
 {
-    switch(c)
+    if (c == ESC)
     {
-        case ESC:
-            RKH_SMA_POST_FIFO(modMgr, &e_Term, 0);
-            rkhport_fwk_stop();
-            break;
-
-        case 'o':
-            RKH_SMA_POST_FIFO(conMgr, &e_Open, 0);
-            break;
-
-        case 's':
-            RKH_SMA_POST_FIFO(conMgr, &e_Sync, 0);
-            break;
+        RKH_SMA_POST_FIFO(modmgr, &e_Term, 0);
+        rkhport_fwk_stop();
     }
 }
 
@@ -204,7 +196,7 @@ static
 void
 ser_rx_isr( unsigned char byte )
 {
-    cmdParser(byte);
+    ssp_doSearch(&sim900Parser, byte);
 }
 
 static
@@ -214,29 +206,20 @@ ser_tx_isr( void )
 }
 
 void
-bsp_serial_open(int ch)
+bsp_serial_open(void)
 {
-    init_serial_hard(ch, &ser_cback );
-    connect_serial(ch);
-    tx_data(ch, 'O');
-    cmdParser = ModCmd_init();
+	init_serial_hard(GSM_PORT, &ser_cback );
+	connect_serial(GSM_PORT);
+    tx_data(GSM_PORT, 'O');
+
+  	ssp_init(&sim900Parser, &root);
 }
 
 void
-bsp_serial_close(int ch)
+bsp_serial_close(void)
 {
-	disconnect_serial(ch);
-	deinit_serial_hard(ch);
-}
-
-void
-bsp_serial_puts(int ch, char *p)
-{
-    while(*p!='\0')
-    {
-        tx_data(ch, *p);
-        ++p;
-    }
+	disconnect_serial(GSM_PORT);
+	deinit_serial_hard(GSM_PORT);
 }
 
 /* ------------------------------ File footer ------------------------------ */

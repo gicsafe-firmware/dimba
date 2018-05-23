@@ -12,7 +12,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{EA23BC21-9F94-4DAD-807C-487D7BAA4EC2}</ProjectGuid>
-    <RootNamespace>blinky</RootNamespace>
+    <RootNamespace>Dimba</RootNamespace>
     <Keyword>Win32Proj</Keyword>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>

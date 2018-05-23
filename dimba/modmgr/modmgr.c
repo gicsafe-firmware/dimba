@@ -47,7 +47,7 @@ static void moreCmd(ModMgr *const me, RKH_EVT_T *pe);
 /* ......................... Declares entry actions ........................ */
 /* ......................... Declares exit actions ......................... */
 /* ............................ Declares guards ............................ */
-rbool_t isInterCmdTime(const RKH_SM_T *me, RKH_EVT_T *pe);
+rbool_t isInterCmdTime(ModMgr *const me, RKH_EVT_T *pe);
 
 /* ........................ States and pseudostates ........................ */
 RKH_CREATE_BASIC_STATE(ModMgr_inactive, NULL, NULL, RKH_ROOT, NULL);
@@ -89,8 +89,10 @@ RKH_END_TRANS_TABLE
 /* ............................. Active object ............................. */
 struct ModMgr
 {
-    RKH_SMA_T ao;       /* base structure */
-    RKH_TMR_T timer;    /* which is responsible for intercmd delay */
+    RKH_SMA_T ao;           /* base structure */
+    RKH_TMR_T timer;        /* which is responsible for wait responce and
+                               intercmd delay */
+    RKH_TNT_T interCmdTime; /* stores intercmd delay for current command */ 
 };
 
 RKH_SMA_CREATE(ModMgr, modMgr, 0, HCAL, &ModMgr_inactive, initialization, 
@@ -101,7 +103,7 @@ RKH_SMA_DEF_PTR(modMgr);
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
-static RKH_ROM_STATIC_EVENT(e_tout, evTimeout);
+static RKH_ROM_STATIC_EVENT(e_tout, evToutWaitResponse);
 static RKH_QUEUE_T queueReq;
 
 /* ----------------------- Local function prototypes ----------------------- */
@@ -126,7 +128,7 @@ initialization(ModMgr *const me, RKH_EVT_T *pe)
 
     RKH_TMR_INIT(&me->timer, &e_tout, NULL);
 
-    bsp_serial_open();
+    bsp_serial_open(GSM_PORT);
 }
 
 /* ............................ Effect actions ............................. */
@@ -147,8 +149,17 @@ notifyURC(ModMgr *const me, RKH_EVT_T *pe)
 static void
 sendCmd(ModMgr *const me, RKH_EVT_T *pe)
 {
-    (void)me;
-    (void)pe;
+    ModMgrEvt *pevt;
+
+    pevt = RKH_UPCAST(ModMgrEvt, pe);
+
+    bsp_serial_puts(GSM_PORT, pevt->cmd);
+
+    RKH_SET_STATIC_EVENT(&e_tout, evToutWaitResponse);
+    RKH_TMR_ONESHOT(&me->timer, RKH_UPCAST(RKH_SMA_T, me), 
+                    pevt->args.waitResponseTime);
+
+    me->interCmdTime = pevt->args.interCmdTime;
 }
 
 static void
@@ -168,8 +179,11 @@ noResponse(ModMgr *const me, RKH_EVT_T *pe)
 static void
 startDelay(ModMgr *const me, RKH_EVT_T *pe)
 {
-    (void)me;
     (void)pe;
+
+    RKH_SET_STATIC_EVENT(&e_tout, evToutDelay);
+    RKH_TMR_ONESHOT(&me->timer, RKH_UPCAST(RKH_SMA_T, me), 
+                    me->interCmdTime);
 }
 
 static void
@@ -183,11 +197,11 @@ moreCmd(ModMgr *const me, RKH_EVT_T *pe)
 /* ............................. Exit actions .............................. */
 /* ................................ Guards ................................. */
 rbool_t
-isInterCmdTime(const RKH_SM_T *me, RKH_EVT_T *pe)
+isInterCmdTime(ModMgr *const me, RKH_EVT_T *pe)
 {
-    (void)me;
     (void)pe;
-    return RKH_TRUE;
+    
+    return (me->interCmdTime != 0) ? RKH_TRUE : RKH_FALSE;
 }
 
 /* ---------------------------- Global functions --------------------------- */

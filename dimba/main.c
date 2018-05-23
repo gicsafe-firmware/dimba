@@ -18,6 +18,7 @@
 #include "rkh.h"
 #include "rkhfwk_dynevt.h"
 #include "modmgr.h"
+#include "conmgr.h"
 #include "bsp.h"
 
 
@@ -26,10 +27,10 @@
 
 #define SIZEOF_EP0STO       16
 #define SIZEOF_EP0_BLOCK    sizeof(RKH_EVT_T)
-#define SIZEOF_EP1STO       8
+#define SIZEOF_EP1STO       32
 #define SIZEOF_EP1_BLOCK    sizeof(ModCmd)
-#define SIZEOF_EP2STO       8
-#define SIZEOF_EP2_BLOCK    sizeof(ModCmd)
+#define SIZEOF_EP2STO       128
+#define SIZEOF_EP2_BLOCK    sizeof(ModMgrEvt)
 
 /* ------------------------------- Constants ------------------------------- */
 /* ---------------------------- Local data types --------------------------- */
@@ -51,8 +52,9 @@ main(int argc, char *argv[])
     rkh_dynEvt_init();
     rkh_fwk_registerEvtPool(evPool0Sto, SIZEOF_EP0STO, SIZEOF_EP0_BLOCK);
     rkh_fwk_registerEvtPool(evPool1Sto, SIZEOF_EP1STO, SIZEOF_EP1_BLOCK);
-    rkh_fwk_registerEvtPool(evPool2Sto, SIZEOF_EP0STO, SIZEOF_EP2_BLOCK);
+    rkh_fwk_registerEvtPool(evPool2Sto, SIZEOF_EP2STO, SIZEOF_EP2_BLOCK);
 
+    RKH_SMA_ACTIVATE(conMgr, qsto, QSTO_SIZE, 0, 0);
     RKH_SMA_ACTIVATE(modMgr, qsto, QSTO_SIZE, 0, 0);
     rkh_fwk_enter();
 

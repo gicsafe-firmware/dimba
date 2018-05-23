@@ -75,12 +75,9 @@ void bsp_init(int argc, char *argv[]);
 void bsp_keyParser(int c);
 void bsp_timeTick(void);
 
-void bsp_serial_open(void);
-void bsp_serial_close(void);
-void bsp_serial_puts(char *p);
-void bsp_send_ping(void);
-void bsp_timeout(void);
-void bsp_received_pong(void);
+void bsp_serial_open(int ch);
+void bsp_serial_close(int ch);
+void bsp_serial_puts(int ch, char *p);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus
