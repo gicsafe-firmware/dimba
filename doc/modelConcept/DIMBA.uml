@@ -230,12 +230,26 @@
       <packagedElement xmi:type="uml:SignalEvent" xmi:id="_LEaNIF8AEeiYcaQ4qYJ6pg" name="evSendFail" signal="_KzqbYF8AEeiYcaQ4qYJ6pg"/>
       <packagedElement xmi:type="uml:TimeEvent" xmi:id="_Z9eTIF8AEeiYcaQ4qYJ6pg" name="SendingConnectTout" isRelative="true">
         <when xmi:type="uml:TimeExpression" xmi:id="_Z9eTIV8AEeiYcaQ4qYJ6pg">
-          <expr xmi:type="uml:LiteralString" xmi:id="_Z9eTIl8AEeiYcaQ4qYJ6pg" value="SEND_PACKET_TIME"/>
+          <expr xmi:type="uml:LiteralString" xmi:id="_Z9eTIl8AEeiYcaQ4qYJ6pg" value="SEND_CONNECT_TIME"/>
         </when>
       </packagedElement>
       <packagedElement xmi:type="uml:TimeEvent" xmi:id="_s4fysF8AEeiYcaQ4qYJ6pg" isRelative="true">
         <when xmi:type="uml:TimeExpression" xmi:id="_s4fysV8AEeiYcaQ4qYJ6pg">
           <expr xmi:type="uml:LiteralString" xmi:id="_s4fysl8AEeiYcaQ4qYJ6pg" value="CONNECT_TIME"/>
+        </when>
+      </packagedElement>
+      <packagedElement xmi:type="uml:SignalEvent" xmi:id="_mz_MkF9CEeiYcaQ4qYJ6pg" name="evPublish" signal="_vMWlsF9CEeiYcaQ4qYJ6pg"/>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_vMWlsF9CEeiYcaQ4qYJ6pg" name="evPublish"/>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_iYcuAF9FEeiYcaQ4qYJ6pg" name="evPublish"/>
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_CtP1oF9HEeiYcaQ4qYJ6pg" isRelative="true">
+        <when xmi:type="uml:TimeExpression" xmi:id="_CtP1oV9HEeiYcaQ4qYJ6pg">
+          <expr xmi:type="uml:LiteralString" xmi:id="_CtP1ol9HEeiYcaQ4qYJ6pg" value="WAIT_ACK_TIME"/>
+        </when>
+      </packagedElement>
+      <packagedElement xmi:type="uml:SignalEvent" xmi:id="_pAFecF9HEeiYcaQ4qYJ6pg" name="evddd"/>
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_lIVe4F9JEeiYcaQ4qYJ6pg" name="SendPublishTout" isRelative="true">
+        <when xmi:type="uml:TimeExpression" xmi:id="_lIVe4V9JEeiYcaQ4qYJ6pg" name="SendPublishTout">
+          <expr xmi:type="uml:LiteralString" xmi:id="_lIVe4l9JEeiYcaQ4qYJ6pg" value="SEND_PUBLISH_TIME"/>
         </when>
       </packagedElement>
     </packagedElement>
@@ -464,11 +478,11 @@
         <ownedAttribute xmi:type="uml:Property" xmi:id="_zzoL4F7LEeiYcaQ4qYJ6pg" name="modCmd" type="_u3OAcFdxEeia3PgQtXbrog"/>
         <ownedAttribute xmi:type="uml:Property" xmi:id="_7SzTMF7LEeiYcaQ4qYJ6pg" name="modMgr" type="_1hZZcFdxEeia3PgQtXbrog"/>
         <ownedAttribute xmi:type="uml:Property" xmi:id="_G84UsF7MEeiYcaQ4qYJ6pg" name="sim900Parser" type="_GhojIF7MEeiYcaQ4qYJ6pg"/>
-        <lifeline xmi:type="uml:Lifeline" xmi:id="_WmC3YF7LEeiYcaQ4qYJ6pg" name="Lifeline1" represents="_e3HVsF7LEeiYcaQ4qYJ6pg" coveredBy="_MJx3YF7MEeiYcaQ4qYJ6pg _I1lJcV7REeiYcaQ4qYJ6pg _p97qYV7REeiYcaQ4qYJ6pg _p_tzEl7REeiYcaQ4qYJ6pg _64_9MF75EeiYcaQ4qYJ6pg _MlU1AF76EeiYcaQ4qYJ6pg _0czgYF76EeiYcaQ4qYJ6pg _yrxLIF77EeiYcaQ4qYJ6pg"/>
-        <lifeline xmi:type="uml:Lifeline" xmi:id="_g2U0YF7LEeiYcaQ4qYJ6pg" name="Lifeline3" represents="_r5qmAF7LEeiYcaQ4qYJ6pg" coveredBy="_MJzFgF7MEeiYcaQ4qYJ6pg _I1lJcF7REeiYcaQ4qYJ6pg _MlVcEF76EeiYcaQ4qYJ6pg _yrxyMF77EeiYcaQ4qYJ6pg"/>
-        <lifeline xmi:type="uml:Lifeline" xmi:id="_s_5OQF7LEeiYcaQ4qYJ6pg" name="Lifeline5" represents="_zzoL4F7LEeiYcaQ4qYJ6pg" coveredBy="_p97qYl7REeiYcaQ4qYJ6pg _qLrEQF75EeiYcaQ4qYJ6pg _p_tzEV7REeiYcaQ4qYJ6pg _p_a4IF7REeiYcaQ4qYJ6pg"/>
-        <lifeline xmi:type="uml:Lifeline" xmi:id="_1qoJwF7LEeiYcaQ4qYJ6pg" name="Lifeline7" represents="_7SzTMF7LEeiYcaQ4qYJ6pg" coveredBy="_qLrrUF75EeiYcaQ4qYJ6pg _zOS7UF75EeiYcaQ4qYJ6pg _64_WIF75EeiYcaQ4qYJ6pg _xDhQYF76EeiYcaQ4qYJ6pg _0cySQF76EeiYcaQ4qYJ6pg"/>
-        <lifeline xmi:type="uml:Lifeline" xmi:id="_8GYsQF7LEeiYcaQ4qYJ6pg" name="Lifeline9" represents="_G84UsF7MEeiYcaQ4qYJ6pg" coveredBy="_zOSUQF75EeiYcaQ4qYJ6pg _xDgpUF76EeiYcaQ4qYJ6pg"/>
+        <lifeline xmi:type="uml:Lifeline" xmi:id="_WmC3YF7LEeiYcaQ4qYJ6pg" name="Lifeline1" represents="_e3HVsF7LEeiYcaQ4qYJ6pg" coveredBy="_MJx3YF7MEeiYcaQ4qYJ6pg _I1lJcV7REeiYcaQ4qYJ6pg _p97qYV7REeiYcaQ4qYJ6pg _p_tzEl7REeiYcaQ4qYJ6pg _64_9MF75EeiYcaQ4qYJ6pg _MlU1AF76EeiYcaQ4qYJ6pg _0czgYF76EeiYcaQ4qYJ6pg _yrxLIF77EeiYcaQ4qYJ6pg _e89ekF9FEeiYcaQ4qYJ6pg _s9goMl9FEeiYcaQ4qYJ6pg _6bJ5EV9FEeiYcaQ4qYJ6pg _6cjnR19FEeiYcaQ4qYJ6pg _EJ4BIF9GEeiYcaQ4qYJ6pg _TVcMYV9GEeiYcaQ4qYJ6pg"/>
+        <lifeline xmi:type="uml:Lifeline" xmi:id="_g2U0YF7LEeiYcaQ4qYJ6pg" name="Lifeline3" represents="_r5qmAF7LEeiYcaQ4qYJ6pg" coveredBy="_MJzFgF7MEeiYcaQ4qYJ6pg _I1lJcF7REeiYcaQ4qYJ6pg _MlVcEF76EeiYcaQ4qYJ6pg _yrxyMF77EeiYcaQ4qYJ6pg _e89ekV9FEeiYcaQ4qYJ6pg _s9goMV9FEeiYcaQ4qYJ6pg _TVcMYl9GEeiYcaQ4qYJ6pg"/>
+        <lifeline xmi:type="uml:Lifeline" xmi:id="_s_5OQF7LEeiYcaQ4qYJ6pg" name="Lifeline5" represents="_zzoL4F7LEeiYcaQ4qYJ6pg" coveredBy="_p97qYl7REeiYcaQ4qYJ6pg _qLrEQF75EeiYcaQ4qYJ6pg _p_tzEV7REeiYcaQ4qYJ6pg _6bTqEF9FEeiYcaQ4qYJ6pg _-OK3sV9FEeiYcaQ4qYJ6pg _6cjnRl9FEeiYcaQ4qYJ6pg _p_a4IF7REeiYcaQ4qYJ6pg _6cZ2QF9FEeiYcaQ4qYJ6pg"/>
+        <lifeline xmi:type="uml:Lifeline" xmi:id="_1qoJwF7LEeiYcaQ4qYJ6pg" name="Lifeline7" represents="_7SzTMF7LEeiYcaQ4qYJ6pg" coveredBy="_qLrrUF75EeiYcaQ4qYJ6pg _zOS7UF75EeiYcaQ4qYJ6pg _64_WIF75EeiYcaQ4qYJ6pg _xDhQYF76EeiYcaQ4qYJ6pg _0cySQF76EeiYcaQ4qYJ6pg _-OK3sl9FEeiYcaQ4qYJ6pg _BOf1Il9GEeiYcaQ4qYJ6pg _EJ3aEF9GEeiYcaQ4qYJ6pg"/>
+        <lifeline xmi:type="uml:Lifeline" xmi:id="_8GYsQF7LEeiYcaQ4qYJ6pg" name="Lifeline9" represents="_G84UsF7MEeiYcaQ4qYJ6pg" coveredBy="_zOSUQF75EeiYcaQ4qYJ6pg _xDgpUF76EeiYcaQ4qYJ6pg _BOf1IV9GEeiYcaQ4qYJ6pg"/>
         <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_MJx3YF7MEeiYcaQ4qYJ6pg" name="Message11SendEvent" covered="_WmC3YF7LEeiYcaQ4qYJ6pg" message="_MJrwwF7MEeiYcaQ4qYJ6pg"/>
         <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_MJzFgF7MEeiYcaQ4qYJ6pg" name="Message11ReceiveEvent" covered="_g2U0YF7LEeiYcaQ4qYJ6pg" message="_MJrwwF7MEeiYcaQ4qYJ6pg"/>
         <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_I1lJcF7REeiYcaQ4qYJ6pg" name="Message14SendEvent" covered="_g2U0YF7LEeiYcaQ4qYJ6pg" message="_I1j7UF7REeiYcaQ4qYJ6pg"/>
@@ -492,6 +506,23 @@
         <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_0czgYF76EeiYcaQ4qYJ6pg" name="Message39ReceiveEvent" covered="_WmC3YF7LEeiYcaQ4qYJ6pg" message="_0cv2AF76EeiYcaQ4qYJ6pg"/>
         <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_yrxLIF77EeiYcaQ4qYJ6pg" name="Message42SendEvent" covered="_WmC3YF7LEeiYcaQ4qYJ6pg" message="_yrwkEF77EeiYcaQ4qYJ6pg"/>
         <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_yrxyMF77EeiYcaQ4qYJ6pg" name="Message42ReceiveEvent" covered="_g2U0YF7LEeiYcaQ4qYJ6pg" message="_yrwkEF77EeiYcaQ4qYJ6pg"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_e89ekF9FEeiYcaQ4qYJ6pg" name="Message45SendEvent" covered="_WmC3YF7LEeiYcaQ4qYJ6pg" message="_e8ztkF9FEeiYcaQ4qYJ6pg"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_e89ekV9FEeiYcaQ4qYJ6pg" name="Message45ReceiveEvent" covered="_g2U0YF7LEeiYcaQ4qYJ6pg" message="_e8ztkF9FEeiYcaQ4qYJ6pg"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_s9goMV9FEeiYcaQ4qYJ6pg" name="Message48SendEvent" covered="_g2U0YF7LEeiYcaQ4qYJ6pg" message="_s9goMF9FEeiYcaQ4qYJ6pg"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_s9goMl9FEeiYcaQ4qYJ6pg" name="Message48ReceiveEvent" covered="_WmC3YF7LEeiYcaQ4qYJ6pg" message="_s9goMF9FEeiYcaQ4qYJ6pg"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_6bJ5EV9FEeiYcaQ4qYJ6pg" name="Message51SendEvent" covered="_WmC3YF7LEeiYcaQ4qYJ6pg" message="_6bJ5EF9FEeiYcaQ4qYJ6pg"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_6bTqEF9FEeiYcaQ4qYJ6pg" name="Message51ReceiveEvent" covered="_s_5OQF7LEeiYcaQ4qYJ6pg" message="_6bJ5EF9FEeiYcaQ4qYJ6pg"/>
+        <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_6cZ2QF9FEeiYcaQ4qYJ6pg" name="BehaviorExecutionSpecification54" covered="_s_5OQF7LEeiYcaQ4qYJ6pg" finish="_6cjnRl9FEeiYcaQ4qYJ6pg" start="_6bTqEF9FEeiYcaQ4qYJ6pg"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_-OK3sV9FEeiYcaQ4qYJ6pg" name="Message58SendEvent" covered="_s_5OQF7LEeiYcaQ4qYJ6pg" message="_-OK3sF9FEeiYcaQ4qYJ6pg"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_6cjnRl9FEeiYcaQ4qYJ6pg" name="Message56SendEvent" covered="_s_5OQF7LEeiYcaQ4qYJ6pg" message="_6cjnRV9FEeiYcaQ4qYJ6pg"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_BOf1IV9GEeiYcaQ4qYJ6pg" name="Message61SendEvent" covered="_8GYsQF7LEeiYcaQ4qYJ6pg" message="_BOf1IF9GEeiYcaQ4qYJ6pg"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_6cjnR19FEeiYcaQ4qYJ6pg" name="Message56ReceiveEvent" covered="_WmC3YF7LEeiYcaQ4qYJ6pg" message="_6cjnRV9FEeiYcaQ4qYJ6pg"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_-OK3sl9FEeiYcaQ4qYJ6pg" name="Message58ReceiveEvent" covered="_1qoJwF7LEeiYcaQ4qYJ6pg" message="_-OK3sF9FEeiYcaQ4qYJ6pg"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_BOf1Il9GEeiYcaQ4qYJ6pg" name="Message61ReceiveEvent" covered="_1qoJwF7LEeiYcaQ4qYJ6pg" message="_BOf1IF9GEeiYcaQ4qYJ6pg"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_EJ3aEF9GEeiYcaQ4qYJ6pg" name="Message64SendEvent" covered="_1qoJwF7LEeiYcaQ4qYJ6pg" message="_EJ2L8F9GEeiYcaQ4qYJ6pg"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_EJ4BIF9GEeiYcaQ4qYJ6pg" name="Message64ReceiveEvent" covered="_WmC3YF7LEeiYcaQ4qYJ6pg" message="_EJ2L8F9GEeiYcaQ4qYJ6pg"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_TVcMYV9GEeiYcaQ4qYJ6pg" name="Message67SendEvent" covered="_WmC3YF7LEeiYcaQ4qYJ6pg" message="_TVcMYF9GEeiYcaQ4qYJ6pg"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_TVcMYl9GEeiYcaQ4qYJ6pg" name="Message67ReceiveEvent" covered="_g2U0YF7LEeiYcaQ4qYJ6pg" message="_TVcMYF9GEeiYcaQ4qYJ6pg"/>
         <message xmi:type="uml:Message" xmi:id="_MJrwwF7MEeiYcaQ4qYJ6pg" name="Message11" messageSort="asynchSignal" receiveEvent="_MJzFgF7MEeiYcaQ4qYJ6pg" sendEvent="_MJx3YF7MEeiYcaQ4qYJ6pg" signature="_EgYq0F7REeiYcaQ4qYJ6pg"/>
         <message xmi:type="uml:Message" xmi:id="_I1j7UF7REeiYcaQ4qYJ6pg" name="Message14" messageSort="asynchSignal" receiveEvent="_I1lJcV7REeiYcaQ4qYJ6pg" sendEvent="_I1lJcF7REeiYcaQ4qYJ6pg" signature="_SDwwQF7REeiYcaQ4qYJ6pg"/>
         <message xmi:type="uml:Message" xmi:id="_p97qYF7REeiYcaQ4qYJ6pg" name="Message17" receiveEvent="_p97qYl7REeiYcaQ4qYJ6pg" sendEvent="_p97qYV7REeiYcaQ4qYJ6pg" signature="_n1Ix4F7REeiYcaQ4qYJ6pg"/>
@@ -503,11 +534,23 @@
         <message xmi:type="uml:Message" xmi:id="_xDfbMF76EeiYcaQ4qYJ6pg" name="Message36" messageSort="asynchSignal" receiveEvent="_xDhQYF76EeiYcaQ4qYJ6pg" sendEvent="_xDgpUF76EeiYcaQ4qYJ6pg" signature="_lyEjwFLlEei-ps2IrsePSA"/>
         <message xmi:type="uml:Message" xmi:id="_0cv2AF76EeiYcaQ4qYJ6pg" name="Message39" messageSort="asynchSignal" receiveEvent="_0czgYF76EeiYcaQ4qYJ6pg" sendEvent="_0cySQF76EeiYcaQ4qYJ6pg" signature="_EYBm8F77EeiYcaQ4qYJ6pg"/>
         <message xmi:type="uml:Message" xmi:id="_yrwkEF77EeiYcaQ4qYJ6pg" name="Message42" messageSort="asynchCall" receiveEvent="_yrxyMF77EeiYcaQ4qYJ6pg" sendEvent="_yrxLIF77EeiYcaQ4qYJ6pg" signature="_EYBm8F77EeiYcaQ4qYJ6pg"/>
+        <message xmi:type="uml:Message" xmi:id="_e8ztkF9FEeiYcaQ4qYJ6pg" name="Message45" messageSort="asynchSignal" receiveEvent="_e89ekV9FEeiYcaQ4qYJ6pg" sendEvent="_e89ekF9FEeiYcaQ4qYJ6pg" signature="_iYcuAF9FEeiYcaQ4qYJ6pg"/>
+        <message xmi:type="uml:Message" xmi:id="_s9goMF9FEeiYcaQ4qYJ6pg" name="Message48" messageSort="asynchSignal" receiveEvent="_s9goMl9FEeiYcaQ4qYJ6pg" sendEvent="_s9goMV9FEeiYcaQ4qYJ6pg" signature="_SDwwQF7REeiYcaQ4qYJ6pg"/>
+        <message xmi:type="uml:Message" xmi:id="_6bJ5EF9FEeiYcaQ4qYJ6pg" name="Message51" receiveEvent="_6bTqEF9FEeiYcaQ4qYJ6pg" sendEvent="_6bJ5EV9FEeiYcaQ4qYJ6pg" signature="_n1Ix4F7REeiYcaQ4qYJ6pg"/>
+        <message xmi:type="uml:Message" xmi:id="_6cjnRV9FEeiYcaQ4qYJ6pg" name="Message56" messageSort="reply" receiveEvent="_6cjnR19FEeiYcaQ4qYJ6pg" sendEvent="_6cjnRl9FEeiYcaQ4qYJ6pg"/>
+        <message xmi:type="uml:Message" xmi:id="_-OK3sF9FEeiYcaQ4qYJ6pg" name="Message58" messageSort="asynchSignal" receiveEvent="_-OK3sl9FEeiYcaQ4qYJ6pg" sendEvent="_-OK3sV9FEeiYcaQ4qYJ6pg" signature="_GLfw4FLgEei-ps2IrsePSA"/>
+        <message xmi:type="uml:Message" xmi:id="_BOf1IF9GEeiYcaQ4qYJ6pg" name="Message61" messageSort="asynchSignal" receiveEvent="_BOf1Il9GEeiYcaQ4qYJ6pg" sendEvent="_BOf1IV9GEeiYcaQ4qYJ6pg" signature="_lyEjwFLlEei-ps2IrsePSA"/>
+        <message xmi:type="uml:Message" xmi:id="_EJ2L8F9GEeiYcaQ4qYJ6pg" name="Message64" messageSort="asynchSignal" receiveEvent="_EJ4BIF9GEeiYcaQ4qYJ6pg" sendEvent="_EJ3aEF9GEeiYcaQ4qYJ6pg" signature="_Jjv6YF76EeiYcaQ4qYJ6pg"/>
+        <message xmi:type="uml:Message" xmi:id="_TVcMYF9GEeiYcaQ4qYJ6pg" name="Message67" messageSort="asynchSignal" receiveEvent="_TVcMYl9GEeiYcaQ4qYJ6pg" sendEvent="_TVcMYV9GEeiYcaQ4qYJ6pg" signature="_Jjv6YF76EeiYcaQ4qYJ6pg"/>
       </packagedElement>
     </packagedElement>
     <packagedElement xmi:type="uml:StateMachine" xmi:id="_AG2QMF78EeiYcaQ4qYJ6pg" name="MQTT">
       <region xmi:type="uml:Region" xmi:id="_E-LykF78EeiYcaQ4qYJ6pg" name="Region1">
         <transition xmi:type="uml:Transition" xmi:id="_PvgnIF78EeiYcaQ4qYJ6pg" source="_ITVwgF78EeiYcaQ4qYJ6pg" target="_LEBvcF78EeiYcaQ4qYJ6pg">
+          <effect xmi:type="uml:OpaqueBehavior" xmi:id="_cZL3EF9BEeiYcaQ4qYJ6pg">
+            <language>C</language>
+            <body>sendConnPacket()</body>
+          </effect>
           <trigger xmi:type="uml:Trigger" xmi:id="_ThS2sF78EeiYcaQ4qYJ6pg" name="evNetConnected" event="_btVrEF78EeiYcaQ4qYJ6pg"/>
         </transition>
         <transition xmi:type="uml:Transition" xmi:id="_oTR34F78EeiYcaQ4qYJ6pg" source="_lj3EQF78EeiYcaQ4qYJ6pg" target="_ITVwgF78EeiYcaQ4qYJ6pg"/>
@@ -525,21 +568,23 @@
             </specification>
           </ownedRule>
         </transition>
-        <transition xmi:type="uml:Transition" xmi:id="_oAFuwF7_EeiYcaQ4qYJ6pg" guard="_rPlwoF7_EeiYcaQ4qYJ6pg" source="_TGDPsF79EeiYcaQ4qYJ6pg" target="_eATr4F7_EeiYcaQ4qYJ6pg">
-          <ownedRule xmi:type="uml:Constraint" xmi:id="_rPlwoF7_EeiYcaQ4qYJ6pg">
-            <specification xmi:type="uml:OpaqueExpression" xmi:id="_vSBrUF7_EeiYcaQ4qYJ6pg">
-              <language>C</language>
-              <body>isConnAck() &amp;&amp; isConnectionRefused()</body>
-            </specification>
-          </ownedRule>
-        </transition>
+        <transition xmi:type="uml:Transition" xmi:id="_oAFuwF7_EeiYcaQ4qYJ6pg" source="_TGDPsF79EeiYcaQ4qYJ6pg" target="_eATr4F7_EeiYcaQ4qYJ6pg"/>
         <transition xmi:type="uml:Transition" xmi:id="_BKT7gF8AEeiYcaQ4qYJ6pg" source="_LEBvcF78EeiYcaQ4qYJ6pg" target="_eATr4F7_EeiYcaQ4qYJ6pg">
           <trigger xmi:type="uml:Trigger" xmi:id="_LM9FIF8AEeiYcaQ4qYJ6pg" event="_LEaNIF8AEeiYcaQ4qYJ6pg"/>
-          <trigger xmi:type="uml:Trigger" xmi:id="_aKHA8F8AEeiYcaQ4qYJ6pg" event="_Z9eTIF8AEeiYcaQ4qYJ6pg"/>
+          <trigger xmi:type="uml:Trigger" xmi:id="_aKHA8F8AEeiYcaQ4qYJ6pg" name="SendConnectTout" event="_Z9eTIF8AEeiYcaQ4qYJ6pg"/>
         </transition>
         <transition xmi:type="uml:Transition" xmi:id="_l5bu0F8AEeiYcaQ4qYJ6pg" source="_2KsToF78EeiYcaQ4qYJ6pg" target="_eATr4F7_EeiYcaQ4qYJ6pg">
           <trigger xmi:type="uml:Trigger" xmi:id="_tC66AF8AEeiYcaQ4qYJ6pg" event="_s4fysF8AEeiYcaQ4qYJ6pg"/>
         </transition>
+        <transition xmi:type="uml:Transition" xmi:id="_q1AncF9BEeiYcaQ4qYJ6pg" guard="_-QZCEF9BEeiYcaQ4qYJ6pg" source="_TGDPsF79EeiYcaQ4qYJ6pg" target="_eATr4F7_EeiYcaQ4qYJ6pg">
+          <ownedRule xmi:type="uml:Constraint" xmi:id="_-QZCEF9BEeiYcaQ4qYJ6pg" name="else">
+            <specification xmi:type="uml:OpaqueExpression" xmi:id="_BZ5wsF9CEeiYcaQ4qYJ6pg">
+              <language>C</language>
+              <body>else</body>
+            </specification>
+          </ownedRule>
+        </transition>
+        <transition xmi:type="uml:Transition" xmi:id="_1GioAF9JEeiYcaQ4qYJ6pg" source="_NxN5AF79EeiYcaQ4qYJ6pg" target="_eATr4F7_EeiYcaQ4qYJ6pg"/>
         <subvertex xmi:type="uml:State" xmi:id="_ITVwgF78EeiYcaQ4qYJ6pg" name="Idle"/>
         <subvertex xmi:type="uml:State" xmi:id="_LEBvcF78EeiYcaQ4qYJ6pg" name="SendingConnect"/>
         <subvertex xmi:type="uml:Pseudostate" xmi:id="_lj3EQF78EeiYcaQ4qYJ6pg" name="Initial4"/>
@@ -547,12 +592,54 @@
         <subvertex xmi:type="uml:State" xmi:id="_NxN5AF79EeiYcaQ4qYJ6pg" name="Connected">
           <region xmi:type="uml:Region" xmi:id="_XpY7MV8BEeiYcaQ4qYJ6pg" name="Region1">
             <transition xmi:type="uml:Transition" xmi:id="_g3bYEF8BEeiYcaQ4qYJ6pg" source="_f_4FAF8BEeiYcaQ4qYJ6pg" target="_XpeawF8BEeiYcaQ4qYJ6pg"/>
-            <transition xmi:type="uml:Transition" xmi:id="_B3QPIF8CEeiYcaQ4qYJ6pg" source="_XpeawF8BEeiYcaQ4qYJ6pg" target="_-fJq4F8BEeiYcaQ4qYJ6pg"/>
-            <transition xmi:type="uml:Transition" xmi:id="_IemWkF8CEeiYcaQ4qYJ6pg" source="_-fJq4F8BEeiYcaQ4qYJ6pg" target="_FN2-kF8CEeiYcaQ4qYJ6pg"/>
-            <subvertex xmi:type="uml:State" xmi:id="_XpeawF8BEeiYcaQ4qYJ6pg" name="WaitToPublish"/>
+            <transition xmi:type="uml:Transition" xmi:id="_B3QPIF8CEeiYcaQ4qYJ6pg" source="_XpeawF8BEeiYcaQ4qYJ6pg" target="_-fJq4F8BEeiYcaQ4qYJ6pg">
+              <effect xmi:type="uml:OpaqueBehavior" xmi:id="_-ivg4F9CEeiYcaQ4qYJ6pg">
+                <language>C</language>
+                <body>sendCurrAndUnackedPackets()</body>
+              </effect>
+              <trigger xmi:type="uml:Trigger" xmi:id="_wBjvYF9CEeiYcaQ4qYJ6pg" event="_mz_MkF9CEeiYcaQ4qYJ6pg"/>
+            </transition>
+            <transition xmi:type="uml:Transition" xmi:id="_IemWkF8CEeiYcaQ4qYJ6pg" source="_-fJq4F8BEeiYcaQ4qYJ6pg" target="_FN2-kF8CEeiYcaQ4qYJ6pg">
+              <trigger xmi:type="uml:Trigger" xmi:id="_lfrIMF9GEeiYcaQ4qYJ6pg" event="_JQ9Z4F79EeiYcaQ4qYJ6pg"/>
+            </transition>
+            <transition xmi:type="uml:Transition" xmi:id="_6ytoAF9GEeiYcaQ4qYJ6pg" source="_FN2-kF8CEeiYcaQ4qYJ6pg" target="_XpeawF8BEeiYcaQ4qYJ6pg">
+              <trigger xmi:type="uml:Trigger" xmi:id="_C7iwUF9HEeiYcaQ4qYJ6pg" event="_CtP1oF9HEeiYcaQ4qYJ6pg"/>
+            </transition>
+            <transition xmi:type="uml:Transition" xmi:id="_cP8-YF9IEeiYcaQ4qYJ6pg" kind="internal" source="_XpeawF8BEeiYcaQ4qYJ6pg" target="_XpeawF8BEeiYcaQ4qYJ6pg">
+              <effect xmi:type="uml:OpaqueBehavior" xmi:id="_qKp-sF9IEeiYcaQ4qYJ6pg">
+                <language>C</language>
+                <body>delStoredPacket()</body>
+              </effect>
+              <trigger xmi:type="uml:Trigger" xmi:id="_d6P9AF9IEeiYcaQ4qYJ6pg" event="_iK1dgF79EeiYcaQ4qYJ6pg"/>
+            </transition>
+            <transition xmi:type="uml:Transition" xmi:id="_IlJyQF9JEeiYcaQ4qYJ6pg" source="_-fJq4F8BEeiYcaQ4qYJ6pg" target="_HPnisF9JEeiYcaQ4qYJ6pg">
+              <trigger xmi:type="uml:Trigger" xmi:id="_RY-YUF9JEeiYcaQ4qYJ6pg" event="_LEaNIF8AEeiYcaQ4qYJ6pg"/>
+              <trigger xmi:type="uml:Trigger" xmi:id="_lVP5gF9JEeiYcaQ4qYJ6pg" name="SendPublishTout" event="_lIVe4F9JEeiYcaQ4qYJ6pg"/>
+            </transition>
+            <transition xmi:type="uml:Transition" xmi:id="_2e_zQF9KEeiYcaQ4qYJ6pg" guard="_flMb4F9IEeiYcaQ4qYJ6pg" source="_FN2-kF8CEeiYcaQ4qYJ6pg" target="_XpeawF8BEeiYcaQ4qYJ6pg">
+              <ownedRule xmi:type="uml:Constraint" xmi:id="_rPlwoF7_EeiYcaQ4qYJ6pg">
+                <specification xmi:type="uml:OpaqueExpression" xmi:id="_vSBrUF7_EeiYcaQ4qYJ6pg">
+                  <language>C</language>
+                  <body>isConnAck() &amp;&amp; isConnectionRefused()</body>
+                </specification>
+              </ownedRule>
+              <ownedRule xmi:type="uml:Constraint" xmi:id="_flMb4F9IEeiYcaQ4qYJ6pg" name="isPubAck">
+                <specification xmi:type="uml:OpaqueExpression" xmi:id="_i-prAF9IEeiYcaQ4qYJ6pg">
+                  <language>C</language>
+                  <body>isPubAck()</body>
+                </specification>
+              </ownedRule>
+              <effect xmi:type="uml:OpaqueBehavior" xmi:id="_9qnFYF9KEeiYcaQ4qYJ6pg">
+                <language>C</language>
+                <body>delStoredPacket()</body>
+              </effect>
+              <trigger xmi:type="uml:Trigger" xmi:id="_5I1jUF9KEeiYcaQ4qYJ6pg" event="_iK1dgF79EeiYcaQ4qYJ6pg"/>
+            </transition>
+            <subvertex xmi:type="uml:State" xmi:id="_XpeawF8BEeiYcaQ4qYJ6pg" name="WaitAckAndPublish"/>
             <subvertex xmi:type="uml:Pseudostate" xmi:id="_f_4FAF8BEeiYcaQ4qYJ6pg" name="Initial2"/>
             <subvertex xmi:type="uml:State" xmi:id="_-fJq4F8BEeiYcaQ4qYJ6pg" name="SendingPublish"/>
-            <subvertex xmi:type="uml:State" xmi:id="_FN2-kF8CEeiYcaQ4qYJ6pg" name="Publishing"/>
+            <subvertex xmi:type="uml:State" xmi:id="_FN2-kF8CEeiYcaQ4qYJ6pg" name="WaitAck"/>
+            <subvertex xmi:type="uml:FinalState" xmi:id="_HPnisF9JEeiYcaQ4qYJ6pg" name="FinalState10"/>
           </region>
         </subvertex>
         <subvertex xmi:type="uml:Pseudostate" xmi:id="_TGDPsF79EeiYcaQ4qYJ6pg" name="Choice9" kind="choice"/>
