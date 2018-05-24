@@ -17,6 +17,7 @@
 /* ----------------------------- Include files ----------------------------- */
 #include "rkh.h"
 #include "rkhfwk_dynevt.h"
+#include "signals.h"
 #include "modmgr.h"
 #include "conmgr.h"
 #include "bsp.h"
@@ -44,6 +45,8 @@ static rui8_t evPool0Sto[SIZEOF_EP0STO],
               evPool1Sto[SIZEOF_EP1STO], 
               evPool2Sto[SIZEOF_EP2STO];
 
+static RKH_ROM_STATIC_EVENT(e_Open, evOpen);
+
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
 /* ---------------------------- Global functions --------------------------- */
@@ -59,6 +62,9 @@ main(int argc, char *argv[])
 
     RKH_SMA_ACTIVATE(conMgr, ConMgr_qsto, CONMGR_QSTO_SIZE, 0, 0);
     RKH_SMA_ACTIVATE(modMgr, ModMgr_qsto, MODMGR_QSTO_SIZE, 0, 0);
+
+    RKH_SMA_POST_FIFO(conMgr, &e_Open, 0);
+
     rkh_fwk_enter();
 
     RKH_TRC_CLOSE();

@@ -59,8 +59,8 @@ static const CmdTbl cmdTbl =
      RKH_TIME_MS(300), RKH_TIME_MS(100)},
 
     {RKH_INIT_STATIC_EVT(evCmd), 
-     "ATE1+CREG=1;+CIPSHUT\r\n", 
-     //"ATE1+CREG=1\r\n", 
+     //"ATE1+CREG=1;+CIPSHUT\r\n",
+     "ATE1+CREG=1\r\n",
      &conMgr, 
      RKH_TIME_MS(300), RKH_TIME_MS(100)},
 

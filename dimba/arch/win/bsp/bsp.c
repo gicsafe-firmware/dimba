@@ -40,13 +40,13 @@
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2017.04.14  LeFr  v2.4.05  Initial version
+ *  2018.05.23  DaBa  v0.0.01  Initial version
  */
 
 /* -------------------------------- Authors -------------------------------- */
 /*
+ *  DaBa  Dario Baliña       db@vortexmakes.com
  *  LeFr  Leandro Francucci  lf@vortexmakes.com
- *  DaBa  Dario Baliña       dariosb@vortexmakes.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
