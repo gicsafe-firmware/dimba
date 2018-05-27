@@ -40,7 +40,7 @@
       <ownedEnd xmi:type="uml:Property" xmi:id="_iTsKQ1d4Eeia3PgQtXbrog" type="_flHrMFd4Eeia3PgQtXbrog" aggregation="composite" association="_iTsKQFd4Eeia3PgQtXbrog"/>
       <ownedEnd xmi:type="uml:Property" xmi:id="_iTsKRFd4Eeia3PgQtXbrog" type="_tp__YFdxEeia3PgQtXbrog" association="_iTsKQFd4Eeia3PgQtXbrog"/>
     </packagedElement>
-    <packagedElement xmi:type="uml:Class" xmi:id="_QQ4PoFd5Eeia3PgQtXbrog" name="MQTT"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="_QQ4PoFd5Eeia3PgQtXbrog" name="MQTTClient"/>
     <packagedElement xmi:type="uml:Class" xmi:id="_W42CIFd5Eeia3PgQtXbrog" name="OtherProcol"/>
     <packagedElement xmi:type="uml:Realization" xmi:id="_hHnjQFd5Eeia3PgQtXbrog" client="_QQ4PoFd5Eeia3PgQtXbrog" supplier="_flHrMFd4Eeia3PgQtXbrog"/>
     <packagedElement xmi:type="uml:Realization" xmi:id="_hzvpcFd5Eeia3PgQtXbrog" client="_Rf1_gFLLEei-ps2IrsePSA" supplier="_Rf1_gFLLEei-ps2IrsePSA"/>
@@ -233,7 +233,7 @@
           <expr xmi:type="uml:LiteralString" xmi:id="_Z9eTIl8AEeiYcaQ4qYJ6pg" value="SEND_CONNECT_TIME"/>
         </when>
       </packagedElement>
-      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_s4fysF8AEeiYcaQ4qYJ6pg" isRelative="true">
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_s4fysF8AEeiYcaQ4qYJ6pg" name="evConnectTime" isRelative="true">
         <when xmi:type="uml:TimeExpression" xmi:id="_s4fysV8AEeiYcaQ4qYJ6pg">
           <expr xmi:type="uml:LiteralString" xmi:id="_s4fysl8AEeiYcaQ4qYJ6pg" value="CONNECT_TIME"/>
         </when>
@@ -247,11 +247,21 @@
         </when>
       </packagedElement>
       <packagedElement xmi:type="uml:SignalEvent" xmi:id="_pAFecF9HEeiYcaQ4qYJ6pg" name="evddd"/>
-      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_lIVe4F9JEeiYcaQ4qYJ6pg" name="SendPublishTout" isRelative="true">
-        <when xmi:type="uml:TimeExpression" xmi:id="_lIVe4V9JEeiYcaQ4qYJ6pg" name="SendPublishTout">
-          <expr xmi:type="uml:LiteralString" xmi:id="_lIVe4l9JEeiYcaQ4qYJ6pg" value="SEND_PUBLISH_TIME"/>
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_lIVe4F9JEeiYcaQ4qYJ6pg" name="evSendPublish" isRelative="true">
+        <when xmi:type="uml:TimeExpression" xmi:id="_lIVe4V9JEeiYcaQ4qYJ6pg" name="evSendPublish">
+          <expr xmi:type="uml:LiteralString" xmi:id="_lIVe4l9JEeiYcaQ4qYJ6pg" value="PUBLISH_TIME"/>
         </when>
       </packagedElement>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_0CzXQGGzEeiiAe1I9uyWIQ" name="evConnRefused">
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_0CzXQWGzEeiiAe1I9uyWIQ" name="code">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:SignalEvent" xmi:id="_0S0JMGGzEeiiAe1I9uyWIQ" name="evConnRefused" signal="_0CzXQGGzEeiiAe1I9uyWIQ"/>
+      <packagedElement xmi:type="uml:Signal" xmi:id="__2XE4GGzEeiiAe1I9uyWIQ" name="evNetDisconnected"/>
+      <packagedElement xmi:type="uml:SignalEvent" xmi:id="_ACYHoGG0EeiiAe1I9uyWIQ" name="evNetDisconnected" signal="__2XE4GGzEeiiAe1I9uyWIQ"/>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_Xvz7YGG2EeiiAe1I9uyWIQ" name="evConnAccepted"/>
+      <packagedElement xmi:type="uml:SignalEvent" xmi:id="_X6TUIGG2EeiiAe1I9uyWIQ" name="evConnAccepted" signal="_Xvz7YGG2EeiiAe1I9uyWIQ"/>
     </packagedElement>
     <packagedElement xmi:type="uml:StateMachine" xmi:id="_i1rp0FRTEeiBd_DXg33BBQ" name="ConMgr">
       <ownedRule xmi:type="uml:Constraint" xmi:id="_yA2HgFioEeiQLo5rqCRH8w">
@@ -514,10 +524,10 @@
         <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_6bTqEF9FEeiYcaQ4qYJ6pg" name="Message51ReceiveEvent" covered="_s_5OQF7LEeiYcaQ4qYJ6pg" message="_6bJ5EF9FEeiYcaQ4qYJ6pg"/>
         <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_6cZ2QF9FEeiYcaQ4qYJ6pg" name="BehaviorExecutionSpecification54" covered="_s_5OQF7LEeiYcaQ4qYJ6pg" finish="_6cjnRl9FEeiYcaQ4qYJ6pg" start="_6bTqEF9FEeiYcaQ4qYJ6pg"/>
         <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_-OK3sV9FEeiYcaQ4qYJ6pg" name="Message58SendEvent" covered="_s_5OQF7LEeiYcaQ4qYJ6pg" message="_-OK3sF9FEeiYcaQ4qYJ6pg"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_-OK3sl9FEeiYcaQ4qYJ6pg" name="Message58ReceiveEvent" covered="_1qoJwF7LEeiYcaQ4qYJ6pg" message="_-OK3sF9FEeiYcaQ4qYJ6pg"/>
         <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_6cjnRl9FEeiYcaQ4qYJ6pg" name="Message56SendEvent" covered="_s_5OQF7LEeiYcaQ4qYJ6pg" message="_6cjnRV9FEeiYcaQ4qYJ6pg"/>
         <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_BOf1IV9GEeiYcaQ4qYJ6pg" name="Message61SendEvent" covered="_8GYsQF7LEeiYcaQ4qYJ6pg" message="_BOf1IF9GEeiYcaQ4qYJ6pg"/>
         <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_6cjnR19FEeiYcaQ4qYJ6pg" name="Message56ReceiveEvent" covered="_WmC3YF7LEeiYcaQ4qYJ6pg" message="_6cjnRV9FEeiYcaQ4qYJ6pg"/>
-        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_-OK3sl9FEeiYcaQ4qYJ6pg" name="Message58ReceiveEvent" covered="_1qoJwF7LEeiYcaQ4qYJ6pg" message="_-OK3sF9FEeiYcaQ4qYJ6pg"/>
         <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_BOf1Il9GEeiYcaQ4qYJ6pg" name="Message61ReceiveEvent" covered="_1qoJwF7LEeiYcaQ4qYJ6pg" message="_BOf1IF9GEeiYcaQ4qYJ6pg"/>
         <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_EJ3aEF9GEeiYcaQ4qYJ6pg" name="Message64SendEvent" covered="_1qoJwF7LEeiYcaQ4qYJ6pg" message="_EJ2L8F9GEeiYcaQ4qYJ6pg"/>
         <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_EJ4BIF9GEeiYcaQ4qYJ6pg" name="Message64ReceiveEvent" covered="_WmC3YF7LEeiYcaQ4qYJ6pg" message="_EJ2L8F9GEeiYcaQ4qYJ6pg"/>
@@ -544,7 +554,7 @@
         <message xmi:type="uml:Message" xmi:id="_TVcMYF9GEeiYcaQ4qYJ6pg" name="Message67" messageSort="asynchSignal" receiveEvent="_TVcMYl9GEeiYcaQ4qYJ6pg" sendEvent="_TVcMYV9GEeiYcaQ4qYJ6pg" signature="_Jjv6YF76EeiYcaQ4qYJ6pg"/>
       </packagedElement>
     </packagedElement>
-    <packagedElement xmi:type="uml:StateMachine" xmi:id="_AG2QMF78EeiYcaQ4qYJ6pg" name="MQTT">
+    <packagedElement xmi:type="uml:StateMachine" xmi:id="_AG2QMF78EeiYcaQ4qYJ6pg" name="MQTTClient">
       <region xmi:type="uml:Region" xmi:id="_E-LykF78EeiYcaQ4qYJ6pg" name="Region1">
         <transition xmi:type="uml:Transition" xmi:id="_PvgnIF78EeiYcaQ4qYJ6pg" source="_ITVwgF78EeiYcaQ4qYJ6pg" target="_LEBvcF78EeiYcaQ4qYJ6pg">
           <effect xmi:type="uml:OpaqueBehavior" xmi:id="_cZL3EF9BEeiYcaQ4qYJ6pg">
@@ -644,6 +654,111 @@
         </subvertex>
         <subvertex xmi:type="uml:Pseudostate" xmi:id="_TGDPsF79EeiYcaQ4qYJ6pg" name="Choice9" kind="choice"/>
         <subvertex xmi:type="uml:State" xmi:id="_eATr4F7_EeiYcaQ4qYJ6pg" name="ConnectionError"/>
+      </region>
+    </packagedElement>
+    <packagedElement xmi:type="uml:StateMachine" xmi:id="_B8RTYGGyEeiiAe1I9uyWIQ" name="MQTTClientA">
+      <region xmi:type="uml:Region" xmi:id="_C8cW8GGyEeiiAe1I9uyWIQ" name="Region1">
+        <ownedComment xmi:type="uml:Comment" xmi:id="_xh7ZIGG3EeiiAe1I9uyWIQ">
+          <body>AlternativeA:&#xD;
+- ConMgr siempre mantiene la conexión&#xD;
+- ConMgr ejecuta el sync (envío y recepción de mensajes)&#xD;
+- El sync se realiza periódicamente cada N ms&#xD;
+- MQTTClient sólo almacena los mensajes en memoria &#xD;
+- MQTTClient no espera CONNACK</body>
+        </ownedComment>
+        <transition xmi:type="uml:Transition" xmi:id="_dRxE4GGyEeiiAe1I9uyWIQ" source="_Nrrg0GGyEeiiAe1I9uyWIQ" target="_GSo2sGGyEeiiAe1I9uyWIQ">
+          <effect xmi:type="uml:OpaqueBehavior" xmi:id="_CIMaEGGzEeiiAe1I9uyWIQ">
+            <language>C</language>
+            <body>mqtt_init()</body>
+          </effect>
+        </transition>
+        <transition xmi:type="uml:Transition" xmi:id="_0f6mgGGyEeiiAe1I9uyWIQ" source="_GSo2sGGyEeiiAe1I9uyWIQ" target="_LXKjsGG2EeiiAe1I9uyWIQ">
+          <effect xmi:type="uml:OpaqueBehavior" xmi:id="__W1FsGGyEeiiAe1I9uyWIQ">
+            <language>C</language>
+            <body>mqtt_connect()</body>
+          </effect>
+          <trigger xmi:type="uml:Trigger" xmi:id="_7VySIGGyEeiiAe1I9uyWIQ" name="evNetConnected" event="_btVrEF78EeiYcaQ4qYJ6pg"/>
+        </transition>
+        <transition xmi:type="uml:Transition" xmi:id="_nunBwGGzEeiiAe1I9uyWIQ" source="_LXKjsGG2EeiiAe1I9uyWIQ" target="_gCNWwGGzEeiiAe1I9uyWIQ">
+          <trigger xmi:type="uml:Trigger" xmi:id="_0hJgIGGzEeiiAe1I9uyWIQ" name="evConnRefused" event="_0S0JMGGzEeiiAe1I9uyWIQ"/>
+        </transition>
+        <transition xmi:type="uml:Transition" xmi:id="_w1y90GG1EeiiAe1I9uyWIQ" source="_gCNWwGGzEeiiAe1I9uyWIQ" target="_GSo2sGGyEeiiAe1I9uyWIQ">
+          <trigger xmi:type="uml:Trigger" xmi:id="_yh8WkGG1EeiiAe1I9uyWIQ" event="_ACYHoGG0EeiiAe1I9uyWIQ"/>
+        </transition>
+        <subvertex xmi:type="uml:State" xmi:id="_GSo2sGGyEeiiAe1I9uyWIQ" name="Idle"/>
+        <subvertex xmi:type="uml:Pseudostate" xmi:id="_Nrrg0GGyEeiiAe1I9uyWIQ" name="Initial2"/>
+        <subvertex xmi:type="uml:State" xmi:id="_gCNWwGGzEeiiAe1I9uyWIQ" name="ConnectionRefused"/>
+        <subvertex xmi:type="uml:State" xmi:id="_LXKjsGG2EeiiAe1I9uyWIQ" name="Connected">
+          <region xmi:type="uml:Region" xmi:id="_7fnfYmG5EeiiAe1I9uyWIQ" name="Region1">
+            <transition xmi:type="uml:Transition" xmi:id="_KfYDQGG6EeiiAe1I9uyWIQ" source="_7fnfaWG5EeiiAe1I9uyWIQ" target="_EemzoGG6EeiiAe1I9uyWIQ">
+              <trigger xmi:type="uml:Trigger" xmi:id="_Mo_bIGG6EeiiAe1I9uyWIQ" event="_ACYHoGG0EeiiAe1I9uyWIQ"/>
+            </transition>
+            <transition xmi:type="uml:Transition" xmi:id="_OSzRkGG6EeiiAe1I9uyWIQ" source="_EemzoGG6EeiiAe1I9uyWIQ" target="_7fnfaWG5EeiiAe1I9uyWIQ">
+              <trigger xmi:type="uml:Trigger" xmi:id="_QJfGYGG6EeiiAe1I9uyWIQ" event="_btVrEF78EeiYcaQ4qYJ6pg"/>
+            </transition>
+            <transition xmi:type="uml:Transition" xmi:id="_X-QDMGG6EeiiAe1I9uyWIQ" source="_CLp5kGG6EeiiAe1I9uyWIQ" target="_7fnfaWG5EeiiAe1I9uyWIQ"/>
+            <transition xmi:type="uml:Transition" xmi:id="_ruPb4GG6EeiiAe1I9uyWIQ" kind="internal" source="_7fnfaWG5EeiiAe1I9uyWIQ" target="_7fnfaWG5EeiiAe1I9uyWIQ">
+              <effect xmi:type="uml:OpaqueBehavior" xmi:id="_zatYUGG6EeiiAe1I9uyWIQ">
+                <language>C</language>
+                <body>mqtt_publish()</body>
+              </effect>
+              <trigger xmi:type="uml:Trigger" xmi:id="_W5aOUGH3EeiiAe1I9uyWIQ" name="evSendPublish" event="_lIVe4F9JEeiYcaQ4qYJ6pg"/>
+            </transition>
+            <subvertex xmi:type="uml:State" xmi:id="_7fnfaWG5EeiiAe1I9uyWIQ" name="WaitToPublish"/>
+            <subvertex xmi:type="uml:Pseudostate" xmi:id="_CLp5kGG6EeiiAe1I9uyWIQ" name="Initial2"/>
+            <subvertex xmi:type="uml:State" xmi:id="_EemzoGG6EeiiAe1I9uyWIQ" name="ConnectionError"/>
+          </region>
+        </subvertex>
+      </region>
+    </packagedElement>
+    <packagedElement xmi:type="uml:StateMachine" xmi:id="_OGJY0GG-EeiiAe1I9uyWIQ" name="MQTTClientB">
+      <region xmi:type="uml:Region" xmi:id="_Pa_E0GG-EeiiAe1I9uyWIQ" name="Region1">
+        <ownedComment xmi:type="uml:Comment" xmi:id="_5mFJEGH0EeiiAe1I9uyWIQ">
+          <body>AlternativeB:&#xD;
+- Igual que AlternativeA pero MQTTClient espera CONNACK</body>
+        </ownedComment>
+        <transition xmi:type="uml:Transition" xmi:id="_kcUwoGG-EeiiAe1I9uyWIQ" source="_Yrr0IGG-EeiiAe1I9uyWIQ" target="_aGXpcGG-EeiiAe1I9uyWIQ">
+          <effect xmi:type="uml:OpaqueBehavior" xmi:id="_HeMX8GG_EeiiAe1I9uyWIQ">
+            <language>C</language>
+            <body>mqtt_connect()</body>
+          </effect>
+          <trigger xmi:type="uml:Trigger" xmi:id="_qGhTUGG-EeiiAe1I9uyWIQ" event="_btVrEF78EeiYcaQ4qYJ6pg"/>
+        </transition>
+        <transition xmi:type="uml:Transition" xmi:id="_roXgkGG-EeiiAe1I9uyWIQ" source="_aGXpcGG-EeiiAe1I9uyWIQ" target="_ex3vQGG-EeiiAe1I9uyWIQ">
+          <trigger xmi:type="uml:Trigger" xmi:id="_vdFIUGG-EeiiAe1I9uyWIQ" event="_X6TUIGG2EeiiAe1I9uyWIQ"/>
+        </transition>
+        <transition xmi:type="uml:Transition" xmi:id="_4aa2wGG-EeiiAe1I9uyWIQ" source="_aGXpcGG-EeiiAe1I9uyWIQ" target="_g76k8GG-EeiiAe1I9uyWIQ">
+          <trigger xmi:type="uml:Trigger" xmi:id="_7SMVIGG-EeiiAe1I9uyWIQ" event="_0S0JMGGzEeiiAe1I9uyWIQ"/>
+        </transition>
+        <transition xmi:type="uml:Transition" xmi:id="_vXeaIGG_EeiiAe1I9uyWIQ" source="_g76k8GG-EeiiAe1I9uyWIQ" target="_Yrr0IGG-EeiiAe1I9uyWIQ">
+          <trigger xmi:type="uml:Trigger" xmi:id="_wYaSsGG_EeiiAe1I9uyWIQ" event="_ACYHoGG0EeiiAe1I9uyWIQ"/>
+        </transition>
+        <transition xmi:type="uml:Transition" xmi:id="_NE7ucGH1EeiiAe1I9uyWIQ" source="_Xl-JQGG-EeiiAe1I9uyWIQ" target="_Yrr0IGG-EeiiAe1I9uyWIQ">
+          <effect xmi:type="uml:OpaqueBehavior" xmi:id="_SldXwGH1EeiiAe1I9uyWIQ">
+            <language>C</language>
+            <body>mqtt_init()</body>
+          </effect>
+        </transition>
+        <subvertex xmi:type="uml:Pseudostate" xmi:id="_Xl-JQGG-EeiiAe1I9uyWIQ" name="Initial1"/>
+        <subvertex xmi:type="uml:State" xmi:id="_Yrr0IGG-EeiiAe1I9uyWIQ" name="Idle"/>
+        <subvertex xmi:type="uml:State" xmi:id="_aGXpcGG-EeiiAe1I9uyWIQ" name="Connecting">
+          <region xmi:type="uml:Region" xmi:id="_2Q-MEmHAEeiiAe1I9uyWIQ" name="Region1">
+            <transition xmi:type="uml:Transition" xmi:id="_9XjsEGHzEeiiAe1I9uyWIQ" source="_xsKb8GHzEeiiAe1I9uyWIQ" target="_3RPOEGHzEeiiAe1I9uyWIQ">
+              <trigger xmi:type="uml:Trigger" xmi:id="_c15iQGH0EeiiAe1I9uyWIQ" event="_ACYHoGG0EeiiAe1I9uyWIQ"/>
+            </transition>
+            <transition xmi:type="uml:Transition" xmi:id="__Vaf4GHzEeiiAe1I9uyWIQ" source="_3RPOEGHzEeiiAe1I9uyWIQ" target="_xsKb8GHzEeiiAe1I9uyWIQ">
+              <trigger xmi:type="uml:Trigger" xmi:id="_e4HRoGH0EeiiAe1I9uyWIQ" event="_btVrEF78EeiYcaQ4qYJ6pg"/>
+            </transition>
+            <transition xmi:type="uml:Transition" xmi:id="_Wmh18GH0EeiiAe1I9uyWIQ" source="_wpZ-cGHzEeiiAe1I9uyWIQ" target="_xsKb8GHzEeiiAe1I9uyWIQ"/>
+            <subvertex xmi:type="uml:Pseudostate" xmi:id="_wpZ-cGHzEeiiAe1I9uyWIQ" name="Initial1"/>
+            <subvertex xmi:type="uml:State" xmi:id="_xsKb8GHzEeiiAe1I9uyWIQ" name="AwaitingAck"/>
+            <subvertex xmi:type="uml:State" xmi:id="_3RPOEGHzEeiiAe1I9uyWIQ" name="ConnectionError"/>
+          </region>
+        </subvertex>
+        <subvertex xmi:type="uml:State" xmi:id="_ex3vQGG-EeiiAe1I9uyWIQ" name="Connected">
+          <region xmi:type="uml:Region" xmi:id="_YlLRkmHAEeiiAe1I9uyWIQ" name="Region1"/>
+        </subvertex>
+        <subvertex xmi:type="uml:State" xmi:id="_g76k8GG-EeiiAe1I9uyWIQ" name="ConnRefused"/>
       </region>
     </packagedElement>
   </packagedElement>
