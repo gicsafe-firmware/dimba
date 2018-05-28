@@ -706,7 +706,7 @@
             </transition>
             <subvertex xmi:type="uml:State" xmi:id="_7fnfaWG5EeiiAe1I9uyWIQ" name="WaitToPublish"/>
             <subvertex xmi:type="uml:Pseudostate" xmi:id="_CLp5kGG6EeiiAe1I9uyWIQ" name="Initial2"/>
-            <subvertex xmi:type="uml:State" xmi:id="_EemzoGG6EeiiAe1I9uyWIQ" name="ConnectionError"/>
+            <subvertex xmi:type="uml:State" xmi:id="_EemzoGG6EeiiAe1I9uyWIQ" name="NetError"/>
           </region>
         </subvertex>
       </region>
@@ -756,7 +756,25 @@
           </region>
         </subvertex>
         <subvertex xmi:type="uml:State" xmi:id="_ex3vQGG-EeiiAe1I9uyWIQ" name="Connected">
-          <region xmi:type="uml:Region" xmi:id="_YlLRkmHAEeiiAe1I9uyWIQ" name="Region1"/>
+          <region xmi:type="uml:Region" xmi:id="_YlLRkmHAEeiiAe1I9uyWIQ" name="Region1">
+            <transition xmi:type="uml:Transition" xmi:id="_w5BnMGKVEeimirxIbbmXNA" source="_uFuZIGKVEeimirxIbbmXNA" target="_m7XEMGKVEeimirxIbbmXNA">
+              <trigger xmi:type="uml:Trigger" xmi:id="_26YssGKVEeimirxIbbmXNA" event="_btVrEF78EeiYcaQ4qYJ6pg"/>
+            </transition>
+            <transition xmi:type="uml:Transition" xmi:id="_xhptcGKVEeimirxIbbmXNA" source="_m7XEMGKVEeimirxIbbmXNA" target="_uFuZIGKVEeimirxIbbmXNA">
+              <trigger xmi:type="uml:Trigger" xmi:id="_4HvQoGKVEeimirxIbbmXNA" event="_ACYHoGG0EeiiAe1I9uyWIQ"/>
+            </transition>
+            <transition xmi:type="uml:Transition" xmi:id="_yQl3EGKVEeimirxIbbmXNA" source="_q1FHwGKVEeimirxIbbmXNA" target="_m7XEMGKVEeimirxIbbmXNA"/>
+            <transition xmi:type="uml:Transition" xmi:id="_5BKzAGKVEeimirxIbbmXNA" kind="internal" source="_m7XEMGKVEeimirxIbbmXNA" target="_m7XEMGKVEeimirxIbbmXNA">
+              <effect xmi:type="uml:OpaqueBehavior" xmi:id="_995ywGKVEeimirxIbbmXNA">
+                <language>C</language>
+                <body>mqtt_publish()</body>
+              </effect>
+              <trigger xmi:type="uml:Trigger" xmi:id="_6WZgkGKVEeimirxIbbmXNA" event="_lIVe4F9JEeiYcaQ4qYJ6pg"/>
+            </transition>
+            <subvertex xmi:type="uml:State" xmi:id="_m7XEMGKVEeimirxIbbmXNA" name="WaitToPublish"/>
+            <subvertex xmi:type="uml:Pseudostate" xmi:id="_q1FHwGKVEeimirxIbbmXNA" name="Initial2"/>
+            <subvertex xmi:type="uml:State" xmi:id="_uFuZIGKVEeimirxIbbmXNA" name="NetError"/>
+          </region>
         </subvertex>
         <subvertex xmi:type="uml:State" xmi:id="_g76k8GG-EeiiAe1I9uyWIQ" name="ConnRefused"/>
       </region>
