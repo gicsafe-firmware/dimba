@@ -34,12 +34,14 @@ RKH_DCLR_BASIC_STATE ConMgr_inactive, ConMgr_sync, ConMgr_initError,
                     ConMgr_unregistered,
                 ConMgr_setManualGet, ConMgr_setAPN, ConMgr_enableGPRS,
                 ConMgr_checkIP, ConMgr_configureError, ConMgr_disconnected,
-                ConMgr_idle, ConMgr_sending, ConMgr_receiving, 
+                ConMgr_idle, ConMgr_waitPrompt, ConMgr_waitOk, ConMgr_receiving, 
                 ConMgr_connectError;
 
 RKH_DCLR_COMP_STATE ConMgr_active, ConMgr_initialize, ConMgr_registered,
-                    ConMgr_configure, ConMgr_connect, ConMgr_connected;
-RKH_DCLR_FINAL_STATE ConMgr_initializeFinal, ConMgr_configureFinal;
+                    ConMgr_configure, ConMgr_connect, ConMgr_connected,
+                    ConMgr_sending;
+RKH_DCLR_FINAL_STATE ConMgr_initializeFinal, ConMgr_configureFinal,
+                     ConMgr_sendingFinal;
 RKH_DCLR_COND_STATE ConMgr_checkSyncTry;
 
 /* ........................ Declares initial action ........................ */
@@ -53,19 +55,21 @@ static void socketOpen(ConMgr *const me, RKH_EVT_T *pe);
 static void socketClose(ConMgr *const me, RKH_EVT_T *pe);
 static void sendData(ConMgr *const me, RKH_EVT_T *pe);
 static void readData(ConMgr *const me, RKH_EVT_T *pe);
+static void sendRequest(ConMgr *const me, RKH_EVT_T *pe);
+static void flushData(ConMgr *const me, RKH_EVT_T *pe);
 
 /* ......................... Declares entry actions ........................ */
-static void sendSync(ConMgr *const me, RKH_EVT_T *pe);
-static void sendInit(ConMgr *const me, RKH_EVT_T *pe);
-static void checkPin(ConMgr *const me, RKH_EVT_T *pe);
-static void setPin(ConMgr *const me, RKH_EVT_T *pe);
-static void checkReg(ConMgr *const me, RKH_EVT_T *pe);
-static void setupManualGet(ConMgr *const me, RKH_EVT_T *pe);
-static void setupAPN(ConMgr *const me, RKH_EVT_T *pe);
-static void startGPRS(ConMgr *const me, RKH_EVT_T *pe);
-static void getConnStatus(ConMgr *const me, RKH_EVT_T *pe);
-static void startConnection(ConMgr *const me, RKH_EVT_T *pe);
-static void startReceivePollingTimer(ConMgr *const me, RKH_EVT_T *pe);
+static void sendSync(ConMgr *const me);
+static void sendInit(ConMgr *const me);
+static void checkPin(ConMgr *const me);
+static void setPin(ConMgr *const me);
+static void checkReg(ConMgr *const me);
+static void setupManualGet(ConMgr *const me);
+static void setupAPN(ConMgr *const me);
+static void startGPRS(ConMgr *const me);
+static void getConnStatus(ConMgr *const me);
+static void startConnection(ConMgr *const me);
+static void startReceivePollingTimer(ConMgr *const me);
 
 /* ......................... Declares exit actions ......................... */
 /* ............................ Declares guards ............................ */
@@ -216,13 +220,25 @@ RKH_END_TRANS_TABLE
 RKH_CREATE_BASIC_STATE(ConMgr_idle, startReceivePollingTimer, 
                                             NULL, &ConMgr_connected, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_idle)
-    RKH_TRREG(evSend,               NULL,  NULL, &ConMgr_sending),
+    RKH_TRREG(evSend,               NULL,  sendRequest, &ConMgr_sending),
     RKH_TRREG(evReceivePollingTout, NULL, readData, &ConMgr_receiving),
 RKH_END_TRANS_TABLE
 
-RKH_CREATE_BASIC_STATE(ConMgr_sending, NULL, NULL, &ConMgr_connected, NULL);
+RKH_CREATE_COMP_REGION_STATE(ConMgr_sending, NULL, NULL, 
+                             &ConMgr_connected, &ConMgr_waitPrompt, NULL,
+                             RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_sending)
-    RKH_TRREG(evOk, NULL,  NULL, &ConMgr_idle),
+    RKH_TRCOMPLETION(NULL, NULL, &ConMgr_idle),
+RKH_END_TRANS_TABLE
+
+RKH_CREATE_BASIC_STATE(ConMgr_waitPrompt, NULL, NULL, &ConMgr_sending, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_waitPrompt)
+    RKH_TRREG(evOk, NULL,  flushData, &ConMgr_waitOk),
+RKH_END_TRANS_TABLE
+
+RKH_CREATE_BASIC_STATE(ConMgr_waitOk, NULL, NULL, &ConMgr_sending, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_waitOk)
+    RKH_TRREG(evOk, NULL,  NULL, &ConMgr_sendingFinal),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_receiving, NULL, NULL, &ConMgr_connected, NULL);
@@ -242,6 +258,7 @@ struct ConMgr
                         /* posting the TIMEOUT signal event to active object */
                         /* 'conMgr' */
     rui8_t syncRetryCount; 
+    SendEvt *psend;
 };
 
 RKH_SMA_CREATE(ConMgr, conMgr, 1, HCAL, &ConMgr_inactive, init, NULL);
@@ -256,7 +273,7 @@ RKH_SMA_DEF_PTR(conMgr);
  *  The 'e_tout' event with TIMEOUT signal never changes, so it can be
  *  statically allocated just once by means of RKH_ROM_STATIC_EVENT() macro.
  */
-static RKH_ROM_STATIC_EVENT(e_tout, evToutDelay);
+static RKH_STATIC_EVENT(e_tout, evToutDelay);
 static RKH_ROM_STATIC_EVENT(e_Open, evOpen);
 
 /* ----------------------- Local function prototypes ----------------------- */
@@ -293,6 +310,9 @@ init(ConMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_STATE(me, &ConMgr_connected);
     RKH_TR_FWK_STATE(me, &ConMgr_idle);
     RKH_TR_FWK_STATE(me, &ConMgr_sending);
+    RKH_TR_FWK_STATE(me, &ConMgr_waitPrompt);
+    RKH_TR_FWK_STATE(me, &ConMgr_waitOk);
+    RKH_TR_FWK_STATE(me, &ConMgr_sendingFinal);
     RKH_TR_FWK_STATE(me, &ConMgr_receiving);
     RKH_TR_FWK_STATE(me, &ConMgr_connectError);
     RKH_TR_FWK_TIMER(&me->timer);
@@ -329,123 +349,14 @@ open(ConMgr *const me, RKH_EVT_T *pe)
     RKH_SMA_POST_FIFO(modMgr, &e_Open, conMgr);
 }
 
-void 
+
+static void 
 requestIp(ConMgr *const me, RKH_EVT_T *pe)
 {
     (void)pe;
     (void)me;
 
     ModCmd_requestIP();
-}
-
-void 
-sendData(ConMgr *const me, RKH_EVT_T *pe)
-{
-    (void)pe;
-    (void)me;
-
-    ModCmd_sendData(CONMGR_TEST_TX_PACKET);
-}
-
-void 
-readData(ConMgr *const me, RKH_EVT_T *pe)
-{
-    (void)pe;
-    (void)me;
-
-    ModCmd_readData();
-}
-
-/* ............................. Entry actions ............................. */
-static void
-sendSync(ConMgr *const me, RKH_EVT_T *pe)
-{
-    (void)pe;
-
-    ++me->syncRetryCount;
-
-    ModCmd_sync();
-}
-
-static void
-sendInit(ConMgr *const me, RKH_EVT_T *pe)
-{
-    (void)me;
-    (void)pe;
-
-    ModCmd_initStr();
-}
-
-static void
-checkPin(ConMgr *const me, RKH_EVT_T *pe)
-{
-    (void)me;
-    (void)pe;
-
-    ModCmd_getPinStatus();
-}
-
-static void
-setPin(ConMgr *const me, RKH_EVT_T *pe)
-{
-    (void)me;
-    (void)pe;
-
-    ModCmd_setPin(SIM_PIN_NUMBER);
-}
-
-static void
-checkReg(ConMgr *const me, RKH_EVT_T *pe)
-{
-    (void)me;
-    (void)pe;
-
-    ModCmd_getRegStatus();
-}
-
-static void
-setupManualGet(ConMgr *const me, RKH_EVT_T *pe)
-{
-    (void)me;
-    (void)pe;
-
-    ModCmd_setManualGet();
-}
-   
-static void
-setupAPN(ConMgr *const me, RKH_EVT_T *pe)
-{
-    (void)me;
-    (void)pe;
-
-    ModCmd_setupAPN(CONNECTION_APN, CONNECTION_USER, CONNECTION_PASSWORD);
-}
-   
-static void
-startGPRS(ConMgr *const me, RKH_EVT_T *pe)
-{
-    (void)me;
-    (void)pe;
-
-    ModCmd_startGPRS();
-}
-
-static void
-getConnStatus(ConMgr *const me, RKH_EVT_T *pe)
-{
-    (void)me;
-    (void)pe;
-
-    ModCmd_getConnStatus();
-}
-
-static void
-startConnection(ConMgr *const me, RKH_EVT_T *pe)
-{
-    (void)me;
-    (void)pe;
-
-    socketOpen(me, pe);
 }
 
 static void
@@ -466,14 +377,120 @@ socketClose(ConMgr *const me, RKH_EVT_T *pe)
     ModCmd_disconnect();
 }
 
+static void 
+readData(ConMgr *const me, RKH_EVT_T *pe)
+{
+    (void)pe;
+    (void)me;
+
+    ModCmd_readData();
+}
 
 static void
-startReceivePollingTimer(ConMgr *const me, RKH_EVT_T *pe)
+sendRequest(ConMgr *const me, RKH_EVT_T *pe)
 {
     (void)me;
+
+    RKH_FWK_RSV( pe );
+    me->psend = RKH_UPCAST(SendEvt, pe);
+
+    ModCmd_sendDataRequest();
+}
+
+static void
+flushData(ConMgr *const me, RKH_EVT_T *pe)
+{
     (void)pe;
 
-    ModCmd_disconnect();
+    ModCmd_sendData(me->psend->data);
+    RKH_FWK_GC(RKH_CAST(RKH_EVT_T, me->psend), me);
+}
+
+/* ............................. Entry actions ............................. */
+static void
+sendSync(ConMgr *const me)
+{
+    ++me->syncRetryCount;
+
+    ModCmd_sync();
+}
+
+static void
+sendInit(ConMgr *const me)
+{
+    (void)me;
+
+    ModCmd_initStr();
+}
+
+static void
+checkPin(ConMgr *const me)
+{
+    (void)me;
+
+    ModCmd_getPinStatus();
+}
+
+static void
+setPin(ConMgr *const me)
+{
+    (void)me;
+
+    ModCmd_setPin(SIM_PIN_NUMBER);
+}
+
+static void
+checkReg(ConMgr *const me)
+{
+    (void)me;
+
+    ModCmd_getRegStatus();
+}
+
+static void
+setupManualGet(ConMgr *const me)
+{
+    (void)me;
+
+    ModCmd_setManualGet();
+}
+   
+static void
+setupAPN(ConMgr *const me)
+{
+    (void)me;
+
+    ModCmd_setupAPN(CONNECTION_APN, CONNECTION_USER, CONNECTION_PASSWORD);
+}
+   
+static void
+startGPRS(ConMgr *const me)
+{
+    (void)me;
+
+    ModCmd_startGPRS();
+}
+
+static void
+getConnStatus(ConMgr *const me)
+{
+    (void)me;
+
+    ModCmd_getConnStatus();
+}
+
+static void
+startConnection(ConMgr *const me)
+{
+    (void)me;
+
+    ModCmd_connect(CONNECTION_PROT, CONNECTION_DOMAIN, CONNECTION_PORT);
+}
+
+static void
+startReceivePollingTimer(ConMgr *const me)
+{
+    (void)me;
 
     RKH_SET_STATIC_EVENT(&e_tout, evReceivePollingTout);
     RKH_TMR_ONESHOT(&me->timer, RKH_UPCAST(RKH_SMA_T, me),

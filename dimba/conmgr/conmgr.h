@@ -52,8 +52,6 @@ extern "C" {
 #define CONNECTION_DOMAIN   "181.230.72.86"
 #define CONNECTION_PORT     "33498"
 
-#define CONMGR_TEST_TX_PACKET  "----o Ping"
-#define CONMGR_TEST_RX_PACKET  "o---- Pong"
 #define CONMGR_TEST_RX_POLLING RKH_TIME_MS(2000)
 
 /* ................................ Signals ................................ */
@@ -61,6 +59,13 @@ extern "C" {
 RKH_SMA_DCLR(conMgr);
 
 /* ------------------------------- Data types ------------------------------ */
+typedef struct SendEvt SendEvt;
+struct SendEvt
+{
+    RKH_EVT_T evt;
+    unsigned char *data;
+};
+
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
 /* -------------------- External C language linkage end -------------------- */

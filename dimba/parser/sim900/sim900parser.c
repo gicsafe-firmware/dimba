@@ -381,23 +381,38 @@ disconnected(unsigned char pos)
     sendModResp_noArgs(evDisconnected);
 }
 
+/* TODO: Resolve Packet reception */
+#include <stdio.h>
+static unsigned char rxbuff[128];
+static unsigned char *prx;
+
 static void
 data_init(unsigned char pos)
 {
+    (void)pos;
 
+    prx = rxbuff; 
 }
 
 static void
 data_collect(unsigned char c)
 {
-
+    *prx = c;
+    ++prx;
 }
 
 static void
 data_ready(unsigned char pos)
 {
+    (void)pos;
 
+   *prx = '\0'; 
+   
+   printf("\r\n------ RX PACKET: %s\r\n", rxbuff);
+
+   sendModResp_noArgs(evOk);
 }
+/************************************/
 
 /* ---------------------------- Global functions --------------------------- */
 void

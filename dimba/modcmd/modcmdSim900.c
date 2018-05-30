@@ -45,6 +45,7 @@ struct CmdTbl
     ModCmd getConnStatus;
     ModCmd connect;
     ModCmd disconnect;
+    ModCmd sendDataRequest;
     ModCmd sendData;
     ModCmd readData;
 };
@@ -68,7 +69,7 @@ static const CmdTbl cmdTbl =
      "ATE1+CREG=1\r\n",
 #endif
      &conMgr, 
-     RKH_TIME_MS(300), RKH_TIME_MS(100)},
+     RKH_TIME_MS(5000), RKH_TIME_MS(100)},
 
     {RKH_INIT_STATIC_EVT(evCmd), 
      "AT+CPIN?\r\n", 
@@ -121,9 +122,14 @@ static const CmdTbl cmdTbl =
      RKH_TIME_MS(10000), RKH_TIME_MS(100)},
 
     {RKH_INIT_STATIC_EVT(evCmd), 
-     "AT+CIPSEND=%s\x1A\r\n", 
+     "AT+CIPSEND\r\n", 
      &conMgr, 
      RKH_TIME_MS(3000), RKH_TIME_MS(100)},
+
+    {RKH_INIT_STATIC_EVT(evCmd), 
+     "%s\x1A\r\n", 
+     &conMgr, 
+     RKH_TIME_MS(5000), RKH_TIME_MS(100)},
 
     {RKH_INIT_STATIC_EVT(evCmd), 
      "AT+CIPRXGET=2,1024\r\n", 
@@ -280,9 +286,15 @@ ModCmd_disconnect(void)
 }
 
 void
-ModCmd_sendData(char *pdata)
+ModCmd_sendDataRequest(void)
 {
-    sendModCmd_StrArg(&cmdTbl.sendData, pdata);
+    sendModCmd_noArgs(&cmdTbl.sendDataRequest);
+}
+
+void
+ModCmd_sendData(unsigned char *pdata)
+{
+    sendModCmd_StrArg(&cmdTbl.sendData, (char *)pdata);
 }
 
 void

@@ -72,6 +72,9 @@ RKH_THIS_MODULE
 #define ESC         0x1B
 #define DIMBA_CFG_OPTIONS    "st:f:p:m:h"
 
+#define TEST_TX_PACKET  "----o Ping"
+#define TEST_RX_PACKET  "o---- Pong"
+
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
 SERIAL_T serials[ NUM_CHANNELS ] =
@@ -98,6 +101,7 @@ static RKH_ROM_STATIC_EVENT(e_Open, evOpen);
 static RKH_ROM_STATIC_EVENT(e_Close, evClose);
 static RKH_ROM_STATIC_EVENT(e_Send, evSend);
 static RKH_ROM_STATIC_EVENT(e_Ok, evOk);
+static RKH_ROM_STATIC_EVENT(e_Receive, evReceivePollingTout);
 
 static void ser_rx_isr(unsigned char byte);
 static void ser_tx_isr(void);
@@ -185,6 +189,8 @@ bsp_init(int argc, char *argv[])
 void
 bsp_keyParser(int c)
 {
+    SendEvt *evtSend;
+
     switch(c)
     {
         case ESC:
@@ -200,8 +206,14 @@ bsp_keyParser(int c)
             RKH_SMA_POST_FIFO(conMgr, &e_Close, 0);
             break;
 
+        case 'r':
+            RKH_SMA_POST_FIFO(conMgr, &e_Receive, 0);
+            break;
+
         case 's':
-            RKH_SMA_POST_FIFO(conMgr, &e_Send, 0);
+            evtSend = RKH_ALLOC_EVT(SendEvt, evSend, 0);
+            evtSend->data = (unsigned char *)TEST_TX_PACKET;
+            RKH_SMA_POST_FIFO(conMgr, RKH_UPCAST(RKH_EVT_T, evtSend), 0);
             break;
 
         default:
