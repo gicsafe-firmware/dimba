@@ -96,6 +96,7 @@ static const char *helpMessage =
 static RKH_ROM_STATIC_EVENT(e_Term, evTerminate);
 static RKH_ROM_STATIC_EVENT(e_Open, evOpen);
 static RKH_ROM_STATIC_EVENT(e_Close, evClose);
+static RKH_ROM_STATIC_EVENT(e_Send, evSend);
 static RKH_ROM_STATIC_EVENT(e_Ok, evOk);
 
 static void ser_rx_isr(unsigned char byte);
@@ -197,6 +198,13 @@ bsp_keyParser(int c)
 
         case 'c':
             RKH_SMA_POST_FIFO(conMgr, &e_Close, 0);
+            break;
+
+        case 's':
+            RKH_SMA_POST_FIFO(conMgr, &e_Send, 0);
+            break;
+
+        default:
             break;
     }
 }

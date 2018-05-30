@@ -26,11 +26,16 @@
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
 static rui8_t sim900parser;
-SSP_DCLR_NORMAL_NODE at, waitOK, at_plus_c, at_plus_ci, at_plus_cip, 
-                     at_plus_cipsta, at_plus_cipstart, at_plus_cipstatus, 
-                     at_plus_cipclose,
+SSP_DCLR_NORMAL_NODE at, waitOK, at_plus_c, at_plus_ci, at_plus_cip,
+                     at_plus_cips, 
+                     at_plus_cipsta, at_plus_cipstart, at_plus_ciprxget,
+                     at_plus_ciprxget_2, at_plus_ciprxget_2_wdata,
+                     at_plus_cipstatus, at_plus_cipclose,
+                     at_plus_cipsend, at_plus_cipsending, at_plus_cipsent,
                      at_plus_cpin, at_plus_creg, pinStatus, wpinSet, pinSet,
                      plus_c, plus_creg, at_plus_cipstatus, at_plus_cifsr;
+
+SSP_DCLR_TRN_NODE at_plus_ciprxget_data;
 
 static rui8_t isURC;
 
@@ -50,6 +55,9 @@ static void ipGprsAct(unsigned char pos);
 static void ipDone(unsigned char pos);
 static void connected(unsigned char pos);
 static void disconnected(unsigned char pos);
+static void data_init(unsigned char pos);
+static void data_collect(unsigned char c);
+static void data_ready(unsigned char pos);
 
 /* ---------------------------- Local functions ---------------------------- */
 
@@ -85,9 +93,17 @@ SSP_END_BR_TABLE
 
 SSP_CREATE_NORMAL_NODE(at_plus_cip);
 SSP_CREATE_BR_TABLE(at_plus_cip)
-	SSPBR("STA",          NULL,  &at_plus_cipsta),
+	SSPBR("S",            NULL,  &at_plus_cips),
 	SSPBR("CLOSE",        NULL,  &at_plus_cipclose),
+	SSPBR("RXGET",        NULL,  &at_plus_ciprxget),
 	SSPBR("\r\n",         NULL,  &rootCmdParser),
+SSP_END_BR_TABLE
+
+SSP_CREATE_NORMAL_NODE(at_plus_cips);
+SSP_CREATE_BR_TABLE(at_plus_cips)
+	SSPBR("TA",          NULL,  &at_plus_cipsta),
+	SSPBR("END",         NULL,  &at_plus_cipsend),
+	SSPBR("\r\n",        NULL,  &rootCmdParser),
 SSP_END_BR_TABLE
 
 SSP_CREATE_NORMAL_NODE(at_plus_cipsta);
@@ -134,6 +150,32 @@ SSP_CREATE_BR_TABLE(at_plus_creg)
 SSP_END_BR_TABLE
 
 /* --------------------------------------------------------------- */
+/* ------------------------ AT+CIPRXGET -------------------------- */
+SSP_CREATE_NORMAL_NODE(at_plus_ciprxget);
+SSP_CREATE_BR_TABLE(at_plus_ciprxget)
+	SSPBR("1\r\n\r\nOK\r\n", cmd_ok,  &rootCmdParser),
+	SSPBR("2,",              NULL,    &at_plus_ciprxget_2),
+	SSPBR("\r\n",            NULL,    &rootCmdParser),
+SSP_END_BR_TABLE
+
+/* --------------------------------------------------------------- */
+/* ------------------------ AT+CIPRXGET=2 ------------------------ */
+SSP_CREATE_NORMAL_NODE(at_plus_ciprxget_2);
+SSP_CREATE_BR_TABLE(at_plus_ciprxget_2)
+	SSPBR("+CIPRXGET: 2",      NULL,   &at_plus_ciprxget_2_wdata),
+SSP_END_BR_TABLE
+
+SSP_CREATE_NORMAL_NODE(at_plus_ciprxget_2_wdata);
+SSP_CREATE_BR_TABLE(at_plus_ciprxget_2_wdata)
+	SSPBR("\r\n",      data_init,   &at_plus_ciprxget_data),
+SSP_END_BR_TABLE
+
+SSP_CREATE_TRN_NODE(at_plus_ciprxget_data, data_collect);
+SSP_CREATE_BR_TABLE(at_plus_ciprxget_data)
+	SSPBR("\r\nOK\r\n", data_ready,   &rootCmdParser),
+SSP_END_BR_TABLE
+
+/* --------------------------------------------------------------- */
 /* ------------------------ AT+CIPSTATUS ------------------------- */
 SSP_CREATE_NORMAL_NODE(at_plus_cipstatus);
 SSP_CREATE_BR_TABLE(at_plus_cipstatus)
@@ -148,6 +190,23 @@ SSP_END_BR_TABLE
 SSP_CREATE_NORMAL_NODE(at_plus_cipstart);
 SSP_CREATE_BR_TABLE(at_plus_cipstart)
 	SSPBR("CONNECT OK", connected,  &rootCmdParser),
+SSP_END_BR_TABLE
+
+/* --------------------------------------------------------------- */
+/* ------------------------- AT+CIPSEND -------------------------- */
+SSP_CREATE_NORMAL_NODE(at_plus_cipsend);
+SSP_CREATE_BR_TABLE(at_plus_cipsend)
+	SSPBR(">", cmd_ok,  &at_plus_cipsending),
+SSP_END_BR_TABLE
+
+SSP_CREATE_NORMAL_NODE(at_plus_cipsending);
+SSP_CREATE_BR_TABLE(at_plus_cipsending)
+	SSPBR("\x1A", NULL,  &at_plus_cipsent),
+SSP_END_BR_TABLE
+
+SSP_CREATE_NORMAL_NODE(at_plus_cipsent);
+SSP_CREATE_BR_TABLE(at_plus_cipsent)
+	SSPBR("SEND OK", cmd_ok,  &rootCmdParser),
 SSP_END_BR_TABLE
 
 /* --------------------------------------------------------------- */
@@ -320,6 +379,24 @@ disconnected(unsigned char pos)
     (void)pos;
 
     sendModResp_noArgs(evDisconnected);
+}
+
+static void
+data_init(unsigned char pos)
+{
+
+}
+
+static void
+data_collect(unsigned char c)
+{
+
+}
+
+static void
+data_ready(unsigned char pos)
+{
+
 }
 
 /* ---------------------------- Global functions --------------------------- */

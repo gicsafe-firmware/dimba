@@ -38,12 +38,15 @@ struct CmdTbl
     ModCmd getPinStatus;
     ModCmd setPin;
     ModCmd getRegStatus;
+    ModCmd setManualGet;
     ModCmd setAPN;
     ModCmd startGPRS;
     ModCmd requestIP;
     ModCmd getConnStatus;
     ModCmd connect;
     ModCmd disconnect;
+    ModCmd sendData;
+    ModCmd readData;
 };
 
 /* ---------------------------- Global variables --------------------------- */
@@ -59,8 +62,11 @@ static const CmdTbl cmdTbl =
      RKH_TIME_MS(300), RKH_TIME_MS(100)},
 
     {RKH_INIT_STATIC_EVT(evCmd), 
-     //"ATE1+CREG=1;+CIPSHUT\r\n",
+#ifdef CIPSHUT_ON_INIT
+     "ATE1+CREG=1;+CIPSHUT\r\n",
+#else
      "ATE1+CREG=1\r\n",
+#endif
      &conMgr, 
      RKH_TIME_MS(300), RKH_TIME_MS(100)},
 
@@ -80,6 +86,11 @@ static const CmdTbl cmdTbl =
      RKH_TIME_MS(300), RKH_TIME_MS(100)},
 
     {RKH_INIT_STATIC_EVT(evCmd), 
+     "AT+CIPRXGET=1\r\n",
+     &conMgr, 
+     RKH_TIME_MS(300), RKH_TIME_MS(100)},
+
+    {RKH_INIT_STATIC_EVT(evCmd), 
      "AT+CSTT=\"%s\",\"%s\",\"%s\"\r\n", 
      &conMgr, 
      RKH_TIME_MS(300), RKH_TIME_MS(100)},
@@ -87,7 +98,7 @@ static const CmdTbl cmdTbl =
     {RKH_INIT_STATIC_EVT(evCmd), 
      "AT+CIICR\r\n", 
      &conMgr, 
-     RKH_TIME_MS(2000), RKH_TIME_MS(100)},
+     RKH_TIME_MS(10000), RKH_TIME_MS(200)},
 
     {RKH_INIT_STATIC_EVT(evCmd), 
      "AT+CIFSR\r\n", 
@@ -102,10 +113,20 @@ static const CmdTbl cmdTbl =
     {RKH_INIT_STATIC_EVT(evCmd), 
      "AT+CIPSTART=\"%s\",\"%s\",\"%s\"\r\n", 
      &conMgr, 
-     RKH_TIME_MS(3000), RKH_TIME_MS(100)},
+     RKH_TIME_MS(10000), RKH_TIME_MS(100)},
 
     {RKH_INIT_STATIC_EVT(evCmd), 
      "AT+CIPCLOSE\r\n", 
+     &conMgr, 
+     RKH_TIME_MS(10000), RKH_TIME_MS(100)},
+
+    {RKH_INIT_STATIC_EVT(evCmd), 
+     "AT+CIPSEND=%s\x1A\r\n", 
+     &conMgr, 
+     RKH_TIME_MS(3000), RKH_TIME_MS(100)},
+
+    {RKH_INIT_STATIC_EVT(evCmd), 
+     "AT+CIPRXGET=2,1024\r\n", 
      &conMgr, 
      RKH_TIME_MS(3000), RKH_TIME_MS(100)},
 };
@@ -149,6 +170,18 @@ sendModCmd_rui16(const ModCmd *p, rui16_t arg)
     evtCmd = RKH_ALLOC_EVT(ModMgrEvt, evCmd, *p->aoDest);
 
     snprintf(evtCmd->cmd, MODMGR_MAX_SIZEOF_CMDSTR, p->fmt, arg);
+
+    postFIFOEvtCmd(evtCmd, p);
+}
+
+static void
+sendModCmd_StrArg(const ModCmd *p, char *s)
+{
+    ModMgrEvt *evtCmd;
+
+    evtCmd = RKH_ALLOC_EVT(ModMgrEvt, evCmd, *p->aoDest);
+    
+    snprintf(evtCmd->cmd, MODMGR_MAX_SIZEOF_CMDSTR, p->fmt, s);
 
     postFIFOEvtCmd(evtCmd, p);
 }
@@ -205,6 +238,12 @@ ModCmd_getRegStatus(void)
 }
 
 void 
+ModCmd_setManualGet(void)
+{
+    sendModCmd_noArgs(&cmdTbl.setManualGet);
+}
+
+void 
 ModCmd_setupAPN(char *apn, char *usr, char *nm)
 {
     sendModCmd_3StrArgs(&cmdTbl.setAPN, apn, usr, nm);
@@ -238,6 +277,18 @@ void
 ModCmd_disconnect(void)
 {
     sendModCmd_noArgs(&cmdTbl.disconnect);
+}
+
+void
+ModCmd_sendData(char *pdata)
+{
+    sendModCmd_StrArg(&cmdTbl.sendData, pdata);
+}
+
+void
+ModCmd_readData(void)
+{
+    sendModCmd_noArgs(&cmdTbl.readData);
 }
 
 /* ------------------------------ End of file ------------------------------ */
