@@ -5,14 +5,14 @@
 
 /* -------------------------- Development history -------------------------- */
 /*
+ *  2018.05.15  DaBa  v1.0.01  Initial version
  *  2018.05.07  LeFr  v1.0.00  Initial version
- *  2018.05.15  DaBa  v1.0.01  Efects implemented
  */
 
 /* -------------------------------- Authors -------------------------------- */
 /*
- *  LeFr  Leandro Francucci lf@vortexmakes.com
  *  DaBa  Darío Baliña      db@vortexmakes.com
+ *  LeFr  Leandro Francucci lf@vortexmakes.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
@@ -31,9 +31,9 @@ typedef struct ConMgr ConMgr;
 /* ................... Declares states and pseudostates .................... */
 RKH_DCLR_BASIC_STATE ConMgr_inactive, ConMgr_sync, ConMgr_initError,
                 ConMgr_init, ConMgr_pin, ConMgr_setPin, ConMgr_waitReg,
-                    ConMgr_unregistered,
+                    ConMgr_unregistered, ConMgr_failure,
                 ConMgr_setManualGet, ConMgr_setAPN, ConMgr_enableGPRS,
-                ConMgr_checkIP, ConMgr_configureError, ConMgr_disconnected,
+                ConMgr_checkIP, ConMgr_waitRetryConfig, ConMgr_disconnected,
                 ConMgr_idle, ConMgr_waitPrompt, ConMgr_waitOk, ConMgr_receiving, 
                 ConMgr_connectError;
 
@@ -42,7 +42,7 @@ RKH_DCLR_COMP_STATE ConMgr_active, ConMgr_initialize, ConMgr_registered,
                     ConMgr_sending;
 RKH_DCLR_FINAL_STATE ConMgr_initializeFinal, ConMgr_configureFinal,
                      ConMgr_sendingFinal;
-RKH_DCLR_COND_STATE ConMgr_checkSyncTry;
+RKH_DCLR_COND_STATE ConMgr_checkSyncTry, ConMgr_checkConfigTry;
 
 /* ........................ Declares initial action ........................ */
 static void init(ConMgr *const me, RKH_EVT_T *pe);
@@ -50,6 +50,8 @@ static void init(ConMgr *const me, RKH_EVT_T *pe);
 /* ........................ Declares effect actions ........................ */
 static void open(ConMgr *const me, RKH_EVT_T *pe);
 static void enableUnsolicitedRegStatus(ConMgr *const me, RKH_EVT_T *pe);
+static void configureInit(ConMgr *const me, RKH_EVT_T *pe);
+static void configTry(ConMgr *const me, RKH_EVT_T *pe);
 static void requestIp(ConMgr *const me, RKH_EVT_T *pe);
 static void socketOpen(ConMgr *const me, RKH_EVT_T *pe);
 static void socketClose(ConMgr *const me, RKH_EVT_T *pe);
@@ -65,6 +67,7 @@ static void checkPin(ConMgr *const me);
 static void setPin(ConMgr *const me);
 static void checkReg(ConMgr *const me);
 static void setupManualGet(ConMgr *const me);
+static void waitRetryConfigEntry(ConMgr *const me);
 static void setupAPN(ConMgr *const me);
 static void startGPRS(ConMgr *const me);
 static void getConnStatus(ConMgr *const me);
@@ -74,6 +77,7 @@ static void startReadPollingTimer(ConMgr *const me);
 /* ......................... Declares exit actions ......................... */
 /* ............................ Declares guards ............................ */
 rbool_t checkSyncTry(ConMgr *const me, RKH_EVT_T *pe);
+rbool_t checkConfigTry(ConMgr *const me, RKH_EVT_T *pe);
 
 /* ........................ States and pseudostates ........................ */
 RKH_CREATE_BASIC_STATE(ConMgr_inactive, NULL, NULL, RKH_ROOT, NULL);
@@ -150,32 +154,37 @@ RKH_CREATE_TRANS_TABLE(ConMgr_unregistered)
     RKH_TRREG(evReg, NULL, NULL,   &ConMgr_registered),
 RKH_END_TRANS_TABLE
 
+RKH_CREATE_BASIC_STATE(ConMgr_failure, NULL, NULL, &ConMgr_active, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_failure)
+RKH_END_TRANS_TABLE
+
+RKH_CREATE_HISTORY_STORAGE(ConMgr_configure);
 RKH_CREATE_COMP_REGION_STATE(ConMgr_configure, NULL, NULL, &ConMgr_registered, 
-                             &ConMgr_setManualGet, configureInit,
-                             RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
+                             &ConMgr_configureHist, NULL,
+                             RKH_SHISTORY, NULL, 
+                             configureInit, &ConMgr_setManualGet,
+                             RKH_GET_HISTORY_STORAGE(ConMgr_configure));
 RKH_CREATE_TRANS_TABLE(ConMgr_configure)
     RKH_TRCOMPLETION(NULL, NULL, &ConMgr_connect),
+    RKH_TRREG(evNoResponse, NULL, NULL, &ConMgr_checkConfigTry),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_setManualGet, setupManualGet, NULL, 
                                                     &ConMgr_configure, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_setManualGet)
     RKH_TRREG(evOk,         NULL, NULL, &ConMgr_setAPN),
-    RKH_TRREG(evNoResponse, NULL, NULL, &ConMgr_configureError),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_setAPN, setupAPN, NULL, 
                                                     &ConMgr_configure, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_setAPN)
     RKH_TRREG(evOk,         NULL, NULL, &ConMgr_enableGPRS),
-    RKH_TRREG(evNoResponse, NULL, NULL, &ConMgr_configureError),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_enableGPRS, startGPRS, NULL, 
                                                     &ConMgr_configure, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_enableGPRS)
     RKH_TRREG(evOk,         NULL, NULL, &ConMgr_checkIP),
-    RKH_TRREG(evNoResponse, NULL, NULL, &ConMgr_configureError),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_checkIP, getConnStatus, NULL, 
@@ -186,12 +195,18 @@ RKH_CREATE_TRANS_TABLE(ConMgr_checkIP)
     RKH_TRREG(evIPInitial,  NULL,         NULL, &ConMgr_checkIP),
     RKH_TRREG(evIPStart,    NULL,         NULL, &ConMgr_checkIP),
     RKH_TRREG(evIPStatus,   NULL,         NULL, &ConMgr_configureFinal),
-    RKH_TRREG(evNoResponse, NULL,         NULL, &ConMgr_configureError),
 RKH_END_TRANS_TABLE
 
-RKH_CREATE_BASIC_STATE(ConMgr_configureError, NULL, NULL,
-                                                    &ConMgr_configure, NULL);
-RKH_CREATE_TRANS_TABLE(ConMgr_configureError)
+RKH_CREATE_COND_STATE(ConMgr_checkConfigTry);
+RKH_CREATE_BRANCH_TABLE(ConMgr_checkConfigTry)
+    RKH_BRANCH(checkConfigTry,   NULL, &ConMgr_waitRetryConfig),
+    RKH_BRANCH(ELSE,           NULL,   &ConMgr_failure),
+RKH_END_BRANCH_TABLE
+
+RKH_CREATE_BASIC_STATE(ConMgr_waitRetryConfig, waitRetryConfigEntry, NULL,
+                                                    &ConMgr_registered, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_waitRetryConfig)
+    RKH_TRREG(evTimeout,  NULL,    configTry, &ConMgr_configure),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_COMP_REGION_STATE(ConMgr_connect, startConnection, NULL, 
@@ -298,12 +313,14 @@ init(ConMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_STATE(me, &ConMgr_initializeFinal);
     RKH_TR_FWK_STATE(me, &ConMgr_registered);
     RKH_TR_FWK_STATE(me, &ConMgr_unregistered);
+    RKH_TR_FWK_STATE(me, &ConMgr_failure);
     RKH_TR_FWK_STATE(me, &ConMgr_configure);
     RKH_TR_FWK_STATE(me, &ConMgr_setManualGet);
     RKH_TR_FWK_STATE(me, &ConMgr_setAPN);
     RKH_TR_FWK_STATE(me, &ConMgr_enableGPRS);
     RKH_TR_FWK_STATE(me, &ConMgr_checkIP);
-    RKH_TR_FWK_STATE(me, &ConMgr_configureError);
+    RKH_TR_FWK_STATE(me, &ConMgr_checkConfigTry);
+    RKH_TR_FWK_STATE(me, &ConMgr_waitRetryConfig);
     RKH_TR_FWK_STATE(me, &ConMgr_configureFinal);
     RKH_TR_FWK_STATE(me, &ConMgr_connect);
     RKH_TR_FWK_STATE(me, &ConMgr_disconnected);
@@ -339,12 +356,6 @@ init(ConMgr *const me, RKH_EVT_T *pe)
     me->retryCount = 0;
 }
 
-static void
-configureInit(SmTest *const me, RKH_EVT_T *pe)
-{
-    me->retryCount = 0;
-}
-
 /* ............................ Effect actions ............................. */
 static void
 open(ConMgr *const me, RKH_EVT_T *pe)
@@ -355,6 +366,21 @@ open(ConMgr *const me, RKH_EVT_T *pe)
     RKH_SMA_POST_FIFO(modMgr, &e_Open, conMgr);
 }
 
+static void
+configureInit(ConMgr *const me, RKH_EVT_T *pe)
+{
+    (void)pe;
+
+    me->retryCount = 0;
+}
+
+static void
+configTry(ConMgr *const me, RKH_EVT_T *pe)
+{
+    (void)pe;
+
+    ++me->retryCount;
+}
 
 static void 
 requestIp(ConMgr *const me, RKH_EVT_T *pe)
@@ -454,6 +480,13 @@ checkReg(ConMgr *const me)
 }
 
 static void
+waitRetryConfigEntry(ConMgr *const me)
+{
+    RKH_SET_STATIC_EVENT(&e_tout, evTimeout);
+    RKH_TMR_ONESHOT(&me->timer, RKH_UPCAST(RKH_SMA_T, me), CONFIG_TRY_DELAY);
+}
+
+static void
 setupManualGet(ConMgr *const me)
 {
     (void)me;
@@ -510,6 +543,14 @@ checkSyncTry(ConMgr *const me, RKH_EVT_T *pe)
     (void)pe;
     
     return (me->retryCount < MAX_SYNC_RETRY) ? RKH_TRUE : RKH_FALSE;
+}
+
+rbool_t
+checkConfigTry(ConMgr *const me, RKH_EVT_T *pe)
+{
+    (void)pe;
+    
+    return (me->retryCount < MAX_CONFIG_RETRY) ? RKH_TRUE : RKH_FALSE;
 }
 
 /* ---------------------------- Global functions --------------------------- */

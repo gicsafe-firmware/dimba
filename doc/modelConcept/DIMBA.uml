@@ -222,6 +222,11 @@
           <expr xmi:type="uml:LiteralString" xmi:id="_ktfV4mTvEeiNN_MZ6epyJg" value="READ_POLLING_TIME"/>
         </when>
       </packagedElement>
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_r72OoGUeEeiPR9LHmvLjHw" name="evTimeout" isRelative="true">
+        <when xmi:type="uml:TimeExpression" xmi:id="_r72OoWUeEeiPR9LHmvLjHw" name="CONFIG_TRY_DELAY">
+          <expr xmi:type="uml:LiteralString" xmi:id="_r72OomUeEeiPR9LHmvLjHw" name="CONFIG_TRY_DELAY" value="CONFIG_TRY_DELAY"/>
+        </when>
+      </packagedElement>
     </packagedElement>
     <packagedElement xmi:type="uml:StateMachine" xmi:id="_i1rp0FRTEeiBd_DXg33BBQ" name="ConMgr">
       <ownedRule xmi:type="uml:Constraint" xmi:id="_yA2HgFioEeiQLo5rqCRH8w">
@@ -259,7 +264,7 @@
                   <trigger xmi:type="uml:Trigger" xmi:id="_OTRisFimEeiQLo5rqCRH8w" name="evNoResponse" event="_9rJ44FiwEeiQLo5rqCRH8w"/>
                 </transition>
                 <transition xmi:type="uml:Transition" xmi:id="_DdZI0FinEeiQLo5rqCRH8w" guard="_6qlvEFipEeiQLo5rqCRH8w" source="_1Z3ZIFilEeiQLo5rqCRH8w" target="_YZ4HYFRVEeiBd_DXg33BBQ">
-                  <ownedRule xmi:type="uml:Constraint" xmi:id="_6qlvEFipEeiQLo5rqCRH8w">
+                  <ownedRule xmi:type="uml:Constraint" xmi:id="_6qlvEFipEeiQLo5rqCRH8w" name="MAX_SYNC_RETRY">
                     <specification xmi:type="uml:OpaqueExpression" xmi:id="_IOR9kFiqEeiQLo5rqCRH8w">
                       <language>C</language>
                       <body>retryCount &lt; MAX_SYNC_RETRY</body>
@@ -286,7 +291,7 @@
                   <trigger xmi:type="uml:Trigger" xmi:id="_B_Gx4FqUEeiA69UjQR0RyA" event="_RxQy4FiuEeiQLo5rqCRH8w"/>
                 </transition>
                 <transition xmi:type="uml:Transition" xmi:id="_m-PgQFipEeiQLo5rqCRH8w" guard="_rtXh0FipEeiQLo5rqCRH8w" source="_1Z3ZIFilEeiQLo5rqCRH8w" target="_1HrngFimEeiQLo5rqCRH8w">
-                  <ownedRule xmi:type="uml:Constraint" xmi:id="_rtXh0FipEeiQLo5rqCRH8w">
+                  <ownedRule xmi:type="uml:Constraint" xmi:id="_rtXh0FipEeiQLo5rqCRH8w" name="else">
                     <specification xmi:type="uml:OpaqueExpression" xmi:id="_vGZ6MFipEeiQLo5rqCRH8w" name="else">
                       <language>C</language>
                       <body>else</body>
@@ -345,9 +350,29 @@
                 <transition xmi:type="uml:Transition" xmi:id="_UcZE4FmJEeiFFviyqWdp8w" source="_6a4F0FiuEeiQLo5rqCRH8w" target="_N4S4EGT1EeiNN_MZ6epyJg">
                   <trigger xmi:type="uml:Trigger" xmi:id="_V8x5kFmJEeiFFviyqWdp8w" event="_9rJ44FiwEeiQLo5rqCRH8w"/>
                 </transition>
-                <transition xmi:type="uml:Transition" xmi:id="_aYkhwGT1EeiNN_MZ6epyJg" source="_N4S4EGT1EeiNN_MZ6epyJg" target="_MaH3kFmJEeiFFviyqWdp8w"/>
-                <transition xmi:type="uml:Transition" xmi:id="_c5niMGT1EeiNN_MZ6epyJg" source="_MaH3kFmJEeiFFviyqWdp8w" target="_6a4F0FiuEeiQLo5rqCRH8w"/>
-                <transition xmi:type="uml:Transition" xmi:id="_PAinoGT3EeiNN_MZ6epyJg" source="_N4S4EGT1EeiNN_MZ6epyJg" target="_tdaWkGTzEeiNN_MZ6epyJg"/>
+                <transition xmi:type="uml:Transition" xmi:id="_aYkhwGT1EeiNN_MZ6epyJg" guard="_eLY20GUbEeiPR9LHmvLjHw" source="_N4S4EGT1EeiNN_MZ6epyJg" target="_MaH3kFmJEeiFFviyqWdp8w">
+                  <ownedRule xmi:type="uml:Constraint" xmi:id="_eLY20GUbEeiPR9LHmvLjHw">
+                    <specification xmi:type="uml:OpaqueExpression" xmi:id="_eLY20WUbEeiPR9LHmvLjHw">
+                      <language>C</language>
+                      <body>retryCount &lt; MAX_CONFIG_RETRY</body>
+                    </specification>
+                  </ownedRule>
+                </transition>
+                <transition xmi:type="uml:Transition" xmi:id="_c5niMGT1EeiNN_MZ6epyJg" source="_MaH3kFmJEeiFFviyqWdp8w" target="_6a4F0FiuEeiQLo5rqCRH8w">
+                  <effect xmi:type="uml:OpaqueBehavior" xmi:id="_Z670oGUjEeiPR9LHmvLjHw">
+                    <language>C</language>
+                    <body>configTry();</body>
+                  </effect>
+                  <trigger xmi:type="uml:Trigger" xmi:id="_scW6sGUeEeiPR9LHmvLjHw" event="_r72OoGUeEeiPR9LHmvLjHw"/>
+                </transition>
+                <transition xmi:type="uml:Transition" xmi:id="_PAinoGT3EeiNN_MZ6epyJg" guard="_EIBmIGUcEeiPR9LHmvLjHw" source="_N4S4EGT1EeiNN_MZ6epyJg" target="_tdaWkGTzEeiNN_MZ6epyJg">
+                  <ownedRule xmi:type="uml:Constraint" xmi:id="_EIBmIGUcEeiPR9LHmvLjHw">
+                    <specification xmi:type="uml:OpaqueExpression" xmi:id="_EIBmIWUcEeiPR9LHmvLjHw">
+                      <language>C</language>
+                      <body>else</body>
+                    </specification>
+                  </ownedRule>
+                </transition>
                 <subvertex xmi:type="uml:State" xmi:id="_4UfoIFiuEeiQLo5rqCRH8w" name="connect">
                   <entry xmi:type="uml:OpaqueBehavior" xmi:id="_oeFLgF0AEeildqcvJZY8yg">
                     <language>C</language>

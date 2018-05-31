@@ -5,14 +5,14 @@
 
 /* -------------------------- Development history -------------------------- */
 /*
+ *  2018.05.15  DaBa  v1.0.01  Initial version
  *  2018.05.07  LeFr  v1.0.00  Initial version
- *  2018.05.15  DaBa  v1.0.01  Efects implemented
  */
 
 /* -------------------------------- Authors -------------------------------- */
 /*
- *  LeFr  Leandro Francucci lf@vortexmakes.com
  *  DaBa  Darío Baliña      db@vortexmakes.com
+ *  LeFr  Leandro Francucci lf@vortexmakes.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
@@ -41,16 +41,24 @@ extern "C" {
 #define SYNC_DELAY_TIME     RKH_TIME_MS(1000)
 #define MAX_SYNC_RETRY      5
 #define SIM_PIN_NUMBER      9474
+
+#define MAX_CONFIG_RETRY    5
+#define CONFIG_TRY_DELAY    RKH_TIME_MS(3000)
+
 #define CONNECTION_APN      CLARO_APN_ADDR
 #define CONNECTION_USER     CLARO_APN_USER
 #define CONNECTION_PASSWORD CLARO_APN_PASS
 
 #define CONNECTION_PROT     "TCP"
-//#define CONNECTION_DOMAIN   "71.6.135.77"
-//#define CONNECTION_PORT     "33499"
 
-#define CONNECTION_DOMAIN   "181.230.72.86"
-#define CONNECTION_PORT     "33498"
+#define YIPIES_SERVER       "71.6.135.77"
+#define YIPIES_PORT         "33499"
+
+#define DOCKLIGHT_SERVER    "181.230.72.86"
+#define DOCKLIGHT_PORT      "33498"
+
+#define CONNECTION_DOMAIN   DOCKLIGHT_SERVER 
+#define CONNECTION_PORT     DCKLIGHT_PORT
 
 #define READ_POLLING_TIME   RKH_TIME_MS(2000)
 
