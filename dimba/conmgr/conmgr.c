@@ -69,7 +69,7 @@ static void setupAPN(ConMgr *const me);
 static void startGPRS(ConMgr *const me);
 static void getConnStatus(ConMgr *const me);
 static void startConnection(ConMgr *const me);
-static void startReceivePollingTimer(ConMgr *const me);
+static void startReadPollingTimer(ConMgr *const me);
 
 /* ......................... Declares exit actions ......................... */
 /* ............................ Declares guards ............................ */
@@ -151,7 +151,7 @@ RKH_CREATE_TRANS_TABLE(ConMgr_unregistered)
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_COMP_REGION_STATE(ConMgr_configure, NULL, NULL, &ConMgr_registered, 
-                             &ConMgr_setManualGet, NULL,
+                             &ConMgr_setManualGet, configureInit,
                              RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_configure)
     RKH_TRCOMPLETION(NULL, NULL, &ConMgr_connect),
@@ -217,11 +217,11 @@ RKH_CREATE_TRANS_TABLE(ConMgr_connected)
     RKH_TRREG(evNoResponse, NULL, NULL, &ConMgr_connectError),
 RKH_END_TRANS_TABLE
 
-RKH_CREATE_BASIC_STATE(ConMgr_idle, startReceivePollingTimer, 
+RKH_CREATE_BASIC_STATE(ConMgr_idle, startReadPollingTimer, 
                                             NULL, &ConMgr_connected, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_idle)
-    RKH_TRREG(evSend,               NULL,  sendRequest, &ConMgr_sending),
-    RKH_TRREG(evReceivePollingTout, NULL, readData, &ConMgr_receiving),
+    RKH_TRREG(evSend, NULL,  sendRequest, &ConMgr_sending),
+    RKH_TRREG(evRead, NULL, readData, &ConMgr_receiving),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_COMP_REGION_STATE(ConMgr_sending, NULL, NULL, 
@@ -257,7 +257,7 @@ struct ConMgr
     RKH_TMR_T timer;    /* which is responsible for toggling the LED */
                         /* posting the TIMEOUT signal event to active object */
                         /* 'conMgr' */
-    rui8_t syncRetryCount; 
+    rui8_t retryCount; 
     SendEvt *psend;
 };
 
@@ -331,12 +331,18 @@ init(ConMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_SIG(evIPGprsAct);
     RKH_TR_FWK_SIG(evConnected);
     RKH_TR_FWK_SIG(evSend);
-    RKH_TR_FWK_SIG(evReceivePollingTout);
+    RKH_TR_FWK_SIG(evRead);
     RKH_TR_FWK_SIG(evDisconnected);
     RKH_TR_FWK_SIG(evTerminate);
 
     RKH_TMR_INIT(&me->timer, &e_tout, NULL);
-    me->syncRetryCount = 0;
+    me->retryCount = 0;
+}
+
+static void
+configureInit(SmTest *const me, RKH_EVT_T *pe)
+{
+    me->retryCount = 0;
 }
 
 /* ............................ Effect actions ............................. */
@@ -410,7 +416,7 @@ flushData(ConMgr *const me, RKH_EVT_T *pe)
 static void
 sendSync(ConMgr *const me)
 {
-    ++me->syncRetryCount;
+    ++me->retryCount;
 
     ModCmd_sync();
 }
@@ -488,13 +494,12 @@ startConnection(ConMgr *const me)
 }
 
 static void
-startReceivePollingTimer(ConMgr *const me)
+startReadPollingTimer(ConMgr *const me)
 {
     (void)me;
 
-    RKH_SET_STATIC_EVENT(&e_tout, evReceivePollingTout);
-    RKH_TMR_ONESHOT(&me->timer, RKH_UPCAST(RKH_SMA_T, me),
-                                                CONMGR_TEST_RX_POLLING);
+    RKH_SET_STATIC_EVENT(&e_tout, evRead);
+    RKH_TMR_ONESHOT(&me->timer, RKH_UPCAST(RKH_SMA_T, me), READ_POLLING_TIME);
 }
 
 
@@ -504,7 +509,7 @@ checkSyncTry(ConMgr *const me, RKH_EVT_T *pe)
 {
     (void)pe;
     
-    return (me->syncRetryCount < MAX_SYNC_RETRY) ? RKH_TRUE : RKH_FALSE;
+    return (me->retryCount < MAX_SYNC_RETRY) ? RKH_TRUE : RKH_FALSE;
 }
 
 /* ---------------------------- Global functions --------------------------- */

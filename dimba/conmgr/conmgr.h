@@ -52,7 +52,7 @@ extern "C" {
 #define CONNECTION_DOMAIN   "181.230.72.86"
 #define CONNECTION_PORT     "33498"
 
-#define CONMGR_TEST_RX_POLLING RKH_TIME_MS(2000)
+#define READ_POLLING_TIME   RKH_TIME_MS(2000)
 
 /* ................................ Signals ................................ */
 /* ........................ Declares active object ......................... */

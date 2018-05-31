@@ -101,7 +101,7 @@ static RKH_ROM_STATIC_EVENT(e_Open, evOpen);
 static RKH_ROM_STATIC_EVENT(e_Close, evClose);
 static RKH_ROM_STATIC_EVENT(e_Send, evSend);
 static RKH_ROM_STATIC_EVENT(e_Ok, evOk);
-static RKH_ROM_STATIC_EVENT(e_Receive, evReceivePollingTout);
+static RKH_ROM_STATIC_EVENT(e_Read, evRead);
 
 static void ser_rx_isr(unsigned char byte);
 static void ser_tx_isr(void);
@@ -207,7 +207,7 @@ bsp_keyParser(int c)
             break;
 
         case 'r':
-            RKH_SMA_POST_FIFO(conMgr, &e_Receive, 0);
+            RKH_SMA_POST_FIFO(conMgr, &e_Read, 0);
             break;
 
         case 's':
