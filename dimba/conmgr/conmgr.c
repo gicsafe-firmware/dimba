@@ -29,7 +29,7 @@
 typedef struct ConMgr ConMgr;
 
 /* ................... Declares states and pseudostates .................... */
-RKH_DCLR_BASIC_STATE ConMgr_inactive, ConMgr_sync, ConMgr_initError,
+RKH_DCLR_BASIC_STATE ConMgr_inactive, ConMgr_sync,
                 ConMgr_init, ConMgr_pin, ConMgr_setPin, ConMgr_waitReg,
                     ConMgr_unregistered, ConMgr_failure,
                 ConMgr_setManualGet, ConMgr_setAPN, ConMgr_enableGPRS,
@@ -49,6 +49,7 @@ static void init(ConMgr *const me, RKH_EVT_T *pe);
 
 /* ........................ Declares effect actions ........................ */
 static void open(ConMgr *const me, RKH_EVT_T *pe);
+static void initializeInit(ConMgr *const me, RKH_EVT_T *pe);
 static void enableUnsolicitedRegStatus(ConMgr *const me, RKH_EVT_T *pe);
 static void configureInit(ConMgr *const me, RKH_EVT_T *pe);
 static void configTry(ConMgr *const me, RKH_EVT_T *pe);
@@ -93,7 +94,7 @@ RKH_CREATE_TRANS_TABLE(ConMgr_active)
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_COMP_REGION_STATE(ConMgr_initialize, NULL, NULL, &ConMgr_active, 
-                             &ConMgr_sync, NULL,
+                             &ConMgr_sync, initializeInit,
                              RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_initialize)
     RKH_TRCOMPLETION(NULL, NULL, &ConMgr_registered),
@@ -108,38 +109,30 @@ RKH_END_TRANS_TABLE
 RKH_CREATE_COND_STATE(ConMgr_checkSyncTry);
 RKH_CREATE_BRANCH_TABLE(ConMgr_checkSyncTry)
     RKH_BRANCH(checkSyncTry,   NULL,   &ConMgr_sync),
-    RKH_BRANCH(ELSE,           NULL,   &ConMgr_initError),
+    RKH_BRANCH(ELSE,           NULL,   &ConMgr_failure),
 RKH_END_BRANCH_TABLE
-
-RKH_CREATE_BASIC_STATE(ConMgr_initError, NULL, NULL, &ConMgr_initialize, NULL);
-RKH_CREATE_TRANS_TABLE(ConMgr_initError)
-RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_init, sendInit, NULL, &ConMgr_initialize, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_init)
     RKH_TRREG(evOk,         NULL, NULL, &ConMgr_pin),
-    RKH_TRREG(evNoResponse, NULL, NULL, &ConMgr_initError),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_pin, checkPin, NULL, &ConMgr_initialize, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_pin)
     RKH_TRREG(evSimPin,     NULL, NULL, &ConMgr_setPin),
-    RKH_TRREG(evSimError,   NULL, NULL, &ConMgr_initError),
+    RKH_TRREG(evSimError,   NULL, NULL, &ConMgr_failure),
     RKH_TRREG(evSimReady,   NULL, NULL, &ConMgr_waitReg),
-    RKH_TRREG(evNoResponse, NULL, NULL, &ConMgr_initError),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_setPin, setPin, NULL, &ConMgr_initialize, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_setPin)
     RKH_TRREG(evOk,         NULL, NULL,   &ConMgr_pin),
-    RKH_TRREG(evNoResponse, NULL, NULL,   &ConMgr_initError),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_waitReg, checkReg, NULL, 
                                                     &ConMgr_initialize, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_waitReg)
     RKH_TRREG(evReg,        NULL, NULL,   &ConMgr_initializeFinal),
-    RKH_TRREG(evNoResponse, NULL, NULL,   &ConMgr_initError),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_COMP_REGION_STATE(ConMgr_registered, NULL, NULL, &ConMgr_active, 
@@ -156,6 +149,7 @@ RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_failure, NULL, NULL, &ConMgr_active, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_failure)
+    RKH_TRREG(evOpen, NULL,  NULL, &ConMgr_active),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_HISTORY_STORAGE(ConMgr_configure);
@@ -306,7 +300,6 @@ init(ConMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_STATE(me, &ConMgr_initialize);
     RKH_TR_FWK_STATE(me, &ConMgr_sync);
 	RKH_TR_FWK_STATE(me, &ConMgr_init);
-    RKH_TR_FWK_STATE(me, &ConMgr_initError);
     RKH_TR_FWK_STATE(me, &ConMgr_pin);
     RKH_TR_FWK_STATE(me, &ConMgr_setPin);
     RKH_TR_FWK_STATE(me, &ConMgr_waitReg);
@@ -364,6 +357,14 @@ open(ConMgr *const me, RKH_EVT_T *pe)
     (void)me;
 
     RKH_SMA_POST_FIFO(modMgr, &e_Open, conMgr);
+}
+
+static void
+initializeInit(ConMgr *const me, RKH_EVT_T *pe)
+{
+    (void)pe;
+
+    me->retryCount = 0;
 }
 
 static void
