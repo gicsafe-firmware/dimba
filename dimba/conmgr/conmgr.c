@@ -67,6 +67,7 @@ static void sendInit(ConMgr *const me);
 static void checkPin(ConMgr *const me);
 static void setPin(ConMgr *const me);
 static void checkReg(ConMgr *const me);
+static void unregEntry(ConMgr *const me);
 static void setupManualGet(ConMgr *const me);
 static void waitRetryConfigEntry(ConMgr *const me);
 static void setupAPN(ConMgr *const me);
@@ -97,7 +98,7 @@ RKH_CREATE_COMP_REGION_STATE(ConMgr_initialize, NULL, NULL, &ConMgr_active,
                              &ConMgr_sync, initializeInit,
                              RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_initialize)
-    RKH_TRCOMPLETION(NULL, NULL, &ConMgr_registered),
+    RKH_TRCOMPLETION(NULL, NULL, &ConMgr_unregistered),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_sync, sendSync, NULL, &ConMgr_initialize, NULL);
@@ -121,18 +122,12 @@ RKH_CREATE_BASIC_STATE(ConMgr_pin, checkPin, NULL, &ConMgr_initialize, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_pin)
     RKH_TRREG(evSimPin,     NULL, NULL, &ConMgr_setPin),
     RKH_TRREG(evSimError,   NULL, NULL, &ConMgr_failure),
-    RKH_TRREG(evSimReady,   NULL, NULL, &ConMgr_waitReg),
+    RKH_TRREG(evSimReady,   NULL, NULL, &ConMgr_initializeFinal),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_setPin, setPin, NULL, &ConMgr_initialize, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_setPin)
     RKH_TRREG(evOk,         NULL, NULL,   &ConMgr_pin),
-RKH_END_TRANS_TABLE
-
-RKH_CREATE_BASIC_STATE(ConMgr_waitReg, checkReg, NULL, 
-                                                    &ConMgr_initialize, NULL);
-RKH_CREATE_TRANS_TABLE(ConMgr_waitReg)
-    RKH_TRREG(evReg,        NULL, NULL,   &ConMgr_initializeFinal),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_COMP_REGION_STATE(ConMgr_registered, NULL, NULL, &ConMgr_active, 
@@ -142,8 +137,9 @@ RKH_CREATE_TRANS_TABLE(ConMgr_registered)
     RKH_TRREG(evNoReg, NULL, NULL,   &ConMgr_unregistered),
 RKH_END_TRANS_TABLE
 
-RKH_CREATE_BASIC_STATE(ConMgr_unregistered, NULL, NULL, &ConMgr_active, NULL);
+RKH_CREATE_BASIC_STATE(ConMgr_unregistered, unregEntry, NULL, &ConMgr_active, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_unregistered)
+    RKH_TRREG(evTimeout,  NULL,    NULL, &ConMgr_failure),
     RKH_TRREG(evReg, NULL, NULL,   &ConMgr_registered),
 RKH_END_TRANS_TABLE
 
@@ -302,7 +298,6 @@ init(ConMgr *const me, RKH_EVT_T *pe)
 	RKH_TR_FWK_STATE(me, &ConMgr_init);
     RKH_TR_FWK_STATE(me, &ConMgr_pin);
     RKH_TR_FWK_STATE(me, &ConMgr_setPin);
-    RKH_TR_FWK_STATE(me, &ConMgr_waitReg);
     RKH_TR_FWK_STATE(me, &ConMgr_initializeFinal);
     RKH_TR_FWK_STATE(me, &ConMgr_registered);
     RKH_TR_FWK_STATE(me, &ConMgr_unregistered);
@@ -472,12 +467,13 @@ setPin(ConMgr *const me)
     ModCmd_setPin(SIM_PIN_NUMBER);
 }
 
-static void
-checkReg(ConMgr *const me)
+static void 
+unregEntry(ConMgr *const me)
 {
-    (void)me;
-
     ModCmd_getRegStatus();
+
+    RKH_SET_STATIC_EVENT(&e_tout, evTimeout);
+    RKH_TMR_ONESHOT(&me->timer, RKH_UPCAST(RKH_SMA_T, me), REGISTRATION_TIME);
 }
 
 static void

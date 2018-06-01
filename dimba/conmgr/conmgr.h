@@ -42,6 +42,8 @@ extern "C" {
 #define MAX_SYNC_RETRY      5
 #define SIM_PIN_NUMBER      9474
 
+#define REGISTRATION_TIME   RKH_TIME_MS(20000)
+
 #define MAX_CONFIG_RETRY    5
 #define CONFIG_TRY_DELAY    RKH_TIME_MS(3000)
 

@@ -227,6 +227,11 @@
           <expr xmi:type="uml:LiteralString" xmi:id="_r72OomUeEeiPR9LHmvLjHw" name="CONFIG_TRY_DELAY" value="CONFIG_TRY_DELAY"/>
         </when>
       </packagedElement>
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_lHFSoGWUEeivSvTH1LqtnQ" name="evTimeout" isRelative="true">
+        <when xmi:type="uml:TimeExpression" xmi:id="_lHFSoWWUEeivSvTH1LqtnQ">
+          <expr xmi:type="uml:LiteralString" xmi:id="_lHFSomWUEeivSvTH1LqtnQ" name="REGISTRATION_TIME" value="REGISTRATION_TIME"/>
+        </when>
+      </packagedElement>
     </packagedElement>
     <packagedElement xmi:type="uml:StateMachine" xmi:id="_i1rp0FRTEeiBd_DXg33BBQ" name="ConMgr">
       <ownedRule xmi:type="uml:Constraint" xmi:id="_yA2HgFioEeiQLo5rqCRH8w">
@@ -258,12 +263,15 @@
             <transition xmi:type="uml:Transition" xmi:id="_PQ7usFivEeiQLo5rqCRH8w" source="_JgDVMFivEeiQLo5rqCRH8w" target="_tuf50FiuEeiQLo5rqCRH8w">
               <trigger xmi:type="uml:Trigger" xmi:id="_Qov2MFivEeiQLo5rqCRH8w" event="_RxQy4FiuEeiQLo5rqCRH8w"/>
             </transition>
-            <transition xmi:type="uml:Transition" xmi:id="_d7ErEFizEeiQLo5rqCRH8w" source="_oXkIkFRUEeiBd_DXg33BBQ" target="_tuf50FiuEeiQLo5rqCRH8w"/>
+            <transition xmi:type="uml:Transition" xmi:id="_d7ErEFizEeiQLo5rqCRH8w" source="_oXkIkFRUEeiBd_DXg33BBQ" target="_JgDVMFivEeiQLo5rqCRH8w"/>
             <transition xmi:type="uml:Transition" xmi:id="_64awEGUoEeiPR9LHmvLjHw" source="_oXkIkFRUEeiBd_DXg33BBQ" target="_tdaWkGTzEeiNN_MZ6epyJg">
               <trigger xmi:type="uml:Trigger" xmi:id="_8qM2wGUoEeiPR9LHmvLjHw" event="_9rJ44FiwEeiQLo5rqCRH8w"/>
             </transition>
             <transition xmi:type="uml:Transition" xmi:id="_GAMVwGUpEeiPR9LHmvLjHw" source="_tdaWkGTzEeiNN_MZ6epyJg" target="_uCMlkFRTEeiBd_DXg33BBQ">
               <trigger xmi:type="uml:Trigger" xmi:id="_DIJ8MGUqEeiPR9LHmvLjHw" event="_KXEO4FLfEei-ps2IrsePSA"/>
+            </transition>
+            <transition xmi:type="uml:Transition" xmi:id="_UAPGcGWUEeivSvTH1LqtnQ" source="_JgDVMFivEeiQLo5rqCRH8w" target="_tdaWkGTzEeiNN_MZ6epyJg">
+              <trigger xmi:type="uml:Trigger" xmi:id="_lP-I4GWUEeivSvTH1LqtnQ" event="_lHFSoGWUEeivSvTH1LqtnQ"/>
             </transition>
             <subvertex xmi:type="uml:State" xmi:id="_oXkIkFRUEeiBd_DXg33BBQ" name="initialize">
               <region xmi:type="uml:Region" xmi:id="_YZ1EEFRVEeiBd_DXg33BBQ" name="Region1">
@@ -300,13 +308,10 @@
                 <transition xmi:type="uml:Transition" xmi:id="_4k4ikFl0EeioMqgkRul4rQ" source="_k7W-QFl0EeioMqgkRul4rQ" target="_Bd0PAFitEeiQLo5rqCRH8w">
                   <trigger xmi:type="uml:Trigger" xmi:id="_6hs0kFl0EeioMqgkRul4rQ" event="_gqE2sFitEeiQLo5rqCRH8w"/>
                 </transition>
-                <transition xmi:type="uml:Transition" xmi:id="_TTZ2IFqSEeiA69UjQR0RyA" source="_Bd0PAFitEeiQLo5rqCRH8w" target="_DJsnoFqSEeiA69UjQR0RyA">
+                <transition xmi:type="uml:Transition" xmi:id="_TTZ2IFqSEeiA69UjQR0RyA" source="_Bd0PAFitEeiQLo5rqCRH8w" target="_mX_E4FqTEeiA69UjQR0RyA">
                   <trigger xmi:type="uml:Trigger" xmi:id="_kkm4MFqSEeiA69UjQR0RyA" event="_gqE2sFitEeiQLo5rqCRH8w"/>
                 </transition>
-                <transition xmi:type="uml:Transition" xmi:id="_8oTsUFqTEeiA69UjQR0RyA" source="_DJsnoFqSEeiA69UjQR0RyA" target="_mX_E4FqTEeiA69UjQR0RyA">
-                  <trigger xmi:type="uml:Trigger" xmi:id="_B_Gx4FqUEeiA69UjQR0RyA" event="_RxQy4FiuEeiQLo5rqCRH8w"/>
-                </transition>
-                <transition xmi:type="uml:Transition" xmi:id="_m-PgQFipEeiQLo5rqCRH8w" guard="_rtXh0FipEeiQLo5rqCRH8w" source="_1Z3ZIFilEeiQLo5rqCRH8w" target="_1HrngFimEeiQLo5rqCRH8w">
+                <transition xmi:type="uml:Transition" xmi:id="_m-PgQFipEeiQLo5rqCRH8w" guard="_rtXh0FipEeiQLo5rqCRH8w" source="_1Z3ZIFilEeiQLo5rqCRH8w" target="_tdaWkGTzEeiNN_MZ6epyJg">
                   <ownedRule xmi:type="uml:Constraint" xmi:id="_rtXh0FipEeiQLo5rqCRH8w" name="else">
                     <specification xmi:type="uml:OpaqueExpression" xmi:id="_vGZ6MFipEeiQLo5rqCRH8w" name="else">
                       <language>C</language>
@@ -314,18 +319,8 @@
                     </specification>
                   </ownedRule>
                 </transition>
-                <transition xmi:type="uml:Transition" xmi:id="_wiV3QFiqEeiQLo5rqCRH8w" source="_Bd0PAFitEeiQLo5rqCRH8w" target="_1HrngFimEeiQLo5rqCRH8w">
+                <transition xmi:type="uml:Transition" xmi:id="_wiV3QFiqEeiQLo5rqCRH8w" source="_Bd0PAFitEeiQLo5rqCRH8w" target="_tdaWkGTzEeiNN_MZ6epyJg">
                   <trigger xmi:type="uml:Trigger" xmi:id="_DkFp4FirEeiQLo5rqCRH8w" name="evSimError" event="_DbUvcFirEeiQLo5rqCRH8w"/>
-                  <trigger xmi:type="uml:Trigger" xmi:id="_UOjQ4Fj_EeiniPlogmuNzQ" event="_9rJ44FiwEeiQLo5rqCRH8w"/>
-                </transition>
-                <transition xmi:type="uml:Transition" xmi:id="_Axz9MFl0EeioMqgkRul4rQ" source="_BjyCIFlzEeioMqgkRul4rQ" target="_1HrngFimEeiQLo5rqCRH8w">
-                  <trigger xmi:type="uml:Trigger" xmi:id="_J-mc4Fl0EeioMqgkRul4rQ" name="evNoResponse" event="_9rJ44FiwEeiQLo5rqCRH8w"/>
-                </transition>
-                <transition xmi:type="uml:Transition" xmi:id="_1a0aUFl0EeioMqgkRul4rQ" source="_k7W-QFl0EeioMqgkRul4rQ" target="_1HrngFimEeiQLo5rqCRH8w">
-                  <trigger xmi:type="uml:Trigger" xmi:id="_3egJUFl0EeioMqgkRul4rQ" event="_9rJ44FiwEeiQLo5rqCRH8w"/>
-                </transition>
-                <transition xmi:type="uml:Transition" xmi:id="_uQWkwFqSEeiA69UjQR0RyA" source="_DJsnoFqSEeiA69UjQR0RyA" target="_1HrngFimEeiQLo5rqCRH8w">
-                  <trigger xmi:type="uml:Trigger" xmi:id="_vtvIwFqSEeiA69UjQR0RyA" event="_9rJ44FiwEeiQLo5rqCRH8w"/>
                 </transition>
                 <subvertex xmi:type="uml:State" xmi:id="_YZ4HYFRVEeiBd_DXg33BBQ" name="sync">
                   <entry xmi:type="uml:OpaqueBehavior" xmi:id="_hw8H8FRWEeiBd_DXg33BBQ">
@@ -348,14 +343,7 @@
                   </entry>
                 </subvertex>
                 <subvertex xmi:type="uml:State" xmi:id="_k7W-QFl0EeioMqgkRul4rQ" name="setPin"/>
-                <subvertex xmi:type="uml:State" xmi:id="_DJsnoFqSEeiA69UjQR0RyA" name="waiReg">
-                  <entry xmi:type="uml:OpaqueBehavior" xmi:id="_n5izsFqSEeiA69UjQR0RyA">
-                    <language>C</language>
-                    <body>checkReg();</body>
-                  </entry>
-                </subvertex>
                 <subvertex xmi:type="uml:FinalState" xmi:id="_mX_E4FqTEeiA69UjQR0RyA" name=""/>
-                <subvertex xmi:type="uml:State" xmi:id="_1HrngFimEeiQLo5rqCRH8w" name="initError"/>
               </region>
             </subvertex>
             <subvertex xmi:type="uml:Pseudostate" xmi:id="_vp674FRUEeiBd_DXg33BBQ" name=""/>
@@ -444,12 +432,7 @@
                           </effect>
                           <trigger xmi:type="uml:Trigger" xmi:id="_EiulAGQzEeietdcvou649g" name="evSend" event="_9EpdIGQiEeietdcvou649g"/>
                         </transition>
-                        <subvertex xmi:type="uml:State" xmi:id="_HzjP0mQjEeietdcvou649g" name="idle">
-                          <entry xmi:type="uml:OpaqueBehavior" xmi:id="__-HgcGQpEeietdcvou649g">
-                            <language>C</language>
-                            <body>startReceivePollingTimer();</body>
-                          </entry>
-                        </subvertex>
+                        <subvertex xmi:type="uml:State" xmi:id="_HzjP0mQjEeietdcvou649g" name="idle"/>
                         <subvertex xmi:type="uml:State" xmi:id="_KjExIGQjEeietdcvou649g" name="sending">
                           <region xmi:type="uml:Region" xmi:id="_rT1s8GQtEeietdcvou649g" name="Region1">
                             <transition xmi:type="uml:Transition" xmi:id="_0uj68GQtEeietdcvou649g" source="_rT4JMGQtEeietdcvou649g" target="_wzGyAGQtEeietdcvou649g">
@@ -539,7 +522,12 @@
                 <subvertex xmi:type="uml:Pseudostate" xmi:id="_N4S4EGT1EeiNN_MZ6epyJg" name="" kind="junction"/>
               </region>
             </subvertex>
-            <subvertex xmi:type="uml:State" xmi:id="_JgDVMFivEeiQLo5rqCRH8w" name="unregistered"/>
+            <subvertex xmi:type="uml:State" xmi:id="_JgDVMFivEeiQLo5rqCRH8w" name="unregistered">
+              <entry xmi:type="uml:OpaqueBehavior" xmi:id="__56xEGWWEeivSvTH1LqtnQ">
+                <language>C</language>
+                <body>checkReg();</body>
+              </entry>
+            </subvertex>
             <subvertex xmi:type="uml:State" xmi:id="_tdaWkGTzEeiNN_MZ6epyJg" name="failure"/>
           </region>
         </subvertex>

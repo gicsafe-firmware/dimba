@@ -229,7 +229,8 @@ SSP_END_BR_TABLE
 /* --------------------------- AT+CIICT -------------------------- */
 SSP_CREATE_NORMAL_NODE(waitOK);
 SSP_CREATE_BR_TABLE(waitOK)
-	SSPBR("OK\r\n",  cmd_ok,  &rootCmdParser),
+	SSPBR("OK\r\n",     cmd_ok, &rootCmdParser),
+	SSPBR("ERROR\r\n",  NULL,   &rootCmdParser),
 SSP_END_BR_TABLE
 
 /* --------------------------------------------------------------- */
