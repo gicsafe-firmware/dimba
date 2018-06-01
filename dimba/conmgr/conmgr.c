@@ -33,7 +33,7 @@ RKH_DCLR_BASIC_STATE ConMgr_inactive, ConMgr_sync,
                 ConMgr_init, ConMgr_pin, ConMgr_setPin, ConMgr_waitReg,
                     ConMgr_unregistered, ConMgr_failure,
                 ConMgr_setManualGet, ConMgr_setAPN, ConMgr_enableGPRS,
-                ConMgr_checkIP, ConMgr_waitRetryConfig, ConMgr_disconnected,
+                ConMgr_checkIP, ConMgr_waitRetryConfig, ConMgr_connecting,
                 ConMgr_idle, ConMgr_waitPrompt, ConMgr_waitOk, ConMgr_receiving, 
                 ConMgr_connectError;
 
@@ -73,10 +73,11 @@ static void waitRetryConfigEntry(ConMgr *const me);
 static void setupAPN(ConMgr *const me);
 static void startGPRS(ConMgr *const me);
 static void getConnStatus(ConMgr *const me);
-static void startConnection(ConMgr *const me);
 static void startReadPollingTimer(ConMgr *const me);
 
 /* ......................... Declares exit actions ......................... */
+static void unregExit(ConMgr *const me);
+
 /* ............................ Declares guards ............................ */
 rbool_t checkSyncTry(ConMgr *const me, RKH_EVT_T *pe);
 rbool_t checkConfigTry(ConMgr *const me, RKH_EVT_T *pe);
@@ -116,6 +117,7 @@ RKH_END_BRANCH_TABLE
 RKH_CREATE_BASIC_STATE(ConMgr_init, sendInit, NULL, &ConMgr_initialize, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_init)
     RKH_TRREG(evOk,         NULL, NULL, &ConMgr_pin),
+    RKH_TRREG(evNoResponse, NULL, NULL, &ConMgr_failure),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_pin, checkPin, NULL, &ConMgr_initialize, NULL);
@@ -137,7 +139,8 @@ RKH_CREATE_TRANS_TABLE(ConMgr_registered)
     RKH_TRREG(evNoReg, NULL, NULL,   &ConMgr_unregistered),
 RKH_END_TRANS_TABLE
 
-RKH_CREATE_BASIC_STATE(ConMgr_unregistered, unregEntry, NULL, &ConMgr_active, NULL);
+RKH_CREATE_BASIC_STATE(ConMgr_unregistered, unregEntry, unregExit,
+                            &ConMgr_active, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_unregistered)
     RKH_TRREG(evTimeout,  NULL,    NULL, &ConMgr_failure),
     RKH_TRREG(evReg, NULL, NULL,   &ConMgr_registered),
@@ -199,17 +202,19 @@ RKH_CREATE_TRANS_TABLE(ConMgr_waitRetryConfig)
     RKH_TRREG(evTimeout,  NULL,    configTry, &ConMgr_configure),
 RKH_END_TRANS_TABLE
 
-RKH_CREATE_COMP_REGION_STATE(ConMgr_connect, startConnection, NULL, 
-                             &ConMgr_registered, &ConMgr_disconnected, NULL,
+RKH_CREATE_COMP_REGION_STATE(ConMgr_connect, NULL, NULL, 
+                             &ConMgr_registered, &ConMgr_connecting,
+                             socketOpen,
                              RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_connect)
 RKH_END_TRANS_TABLE
 
-RKH_CREATE_BASIC_STATE(ConMgr_disconnected, NULL, NULL, 
-                                                    &ConMgr_connect, NULL);
-RKH_CREATE_TRANS_TABLE(ConMgr_disconnected)
-    RKH_TRINT(evOpen, NULL,  &socketOpen),
-    RKH_TRREG(evConnected, NULL,  NULL, &ConMgr_connected),
+RKH_CREATE_BASIC_STATE(ConMgr_connecting, NULL, NULL, &ConMgr_connect, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_connecting)
+    RKH_TRINT(evOk,         NULL,  &getConnStatus),
+    RKH_TRINT(evConnecting, NULL,  &getConnStatus),
+    RKH_TRREG(evConnected,  NULL,  NULL, &ConMgr_connected),
+    RKH_TRREG(evClosed,     NULL,  NULL, &ConMgr_connect),
     RKH_TRREG(evNoResponse, NULL, NULL, &ConMgr_connectError),
 RKH_END_TRANS_TABLE
 
@@ -218,7 +223,7 @@ RKH_CREATE_COMP_REGION_STATE(ConMgr_connected, NULL, NULL,
                              RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_connected)
     RKH_TRINT(evClose, NULL,  &socketClose),
-    RKH_TRREG(evDisconnected, NULL,  NULL, &ConMgr_disconnected),
+    RKH_TRREG(evDisconnected, NULL,  NULL, &ConMgr_connect),
     RKH_TRREG(evNoResponse, NULL, NULL, &ConMgr_connectError),
 RKH_END_TRANS_TABLE
 
@@ -253,6 +258,7 @@ RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_connectError, NULL, NULL, &ConMgr_connect, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_connectError)
+    RKH_TRREG(evOpen, NULL,  NULL, &ConMgr_connect),
 RKH_END_TRANS_TABLE
 
 /* ............................. Active object ............................. */
@@ -311,7 +317,7 @@ init(ConMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_STATE(me, &ConMgr_waitRetryConfig);
     RKH_TR_FWK_STATE(me, &ConMgr_configureFinal);
     RKH_TR_FWK_STATE(me, &ConMgr_connect);
-    RKH_TR_FWK_STATE(me, &ConMgr_disconnected);
+    RKH_TR_FWK_STATE(me, &ConMgr_connecting);
     RKH_TR_FWK_STATE(me, &ConMgr_connected);
     RKH_TR_FWK_STATE(me, &ConMgr_idle);
     RKH_TR_FWK_STATE(me, &ConMgr_sending);
@@ -333,7 +339,10 @@ init(ConMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_SIG(evNoReg);
     RKH_TR_FWK_SIG(evIPInitial);
     RKH_TR_FWK_SIG(evIPStart);
+    RKH_TR_FWK_SIG(evIPStatus);
     RKH_TR_FWK_SIG(evIPGprsAct);
+    RKH_TR_FWK_SIG(evConnecting);
+    RKH_TR_FWK_SIG(evClosed);
     RKH_TR_FWK_SIG(evConnected);
     RKH_TR_FWK_SIG(evSend);
     RKH_TR_FWK_SIG(evRead);
@@ -516,14 +525,6 @@ getConnStatus(ConMgr *const me)
 }
 
 static void
-startConnection(ConMgr *const me)
-{
-    (void)me;
-
-    ModCmd_connect(CONNECTION_PROT, CONNECTION_DOMAIN, CONNECTION_PORT);
-}
-
-static void
 startReadPollingTimer(ConMgr *const me)
 {
     (void)me;
@@ -532,6 +533,13 @@ startReadPollingTimer(ConMgr *const me)
     RKH_TMR_ONESHOT(&me->timer, RKH_UPCAST(RKH_SMA_T, me), READ_POLLING_TIME);
 }
 
+
+/* ............................. Exit actions ............................. */
+static void 
+unregExit(ConMgr *const me)
+{
+    rkh_tmr_stop(&me->timer);
+}
 
 /* ................................ Guards ................................. */
 rbool_t

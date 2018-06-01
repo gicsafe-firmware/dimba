@@ -94,7 +94,7 @@ static const CmdTbl cmdTbl =
     {RKH_INIT_STATIC_EVT(evCmd), 
      "AT+CSTT=\"%s\",\"%s\",\"%s\"\r\n", 
      &conMgr, 
-     RKH_TIME_MS(300), RKH_TIME_MS(100)},
+     RKH_TIME_MS(300), RKH_TIME_MS(500)},
 
     {RKH_INIT_STATIC_EVT(evCmd), 
      "AT+CIICR\r\n", 
@@ -109,12 +109,12 @@ static const CmdTbl cmdTbl =
     {RKH_INIT_STATIC_EVT(evCmd), 
      "AT+CIPSTATUS\r\n", 
      &conMgr, 
-     RKH_TIME_MS(1000), RKH_TIME_MS(100)},
+     RKH_TIME_MS(1000), RKH_TIME_MS(300)},
 
     {RKH_INIT_STATIC_EVT(evCmd), 
      "AT+CIPSTART=\"%s\",\"%s\",\"%s\"\r\n", 
      &conMgr, 
-     RKH_TIME_MS(10000), RKH_TIME_MS(100)},
+     RKH_TIME_MS(10000), RKH_TIME_MS(300)},
 
     {RKH_INIT_STATIC_EVT(evCmd), 
      "AT+CIPCLOSE\r\n", 

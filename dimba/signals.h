@@ -54,6 +54,8 @@ enum Signals
     evIPStart,
     evIPStatus,
     evIPGprsAct,
+    evConnecting,
+    evClosed,
     evConnected,
     evSend,
     evRead,

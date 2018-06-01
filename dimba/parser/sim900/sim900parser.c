@@ -28,9 +28,12 @@
 static rui8_t sim900parser;
 SSP_DCLR_NORMAL_NODE at, waitOK, at_plus_c, at_plus_ci, at_plus_cip,
                      at_plus_cips, 
-                     at_plus_cipsta, at_plus_cipstart, at_plus_ciprxget,
+                     at_plus_cipsta, at_plus_ciprxget,
                      at_plus_ciprxget_2, at_plus_ciprxget_2_wdata,
-                     at_plus_cipstatus, at_plus_cipclose,
+                     at_plus_cipstatus, at_plus_cipstatus_ip,
+                     at_plus_cipstatus_sta, 
+                     at_plus_cipstatus_c, at_plus_cipstatus_connect,
+                     at_plus_cipclose,
                      at_plus_cipsend, at_plus_cipsending, at_plus_cipsent,
                      at_plus_cpin, at_plus_creg, pinStatus, wpinSet, pinSet,
                      plus_c, plus_creg, at_plus_cipstatus, at_plus_cifsr;
@@ -53,6 +56,8 @@ static void ipStart(unsigned char pos);
 static void ipStatus(unsigned char pos);
 static void ipGprsAct(unsigned char pos);
 static void ipDone(unsigned char pos);
+static void connecting(unsigned char pos);
+static void closed(unsigned char pos);
 static void connected(unsigned char pos);
 static void disconnected(unsigned char pos);
 static void data_init(unsigned char pos);
@@ -63,8 +68,10 @@ static void data_ready(unsigned char pos);
 
 SSP_CREATE_NORMAL_NODE(rootCmdParser);
 SSP_CREATE_BR_TABLE(rootCmdParser)
-	SSPBR("AT", NULL,     &at),
-	SSPBR("+C", NULL,     &plus_c),
+	SSPBR("STATE",      NULL,     &rootCmdParser),
+	SSPBR("CONNECT OK", NULL,     &rootCmdParser),
+	SSPBR("AT",         NULL,     &at),
+	SSPBR("+C",         NULL,     &plus_c),
 SSP_END_BR_TABLE
 
 SSP_CREATE_NORMAL_NODE(at);
@@ -109,7 +116,7 @@ SSP_END_BR_TABLE
 SSP_CREATE_NORMAL_NODE(at_plus_cipsta);
 SSP_CREATE_BR_TABLE(at_plus_cipsta)
 	SSPBR("TUS\r\n",      NULL,  &at_plus_cipstatus),
-	SSPBR("RT",           NULL,  &at_plus_cipstart),
+	SSPBR("RT=",          NULL,  &waitOK),
 	SSPBR("\r\n",         NULL,  &rootCmdParser),
 SSP_END_BR_TABLE
 
@@ -179,17 +186,33 @@ SSP_END_BR_TABLE
 /* ------------------------ AT+CIPSTATUS ------------------------- */
 SSP_CREATE_NORMAL_NODE(at_plus_cipstatus);
 SSP_CREATE_BR_TABLE(at_plus_cipstatus)
-	SSPBR("INITIAL", ipInitial,  &rootCmdParser),
-	SSPBR("STATUS",  ipStatus,   &rootCmdParser),
-	SSPBR("TART",   ipStart,    &rootCmdParser),
-	SSPBR("GPRSACT", ipGprsAct,  &rootCmdParser),
+	SSPBR("IP ",    NULL,  &at_plus_cipstatus_ip),
+	SSPBR("C",      NULL,  &at_plus_cipstatus_c),
 SSP_END_BR_TABLE
 
-/* --------------------------------------------------------------- */
-/* ------------------------- AT+CIPSTART ------------------------- */
-SSP_CREATE_NORMAL_NODE(at_plus_cipstart);
-SSP_CREATE_BR_TABLE(at_plus_cipstart)
-	SSPBR("CONNECT OK", connected,  &rootCmdParser),
+SSP_CREATE_NORMAL_NODE(at_plus_cipstatus_ip);
+SSP_CREATE_BR_TABLE(at_plus_cipstatus_ip)
+	SSPBR("INITIAL",    ipInitial,  &rootCmdParser),
+	SSPBR("STA",        NULL,       &at_plus_cipstatus_sta),
+	SSPBR("GPRSACT",    ipGprsAct,  &rootCmdParser),
+SSP_END_BR_TABLE
+
+SSP_CREATE_NORMAL_NODE(at_plus_cipstatus_sta);
+SSP_CREATE_BR_TABLE(at_plus_cipstatus_sta)
+	SSPBR("TUS",     ipStatus,   &rootCmdParser),
+	SSPBR("RT",      ipStart,    &rootCmdParser),
+SSP_END_BR_TABLE
+
+SSP_CREATE_NORMAL_NODE(at_plus_cipstatus_c);
+SSP_CREATE_BR_TABLE(at_plus_cipstatus_c)
+	SSPBR("LOSED",     closed,     &rootCmdParser),
+	SSPBR("ONNECT",    NULL,       &at_plus_cipstatus_connect),
+SSP_END_BR_TABLE
+
+SSP_CREATE_NORMAL_NODE(at_plus_cipstatus_connect);
+SSP_CREATE_BR_TABLE(at_plus_cipstatus_connect)
+	SSPBR("ING",     connecting,     &rootCmdParser),
+	SSPBR(" OK",     connected,      &rootCmdParser),
 SSP_END_BR_TABLE
 
 /* --------------------------------------------------------------- */
@@ -364,6 +387,22 @@ ipDone(unsigned char pos)
     (void)pos;
 
     sendModResp_noArgs(evIP);
+}
+
+static void
+connecting(unsigned char pos)
+{
+    (void)pos;
+
+    sendModResp_noArgs(evConnecting);
+}
+
+static void
+closed(unsigned char pos)
+{
+    (void)pos;
+
+    sendModResp_noArgs(evClosed);
 }
 
 static void
