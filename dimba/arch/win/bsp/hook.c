@@ -62,6 +62,9 @@ RKH_THIS_MODULE
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
+#if defined(RKH_USE_TRC_SENDER)
+static rui8_t rkhtick;
+#endif
 static DWORD tickMsec;
 
 /* ----------------------- Local function prototypes ----------------------- */
@@ -76,7 +79,7 @@ isr_tmrThread(LPVOID par)      /* Win32 thread to emulate timer ISR */
     (void)par;
     while (rkhport_fwk_is_running())
     {
-        RKH_TIM_TICK(0);
+        RKH_TIM_TICK(&rkhtick);
         Sleep(tickMsec);
     }
     return 0;
@@ -114,6 +117,8 @@ rkh_hook_start(void)
     hthKbd = CreateThread(NULL, 1024, &isr_kbdThread, 0, 0, &thkbdId);
     RKH_ASSERT(hthKbd != (HANDLE)0);
     SetThreadPriority(hthKbd, THREAD_PRIORITY_NORMAL);
+
+    RKH_TR_FWK_ACTOR(&rkhtick, "rkhtick");
 }
 
 void

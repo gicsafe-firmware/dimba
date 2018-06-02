@@ -83,6 +83,7 @@ SERIAL_T serials[ NUM_CHANNELS ] =
 };
 
 /* ---------------------------- Local variables ---------------------------- */
+static rui8_t bsp;
 static ModCmdRcvHandler cmdParser;
 static char *opts = (char *)DIMBA_CFG_OPTIONS;
 static const char *helpMessage =
@@ -175,7 +176,7 @@ bsp_init(int argc, char *argv[])
     RKH_FILTER_ON_EVENT(RKH_TRC_ALL_EVENTS);
 	RKH_FILTER_OFF_EVENT(MODCMD_USR_TRACE);
 	RKH_FILTER_OFF_GROUP_ALL_EVENTS(RKH_TG_USR);
-    RKH_FILTER_OFF_EVENT(RKH_TE_TMR_TOUT);
+    //RKH_FILTER_OFF_EVENT(RKH_TE_TMR_TOUT);
     RKH_FILTER_OFF_EVENT(RKH_TE_SM_STATE);
     RKH_FILTER_OFF_EVENT(RKH_TE_SMA_FIFO);
     RKH_FILTER_OFF_EVENT(RKH_TE_SMA_LIFO);
@@ -184,6 +185,8 @@ bsp_init(int argc, char *argv[])
     RKH_FILTER_OFF_ALL_SIGNALS();
 
     RKH_TRC_OPEN();
+
+    RKH_TR_FWK_ACTOR(&bsp, "bsp");
 }
 
 void
@@ -194,26 +197,26 @@ bsp_keyParser(int c)
     switch(c)
     {
         case ESC:
-            RKH_SMA_POST_FIFO(modMgr, &e_Term, 0);
+            RKH_SMA_POST_FIFO(modMgr, &e_Term, &bsp);
             rkhport_fwk_stop();
             break;
 
         case 'o':
-            RKH_SMA_POST_FIFO(conMgr, &e_Open, 0);
+            RKH_SMA_POST_FIFO(conMgr, &e_Open, &bsp);
             break;
 
         case 'c':
-            RKH_SMA_POST_FIFO(conMgr, &e_Close, 0);
+            RKH_SMA_POST_FIFO(conMgr, &e_Close, &bsp);
             break;
 
         case 'r':
-            RKH_SMA_POST_FIFO(conMgr, &e_Read, 0);
+            RKH_SMA_POST_FIFO(conMgr, &e_Read, &bsp);
             break;
 
         case 's':
-            evtSend = RKH_ALLOC_EVT(SendEvt, evSend, 0);
+            evtSend = RKH_ALLOC_EVT(SendEvt, evSend, &bsp);
             evtSend->data = (unsigned char *)TEST_TX_PACKET;
-            RKH_SMA_POST_FIFO(conMgr, RKH_UPCAST(RKH_EVT_T, evtSend), 0);
+            RKH_SMA_POST_FIFO(conMgr, RKH_UPCAST(RKH_EVT_T, evtSend), &bsp);
             break;
 
         default:

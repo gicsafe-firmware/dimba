@@ -42,7 +42,9 @@ extern "C" {
 #define MAX_SYNC_RETRY      5
 #define SIM_PIN_NUMBER      9474
 
-#define REGISTRATION_TIME   RKH_TIME_MS(20000)
+#define REGISTRATION_TIME   RKH_TIME_MS(60000)
+
+#define FAILURE_TRY_DELAY   RKH_TIME_MS(10000)
 
 #define MAX_CONFIG_RETRY    5
 #define CONFIG_TRY_DELAY    RKH_TIME_MS(3000)
@@ -59,10 +61,15 @@ extern "C" {
 #define DOCKLIGHT_SERVER    "181.230.72.86"
 #define DOCKLIGHT_PORT      "33498"
 
+#define DOCKLIGHT_BIS_SERVER    "200.127.3.140"
+#define DOCKLIGHT_BIS_PORT      "33498"
+
 #define CONNECTION_DOMAIN   DOCKLIGHT_SERVER 
 #define CONNECTION_PORT     DOCKLIGHT_PORT
 
-#define READ_POLLING_TIME   RKH_TIME_MS(2000)
+#define MAX_CONNECT_RETRY   3
+#define CONNECT_TRY_DELAY   RKH_TIME_MS(5000)
+#define CONNSTATUS_PERIOD   RKH_TIME_MS(2000)
 
 /* ................................ Signals ................................ */
 /* ........................ Declares active object ......................... */

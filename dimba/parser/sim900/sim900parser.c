@@ -33,6 +33,7 @@ SSP_DCLR_NORMAL_NODE at, waitOK, at_plus_c, at_plus_ci, at_plus_cip,
                      at_plus_cipstatus, at_plus_cipstatus_ip,
                      at_plus_cipstatus_sta, 
                      at_plus_cipstatus_c, at_plus_cipstatus_connect,
+                     at_plus_cipstart,
                      at_plus_cipclose,
                      at_plus_cipsend, at_plus_cipsending, at_plus_cipsent,
                      at_plus_cpin, at_plus_creg, pinStatus, wpinSet, pinSet,
@@ -44,6 +45,7 @@ static rui8_t isURC;
 
 /* ----------------------- Local function prototypes ----------------------- */
 static void cmd_ok(unsigned char pos);
+static void cmd_error(unsigned char pos);
 static void sim_pin(unsigned char pos);
 static void sim_error(unsigned char pos);
 static void sim_ready(unsigned char pos);
@@ -116,7 +118,7 @@ SSP_END_BR_TABLE
 SSP_CREATE_NORMAL_NODE(at_plus_cipsta);
 SSP_CREATE_BR_TABLE(at_plus_cipsta)
 	SSPBR("TUS\r\n",      NULL,  &at_plus_cipstatus),
-	SSPBR("RT=",          NULL,  &waitOK),
+	SSPBR("RT=",          NULL,  &at_plus_cipstart),
 	SSPBR("\r\n",         NULL,  &rootCmdParser),
 SSP_END_BR_TABLE
 
@@ -180,6 +182,14 @@ SSP_END_BR_TABLE
 SSP_CREATE_TRN_NODE(at_plus_ciprxget_data, data_collect);
 SSP_CREATE_BR_TABLE(at_plus_ciprxget_data)
 	SSPBR("\r\nOK\r\n", data_ready,   &rootCmdParser),
+SSP_END_BR_TABLE
+
+/* --------------------------------------------------------------- */
+/* ------------------------ AT+CIPSTART -------------------------- */
+SSP_CREATE_NORMAL_NODE(at_plus_cipstart);
+SSP_CREATE_BR_TABLE(at_plus_cipstart)
+	SSPBR("OK",     cmd_ok,    &rootCmdParser),
+	SSPBR("ERROR",  cmd_error, &rootCmdParser),
 SSP_END_BR_TABLE
 
 /* --------------------------------------------------------------- */
@@ -307,6 +317,14 @@ cmd_ok(unsigned char pos)
     (void)pos;
     
     sendModResp_noArgs(evOk);
+}
+
+static void
+cmd_error(unsigned char pos)
+{
+    (void)pos;
+    
+    sendModResp_noArgs(evError);
 }
 
 static void
@@ -458,7 +476,7 @@ data_ready(unsigned char pos)
 void
 parser_init(void)
 {
-   RKH_TR_FWK_ACTOR(&sim900parser, "sim900parser");
+    RKH_TR_FWK_ACTOR(&sim900parser, "sim900parser");
 }
 
 /* ------------------------------ End of file ------------------------------ */

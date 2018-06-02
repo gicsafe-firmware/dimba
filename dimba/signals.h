@@ -43,6 +43,7 @@ enum Signals
 	evTimeout,
     evToutWaitResponse,
     evOk,
+    evError,
     evToutDelay,
     evSimReady,
     evSimPin,

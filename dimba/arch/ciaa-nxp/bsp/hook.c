@@ -79,6 +79,7 @@ void
 rkh_hook_start(void)
 {    
     tickConfig(BSP_TICK_RATE_MS, tickHook);
+    RKH_TR_FWK_ACTOR(&rkhtick, "rkhtick");
 }
 
 void
