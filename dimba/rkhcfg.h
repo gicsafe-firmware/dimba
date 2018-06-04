@@ -346,7 +346,7 @@
  *  \range
  *  \default    RKH_DISABLED
  */
-#define RKH_CFG_SMA_VFUNCT_EN           RKH_DISABLED
+#define RKH_CFG_SMA_VFUNCT_EN           RKH_ENABLED
 
 /* --- Configuration options related to trace facility -------------------- */
 
