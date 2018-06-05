@@ -112,6 +112,7 @@
     <ClCompile Include="..\..\..\main.c" />
     <ClCompile Include="..\..\..\modcmd\modcmdSim900.c" />
     <ClCompile Include="..\..\..\modmgr\modmgr.c" />
+    <ClCompile Include="..\..\..\mqtt\mqtt.c" />
     <ClCompile Include="..\..\..\parser\sim900\sim900parser.c" />
     <ClCompile Include="..\bsp\assert.c" />
     <ClCompile Include="..\bsp\bsp.c" />
@@ -122,6 +123,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\bsp.h" />
+    <ClInclude Include="..\..\..\mqtt\mqtt.h" />
     <ClInclude Include="..\..\..\rkhcfg.h" />
   </ItemGroup>
   <ItemGroup>

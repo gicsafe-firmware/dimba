@@ -59,7 +59,13 @@ enum Signals
     evClosed,
     evConnected,
     evSend,
-    evRead,
+    evSendFail,
+    evSent,
+    evRecv,
+    evRecvFail,
+    evReceived,
+    evNetConnected,
+    evNetDisconnected,
     evDisconnected,
 	evTerminate     /* press the key escape on the keyboard */
 };

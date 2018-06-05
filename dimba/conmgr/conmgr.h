@@ -77,6 +77,12 @@ extern "C" {
 #define CONNSTATUS_PERIOD   RKH_TIME_MS(2000)
 
 /**
+ * Specifies sizeof send / receive buffers.
+ */
+#define SEND_BUFF_SIZE      1024
+#define RECV_BUFF_SIZE      1024
+
+/**
  * GSM Network Provider and Connection specific configurations.
  */
 /* .................................. APN .................................. */
@@ -118,7 +124,16 @@ typedef struct SendEvt SendEvt;
 struct SendEvt
 {
     RKH_EVT_T evt;
-    unsigned char *data;
+    unsigned char buf[SEND_BUFF_SIZE];
+    ruint size;
+};
+
+typedef struct ReceivedEvt ReceivedEvt;
+struct ReceivedEvt
+{
+    RKH_EVT_T evt;
+    unsigned char buf[RECV_BUFF_SIZE];
+    ruint size;
 };
 
 /* -------------------------- External variables --------------------------- */

@@ -21,6 +21,7 @@
 #include "conmgr.h"
 #include "modmgr.h"
 #include "modcmd.h"
+#include "mqtt.h"
 #include "signals.h"
 #include "bsp.h"
 
@@ -64,6 +65,10 @@ static void sendData(ConMgr *const me, RKH_EVT_T *pe);
 static void readData(ConMgr *const me, RKH_EVT_T *pe);
 static void sendRequest(ConMgr *const me, RKH_EVT_T *pe);
 static void flushData(ConMgr *const me, RKH_EVT_T *pe);
+static void sendOk(ConMgr *const me, RKH_EVT_T *pe);
+static void recvOk(ConMgr *const me, RKH_EVT_T *pe);
+static void sendFail(ConMgr *const me, RKH_EVT_T *pe);
+static void recvFail(ConMgr *const me, RKH_EVT_T *pe);
 
 /* ......................... Declares entry actions ........................ */
 static void sendSync(ConMgr *const me);
@@ -80,6 +85,7 @@ static void startGPRS(ConMgr *const me);
 static void waitRetryConnEntry(ConMgr *const me);
 static void getConnStatus(ConMgr *const me);
 static void connectingEntry(ConMgr *const me);
+static void socketConnected(ConMgr *const me);
 static void idleEntry(ConMgr *const me);
 
 /* ......................... Declares exit actions ......................... */
@@ -87,6 +93,7 @@ static void unregExit(ConMgr *const me);
 static void waitRetryConnExit(ConMgr *const me);
 static void failureExit(ConMgr *const me);
 static void connectingExit(ConMgr *const me);
+static void socketDisconnected(ConMgr *const me);
 static void idleExit(ConMgr *const me);
 
 /* ............................ Declares guards ............................ */
@@ -97,6 +104,8 @@ rbool_t checkConnectTry(ConMgr *const me, RKH_EVT_T *pe);
 /* ........................ States and pseudostates ........................ */
 RKH_CREATE_BASIC_STATE(ConMgr_inactive, NULL, NULL, RKH_ROOT, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_inactive)
+    RKH_TRINT(evSend, NULL, sendFail),
+    RKH_TRINT(evRecv, NULL, recvFail),
     RKH_TRREG(evOpen, NULL, open, &ConMgr_active),
 RKH_END_TRANS_TABLE
 
@@ -104,6 +113,8 @@ RKH_CREATE_COMP_REGION_STATE(ConMgr_active, NULL, NULL, RKH_ROOT,
                              &ConMgr_initialize, NULL,
                              RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_active)
+    RKH_TRINT(evSend, NULL, sendFail),
+    RKH_TRINT(evRecv, NULL, recvFail),
     RKH_TRCOMPLETION(NULL, NULL, &ConMgr_inactive),
     RKH_TRREG(evClose, NULL, NULL, &ConMgr_inactive),
 RKH_END_TRANS_TABLE
@@ -231,7 +242,8 @@ RKH_CREATE_TRANS_TABLE(ConMgr_waitingServer)
     RKH_TRREG(evClosed,     NULL,  NULL, &ConMgr_connecting),
 RKH_END_TRANS_TABLE
 
-RKH_CREATE_COMP_REGION_STATE(ConMgr_connected, NULL, NULL, 
+RKH_CREATE_COMP_REGION_STATE(ConMgr_connected, 
+                             socketConnected, socketDisconnected, 
                              &ConMgr_connecting, &ConMgr_idle, NULL,
                              RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_connected)
@@ -260,12 +272,12 @@ RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_waitOk, NULL, NULL, &ConMgr_sending, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_waitOk)
-    RKH_TRREG(evOk, NULL,  NULL, &ConMgr_sendingFinal),
+    RKH_TRREG(evOk, NULL,  sendOk, &ConMgr_sendingFinal),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_receiving, NULL, NULL, &ConMgr_connected, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_receiving)
-    RKH_TRREG(evOk, NULL,  NULL, &ConMgr_idle),
+    RKH_TRREG(evOk, NULL,  recvOk, &ConMgr_idle),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_COND_STATE(ConMgr_checkConnectTry);
@@ -313,6 +325,12 @@ RKH_SMA_DEF_PTR(conMgr);
  */
 static RKH_STATIC_EVENT(e_tout, evToutDelay);
 static RKH_ROM_STATIC_EVENT(e_Open, evOpen);
+static RKH_ROM_STATIC_EVENT(e_NetConnected, evNetConnected);
+static RKH_ROM_STATIC_EVENT(e_NetDisconnected, evNetDisconnected);
+static RKH_ROM_STATIC_EVENT(e_Sent,     evSent);
+static RKH_STATIC_EVENT(e_Received, evReceived);
+static RKH_ROM_STATIC_EVENT(e_SendFail, evSendFail);
+static RKH_ROM_STATIC_EVENT(e_RecvFail, evRecvFail);
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
@@ -375,6 +393,12 @@ init(ConMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_SIG(evConnected);
     RKH_TR_FWK_SIG(evSend);
     RKH_TR_FWK_SIG(evRead);
+    RKH_TR_FWK_SIG(evSent);
+    RKH_TR_FWK_SIG(evReceived);
+    RKH_TR_FWK_SIG(evSendFail);
+    RKH_TR_FWK_SIG(evRecvFail);
+    RKH_TR_FWK_SIG(evNetConnected);
+    RKH_TR_FWK_SIG(evNetDisconnected);
     RKH_TR_FWK_SIG(evDisconnected);
     RKH_TR_FWK_SIG(evTerminate);
 
@@ -488,6 +512,42 @@ flushData(ConMgr *const me, RKH_EVT_T *pe)
     RKH_FWK_GC(RKH_CAST(RKH_EVT_T, me->psend), me);
 }
 
+static void
+sendOk(ConMgr *const me, RKH_EVT_T *pe)
+{
+    (void)pe;
+    (void)me;
+
+    RKH_SMA_POST_FIFO(mqtt, &e_Sent, conMgr);
+}
+
+static void
+recvOk(ConMgr *const me, RKH_EVT_T *pe)
+{
+    (void)pe;
+    (void)me;
+
+    RKH_SMA_POST_FIFO(mqtt, &e_Received, conMgr);
+}
+
+static void
+sendFail(ConMgr *const me, RKH_EVT_T *pe)
+{
+    (void)pe;
+    (void)me;
+
+    RKH_SMA_POST_FIFO(mqtt, &e_SendFail, conMgr);
+}
+
+static void
+recvFail(ConMgr *const me, RKH_EVT_T *pe)
+{
+    (void)pe;
+    (void)me;
+
+    RKH_SMA_POST_FIFO(mqtt, &e_RecvFail, conMgr);
+}
+
 /* ............................. Entry actions ............................. */
 static void
 sendSync(ConMgr *const me)
@@ -586,6 +646,15 @@ connectingEntry(ConMgr *const me)
 }
 
 static void
+socketConnected(ConMgr *const me)
+{
+    (void)me;
+    (void)pe;
+
+    RKH_SMA_POST_FIFO(mqtt, &e_NetConnected, conMgr);
+}
+
+static void
 waitRetryConnEntry(ConMgr *const me)
 {
     (void)me;
@@ -635,6 +704,15 @@ connectingExit(ConMgr *const me)
     (void)me;
 
     rkh_tmr_stop(&me->timer);
+}
+
+static void
+socketDisconnected(ConMgr *const me)
+{
+    (void)me;
+    (void)pe;
+
+    RKH_SMA_POST_FIFO(mqtt, &e_NetDisconnected, conMgr);
 }
 
 static void
