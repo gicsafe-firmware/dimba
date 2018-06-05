@@ -88,6 +88,9 @@
     <ClCompile Include="..\..\..\..\third-party\MQTT-C\src\mqtt.c">
       <Filter>MQTT-C</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\third-party\MQTT-C\src\mqtt_pal.c">
+      <Filter>MQTT-C</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rkh">
