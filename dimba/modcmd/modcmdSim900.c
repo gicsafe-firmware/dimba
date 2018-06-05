@@ -53,7 +53,6 @@ struct CmdTbl
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
 static SSP sim900Parser;
-static RKH_SMA_T *sender;
 
 static const CmdTbl cmdTbl =
 {
@@ -119,7 +118,7 @@ static const CmdTbl cmdTbl =
     {RKH_INIT_STATIC_EVT(evCmd), 
      "AT+CIPCLOSE\r\n", 
      &conMgr, 
-     RKH_TIME_MS(10000), RKH_TIME_MS(100)},
+     RKH_TIME_MS(1000), RKH_TIME_MS(100)},
 
     {RKH_INIT_STATIC_EVT(evCmd), 
      "AT+CIPSEND\r\n", 
@@ -129,7 +128,7 @@ static const CmdTbl cmdTbl =
     {RKH_INIT_STATIC_EVT(evCmd), 
      "\x1A\r\n", 
      &conMgr, 
-     RKH_TIME_MS(5000), RKH_TIME_MS(100)},
+     RKH_TIME_MS(10000), RKH_TIME_MS(100)},
 
     {RKH_INIT_STATIC_EVT(evCmd), 
      "AT+CIPRXGET=2,1024\r\n", 
@@ -178,18 +177,6 @@ sendModCmd_rui16(const ModCmd *p, rui16_t arg)
     evtCmd = RKH_ALLOC_EVT(ModMgrEvt, evCmd, *p->aoDest);
 
     snprintf(evtCmd->cmd, MODMGR_MAX_SIZEOF_CMDSTR, p->fmt, arg);
-
-    postFIFOEvtCmd(evtCmd, p, NULL, 0);
-}
-
-static void
-sendModCmd_StrArg(const ModCmd *p, char *s)
-{
-    ModMgrEvt *evtCmd;
-
-    evtCmd = RKH_ALLOC_EVT(ModMgrEvt, evCmd, *p->aoDest);
-    
-    snprintf(evtCmd->cmd, MODMGR_MAX_SIZEOF_CMDSTR, p->fmt, s);
 
     postFIFOEvtCmd(evtCmd, p, NULL, 0);
 }

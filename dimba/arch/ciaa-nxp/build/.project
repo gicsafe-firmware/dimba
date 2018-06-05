@@ -110,6 +110,11 @@
 			<locationURI>PARENT-3-PROJECT_LOC/modmgr</locationURI>
 		</link>
 		<link>
+			<name>src/dimba/mqtt</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/mqtt</locationURI>
+		</link>
+		<link>
 			<name>src/dimba/parser</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>

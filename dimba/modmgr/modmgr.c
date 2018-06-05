@@ -11,7 +11,7 @@
 
 /* -------------------------------- Authors -------------------------------- */
 /*
- *  DaBa  Dario Baliña db@vortexmakes.com
+ *  DaBa  Dario Baliï¿½a db@vortexmakes.com
  *  LeFr  Leandro Francucci lf@vortexmakes.com
  */
 
@@ -61,7 +61,8 @@ RKH_CREATE_TRANS_TABLE(ModMgr_inactive)
     RKH_TRREG(evOpen, NULL, NULL, &ModMgr_active),
 RKH_END_TRANS_TABLE
 
-RKH_CREATE_COMP_REGION_STATE(ModMgr_active, NULL, NULL, RKH_ROOT, &ModMgr_idle, NULL,
+RKH_CREATE_COMP_REGION_STATE(ModMgr_active, NULL, NULL, RKH_ROOT, 
+                              &ModMgr_idle, NULL,
                               RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
 RKH_CREATE_TRANS_TABLE(ModMgr_active)
     RKH_TRINT(evCmd, NULL, defer),
@@ -80,7 +81,8 @@ RKH_CREATE_BRANCH_TABLE(ModMgr_chkDataCmd)
     RKH_BRANCH(ELSE,        sendCmd,   &ModMgr_inProgress),
 RKH_END_BRANCH_TABLE
 
-RKH_CREATE_BASIC_STATE(ModMgr_inProgress, NULL, NULL, &ModMgr_active, NULL);
+RKH_CREATE_BASIC_STATE(ModMgr_inProgress, setupResponse, NULL,
+												&ModMgr_active, NULL);
 RKH_CREATE_TRANS_TABLE(ModMgr_inProgress)
     RKH_TRREG(evResponse, NULL, sendResponse, &ModMgr_chkInterCmdDelay),
     RKH_TRREG(evToutWaitResponse, NULL, noResponse, &ModMgr_idle),

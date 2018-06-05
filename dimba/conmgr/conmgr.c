@@ -53,7 +53,6 @@ static void init(ConMgr *const me, RKH_EVT_T *pe);
 /* ........................ Declares effect actions ........................ */
 static void open(ConMgr *const me, RKH_EVT_T *pe);
 static void initializeInit(ConMgr *const me, RKH_EVT_T *pe);
-static void enableUnsolicitedRegStatus(ConMgr *const me, RKH_EVT_T *pe);
 static void configureInit(ConMgr *const me, RKH_EVT_T *pe);
 static void configTry(ConMgr *const me, RKH_EVT_T *pe);
 static void requestIp(ConMgr *const me, RKH_EVT_T *pe);
@@ -61,7 +60,6 @@ static void connectInit(ConMgr *const me, RKH_EVT_T *pe);
 static void connectTry(ConMgr *const me, RKH_EVT_T *pe);
 static void socketOpen(ConMgr *const me, RKH_EVT_T *pe);
 static void socketClose(ConMgr *const me, RKH_EVT_T *pe);
-static void sendData(ConMgr *const me, RKH_EVT_T *pe);
 static void readData(ConMgr *const me, RKH_EVT_T *pe);
 static void sendRequest(ConMgr *const me, RKH_EVT_T *pe);
 static void flushData(ConMgr *const me, RKH_EVT_T *pe);
@@ -75,7 +73,6 @@ static void sendSync(ConMgr *const me);
 static void sendInit(ConMgr *const me);
 static void checkPin(ConMgr *const me);
 static void setPin(ConMgr *const me);
-static void checkReg(ConMgr *const me);
 static void unregEntry(ConMgr *const me);
 static void failureEntry(ConMgr *const me);
 static void setupManualGet(ConMgr *const me);
@@ -124,6 +121,7 @@ RKH_CREATE_COMP_REGION_STATE(ConMgr_initialize, NULL, NULL, &ConMgr_active,
                              RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_initialize)
     RKH_TRCOMPLETION(NULL, NULL, &ConMgr_unregistered),
+    RKH_TRREG(evNoResponse, NULL, NULL, &ConMgr_failure),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_sync, sendSync, NULL, &ConMgr_initialize, NULL);
@@ -141,7 +139,6 @@ RKH_END_BRANCH_TABLE
 RKH_CREATE_BASIC_STATE(ConMgr_init, sendInit, NULL, &ConMgr_initialize, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_init)
     RKH_TRREG(evOk,         NULL, NULL, &ConMgr_pin),
-    RKH_TRREG(evNoResponse, NULL, NULL, &ConMgr_failure),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_pin, checkPin, NULL, &ConMgr_initialize, NULL);

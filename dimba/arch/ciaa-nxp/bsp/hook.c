@@ -72,6 +72,7 @@ static bool_t
 tickHook(void *p)
 {
     RKH_TIM_TICK(&rkhtick);
+    return 0;
 }
 
 /* ---------------------------- Global functions --------------------------- */

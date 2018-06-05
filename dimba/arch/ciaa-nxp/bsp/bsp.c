@@ -182,6 +182,15 @@ bsp_serial_puts(int ch, char *p)
     }
 }
 
+void
+bsp_serial_putnchar(int ch, unsigned char *p, ruint ndata)
+{
+    while(ndata && (ndata-- != 0))
+    {
+        uartWriteByte(UART_232, *p);
+        ++p;
+    }
+}
 
 #if 0
 #ifdef __USE_CMSIS
