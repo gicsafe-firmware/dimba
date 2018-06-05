@@ -19,6 +19,7 @@
 /* ----------------------------- Include files ----------------------------- */
 #include "rkh.h"
 #include "conmgr.h"
+#include "modpwr.h"
 #include "modmgr.h"
 #include "modcmd.h"
 #include "mqtt.h"
@@ -52,6 +53,7 @@ static void init(ConMgr *const me, RKH_EVT_T *pe);
 
 /* ........................ Declares effect actions ........................ */
 static void open(ConMgr *const me, RKH_EVT_T *pe);
+static void close(ConMgr *const me, RKH_EVT_T *pe);
 static void initializeInit(ConMgr *const me, RKH_EVT_T *pe);
 static void configureInit(ConMgr *const me, RKH_EVT_T *pe);
 static void configTry(ConMgr *const me, RKH_EVT_T *pe);
@@ -113,7 +115,7 @@ RKH_CREATE_TRANS_TABLE(ConMgr_active)
     RKH_TRINT(evSend, NULL, sendFail),
     RKH_TRINT(evRecv, NULL, recvFail),
     RKH_TRCOMPLETION(NULL, NULL, &ConMgr_inactive),
-    RKH_TRREG(evClose, NULL, NULL, &ConMgr_inactive),
+    RKH_TRREG(evClose, NULL, close, &ConMgr_inactive),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_COMP_REGION_STATE(ConMgr_initialize, NULL, NULL, &ConMgr_active, 
@@ -322,6 +324,7 @@ RKH_SMA_DEF_PTR(conMgr);
  */
 static RKH_STATIC_EVENT(e_tout, evToutDelay);
 static RKH_ROM_STATIC_EVENT(e_Open, evOpen);
+static RKH_ROM_STATIC_EVENT(e_Close, evClose);
 static RKH_ROM_STATIC_EVENT(e_NetConnected, evNetConnected);
 static RKH_ROM_STATIC_EVENT(e_NetDisconnected, evNetDisconnected);
 static RKH_ROM_STATIC_EVENT(e_Sent,     evSent);
@@ -412,6 +415,19 @@ open(ConMgr *const me, RKH_EVT_T *pe)
     (void)me;
 
     RKH_SMA_POST_FIFO(modMgr, &e_Open, conMgr);
+
+    modPwr_on();
+}
+
+static void
+close(ConMgr *const me, RKH_EVT_T *pe)
+{
+    (void)pe;
+    (void)me;
+
+    RKH_SMA_POST_FIFO(modMgr, &e_Close, conMgr);
+
+    modPwr_off();
 }
 
 static void
@@ -592,6 +608,7 @@ failureEntry(ConMgr *const me)
 {
     RKH_SET_STATIC_EVENT(&e_tout, evTimeout);
     RKH_TMR_ONESHOT(&me->timer, RKH_UPCAST(RKH_SMA_T, me), FAILURE_TRY_DELAY);
+    modPwr_off();
 }
 
 static void
@@ -681,6 +698,7 @@ failureExit(ConMgr *const me)
 {
     (void)me;
 
+    modPwr_on();
     ModCmd_init();
     rkh_tmr_stop(&me->timer);
 }

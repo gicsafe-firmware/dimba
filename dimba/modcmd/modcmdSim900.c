@@ -59,7 +59,7 @@ static const CmdTbl cmdTbl =
     {RKH_INIT_STATIC_EVT(evCmd), 
      "AT\r\n", 
      &conMgr, 
-     RKH_TIME_MS(300), RKH_TIME_MS(100)},
+     RKH_TIME_MS(1000), RKH_TIME_MS(100)},
 
     {RKH_INIT_STATIC_EVT(evCmd), 
 #ifdef CIPSHUT_ON_INIT
@@ -197,8 +197,10 @@ sendModCmd_3StrArgs(const ModCmd *p, char *s1, char *s2, char *s3)
 ModCmdRcvHandler
 ModCmd_init(void)
 {
+    RKH_ENTER_CRITICAL();
   	ssp_init(&sim900Parser, &rootCmdParser);
   	parser_init();
+    RKH_EXIT_CRITICAL();
     return &doSearch;
 }
 
