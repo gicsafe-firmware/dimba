@@ -12,3 +12,7 @@
 [submodule "third-party/ceedling"]
 	path = third-party/ceedling
 	url = https://github.com/ThrowTheSwitch/Ceedling.git
+[submodule "third-party/MQTT-C"]
+	path = third-party/MQTT-C
+	url = https://github.com/leanfrancucci/MQTT-C.git
+	branch = reactive
