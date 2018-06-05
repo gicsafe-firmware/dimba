@@ -255,7 +255,7 @@ RKH_CREATE_BASIC_STATE(ConMgr_idle, idleEntry, idleExit,
 RKH_CREATE_TRANS_TABLE(ConMgr_idle)
     RKH_TRREG(evTimeout, NULL,  getConnStatus,  &ConMgr_idle),
     RKH_TRREG(evSend,    NULL,  sendRequest,    &ConMgr_sending),
-    RKH_TRREG(evRead,    NULL,  readData,       &ConMgr_receiving),
+    RKH_TRREG(evRecv,    NULL,  readData,       &ConMgr_receiving),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_COMP_REGION_STATE(ConMgr_sending, NULL, NULL, 
@@ -328,9 +328,10 @@ static RKH_ROM_STATIC_EVENT(e_Open, evOpen);
 static RKH_ROM_STATIC_EVENT(e_NetConnected, evNetConnected);
 static RKH_ROM_STATIC_EVENT(e_NetDisconnected, evNetDisconnected);
 static RKH_ROM_STATIC_EVENT(e_Sent,     evSent);
-static RKH_STATIC_EVENT(e_Received, evReceived);
 static RKH_ROM_STATIC_EVENT(e_SendFail, evSendFail);
 static RKH_ROM_STATIC_EVENT(e_RecvFail, evRecvFail);
+
+ReceivedEvt e_Received;
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
@@ -392,7 +393,7 @@ init(ConMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_SIG(evClosed);
     RKH_TR_FWK_SIG(evConnected);
     RKH_TR_FWK_SIG(evSend);
-    RKH_TR_FWK_SIG(evRead);
+    RKH_TR_FWK_SIG(evRecv);
     RKH_TR_FWK_SIG(evSent);
     RKH_TR_FWK_SIG(evReceived);
     RKH_TR_FWK_SIG(evSendFail);
@@ -489,6 +490,7 @@ readData(ConMgr *const me, RKH_EVT_T *pe)
     (void)pe;
     (void)me;
 
+    RKH_SET_STATIC_EVENT(RKH_UPCAST(RKH_EVT_T, &e_Received), evReceived);
     ModCmd_readData();
 }
 
@@ -497,7 +499,6 @@ sendRequest(ConMgr *const me, RKH_EVT_T *pe)
 {
     (void)me;
 
-    RKH_FWK_RSV( pe );
     me->psend = RKH_UPCAST(SendEvt, pe);
 
     ModCmd_sendDataRequest();
@@ -508,8 +509,7 @@ flushData(ConMgr *const me, RKH_EVT_T *pe)
 {
     (void)pe;
 
-    ModCmd_sendData(me->psend->data);
-    RKH_FWK_GC(RKH_CAST(RKH_EVT_T, me->psend), me);
+    ModCmd_sendData(me->psend->buf, me->psend->size);
 }
 
 static void
@@ -527,7 +527,7 @@ recvOk(ConMgr *const me, RKH_EVT_T *pe)
     (void)pe;
     (void)me;
 
-    RKH_SMA_POST_FIFO(mqtt, &e_Received, conMgr);
+    RKH_SMA_POST_FIFO(mqtt, RKH_UPCAST(RKH_EVT_T, &e_Received), conMgr);
 }
 
 static void
@@ -649,7 +649,6 @@ static void
 socketConnected(ConMgr *const me)
 {
     (void)me;
-    (void)pe;
 
     RKH_SMA_POST_FIFO(mqtt, &e_NetConnected, conMgr);
 }
@@ -710,7 +709,6 @@ static void
 socketDisconnected(ConMgr *const me)
 {
     (void)me;
-    (void)pe;
 
     RKH_SMA_POST_FIFO(mqtt, &e_NetDisconnected, conMgr);
 }
@@ -749,4 +747,10 @@ checkConnectTry(ConMgr *const me, RKH_EVT_T *pe)
 }
 
 /* ---------------------------- Global functions --------------------------- */
+ReceivedEvt *
+ConMgr_ReceiveDataGetRef(void)
+{
+    return &e_Received;
+}
+
 /* ------------------------------ End of file ------------------------------ */

@@ -17,7 +17,7 @@
  *	Specify the maximum number of state machine applications (SMA) to be used
  *	by the application (can be a number in the range [1..64]).
  */
-#define RKH_CFG_FWK_MAX_SMA             2u
+#define RKH_CFG_FWK_MAX_SMA             3u
 
 /**
  *	If the dynamic event support (see #RKH_CFG_FWK_DYN_EVT_EN) is set to

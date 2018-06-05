@@ -270,4 +270,14 @@ bsp_serial_puts(int ch, char *p)
     }
 }
 
+void
+bsp_serial_putnchar(int ch, unsigned char *p, ruint ndata)
+{
+    while(ndata && (ndata-- != 0))
+    {
+        tx_data(ch, *p);
+        ++p;
+    }
+}
+
 /* ------------------------------ File footer ------------------------------ */

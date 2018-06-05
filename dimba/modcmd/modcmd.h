@@ -60,8 +60,9 @@ void ModCmd_getConnStatus(void);
 void ModCmd_connect(char *prot, char *dmn, char *port);
 void ModCmd_disconnect(void);
 void ModCmd_sendDataRequest(void);
-void ModCmd_sendData(unsigned char *pdata);
+void ModCmd_sendData(unsigned char *buf, ruint size);
 void ModCmd_readData(void);
+char *ModCmd_endOfXmitStr(void);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus

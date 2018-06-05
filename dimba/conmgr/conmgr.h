@@ -138,6 +138,8 @@ struct ReceivedEvt
 
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
+ReceivedEvt * ConMgr_ReceiveDataGetRef(void);
+
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus
 }

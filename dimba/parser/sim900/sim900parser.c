@@ -19,9 +19,12 @@
 #include "sim900parser.h"
 #include "signals.h"
 #include "modmgr.h"
+#include "conmgr.h"
 
 /* ----------------------------- Local macros ------------------------------ */
 /* ------------------------------- Constants ------------------------------- */
+#define END_OF_RECV_STR     "\r\nOK\r\n"
+
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
@@ -42,6 +45,9 @@ SSP_DCLR_NORMAL_NODE at, waitOK, at_plus_c, at_plus_ci, at_plus_cip,
 SSP_DCLR_TRN_NODE at_plus_ciprxget_data;
 
 static rui8_t isURC;
+
+static unsigned char *prx;
+ReceivedEvt *precv;
 
 /* ----------------------- Local function prototypes ----------------------- */
 static void cmd_ok(unsigned char pos);
@@ -181,7 +187,7 @@ SSP_END_BR_TABLE
 
 SSP_CREATE_TRN_NODE(at_plus_ciprxget_data, data_collect);
 SSP_CREATE_BR_TABLE(at_plus_ciprxget_data)
-	SSPBR("\r\nOK\r\n", data_ready,   &rootCmdParser),
+	SSPBR(END_OF_RECV_STR, data_ready,   &rootCmdParser),
 SSP_END_BR_TABLE
 
 /* --------------------------------------------------------------- */
@@ -439,17 +445,14 @@ disconnected(unsigned char pos)
     sendModResp_noArgs(evDisconnected);
 }
 
-/* TODO: Resolve Packet reception */
-#include <stdio.h>
-static unsigned char rxbuff[128];
-static unsigned char *prx;
-
-static void
-data_init(unsigned char pos)
+void
+data_init(unsigned char c)
 {
-    (void)pos;
+    (void)c;
 
-    prx = rxbuff; 
+    precv = ConMgr_ReceiveDataGetRef();
+    precv->size = 0;
+    prx = precv->buf;
 }
 
 static void
@@ -457,18 +460,18 @@ data_collect(unsigned char c)
 {
     *prx = c;
     ++prx;
+    ++precv->size;
 }
 
 static void
 data_ready(unsigned char pos)
 {
     (void)pos;
-
-   *prx = '\0'; 
+    
+    *prx = '\0'; 
+    precv->size -= (sizeof(END_OF_RECV_STR) - 1);
    
-   printf("\r\n------ RX PACKET: %s\r\n", rxbuff);
-
-   sendModResp_noArgs(evOk);
+    sendModResp_noArgs(evOk);
 }
 /************************************/
 
