@@ -31,7 +31,14 @@ extern "C" {
 /* ------------------------------- Data types ------------------------------ */
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
+/* TODO implement arch specific time read */
+#if 0
 Time *rtime_get(void);
+#else
+Time t;
+
+#define rtime_get() &t
+#endif
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus

@@ -94,6 +94,24 @@
     <ClCompile Include="..\..\..\..\third-party\MQTT-C\src\mqtt_pal.c">
       <Filter>MQTT-C</Filter>
     </ClCompile>
+    <ClCompile Include="..\bsp\dIn.c">
+      <Filter>bsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ioChgDet\ioChgDet.c">
+      <Filter>ioChgDet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\CirBuffer\CirBuffer.c">
+      <Filter>CirBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\anSampler\anSampler.c">
+      <Filter>anSampler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\adconv\adconv.c">
+      <Filter>adconv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\epoch\epoch.c">
+      <Filter>epoch</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rkh">
@@ -128,6 +146,21 @@
     </Filter>
     <Filter Include="MQTT-C">
       <UniqueIdentifier>{3eb97c3d-dd65-405e-bc99-f43ad7a1d496}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="epoch">
+      <UniqueIdentifier>{5c666b64-01b7-4fca-9537-4c583a32bc6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CirBuffer">
+      <UniqueIdentifier>{add1b628-dbb7-480b-a20f-58b2a5959442}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ioChgDet">
+      <UniqueIdentifier>{34edcf4d-42ca-4630-986e-151e66ec3860}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="anSampler">
+      <UniqueIdentifier>{761e4ea1-f378-497b-a4bf-90632bc7aaa1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="adconv">
+      <UniqueIdentifier>{4cbb6727-a6d1-4cc6-9a47-737445cbb205}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
