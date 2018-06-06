@@ -54,6 +54,7 @@
 
 #include "rkh.h"
 #include "bsp.h"
+#include "din.h"
 
 RKH_THIS_MODULE
 
@@ -61,6 +62,8 @@ RKH_THIS_MODULE
 /* ------------------------------- Constants ------------------------------- */
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
+void keyb_din_parser(char c);
+
 /* ---------------------------- Local variables ---------------------------- */
 #if defined(RKH_USE_TRC_SENDER)
 static rui8_t rkhtick;
@@ -90,10 +93,13 @@ DWORD WINAPI
 isr_kbdThread(LPVOID par)      /* Win32 thread to emulate keyboard ISR */
 {
     (void)par;
+	char c;
 
     while (rkhport_fwk_is_running())
     {
-        bsp_keyParser(_getch());
+		c = (char)_getch();
+        bsp_keyParser(c);
+		keyb_din_parser(c);
     }
     return 0;
 }

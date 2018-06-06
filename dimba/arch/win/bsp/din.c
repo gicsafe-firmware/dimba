@@ -15,9 +15,6 @@
 
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
-#include <conio.h>
-#include <windows.h>
-
 #include "rkh.h"
 #include "IOChgDet.h"
 #include "din.h"
@@ -33,33 +30,20 @@ static int tick;
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
-static
-DWORD WINAPI
-isr_dinThread(LPVOID par)      /* Win32 thread to emulate keyboard ISR */
+/* ---------------------------- Global functions --------------------------- */
+void keyb_din_parser(char c)
 {
-    (void)par;
-    unsigned char s;
+	c = c - '0';
 
-    while (rkhport_fwk_is_running())
-    {
-        s = (unsigned char)(_getch() - '0');
+	if (c > NUM_DIN_SIGNALS)
+		return;
 
-        if(s > NUM_DIN_SIGNALS)
-            continue;
-        
-        dinsKb[s] ^= dinsKb[s];
-    }
-    return 0;
+	dinsKb[c] ^= 1;
 }
 
-/* ---------------------------- Global functions --------------------------- */
 void
 din_init(void)
 {
-    DWORD thkdinId;
-    HANDLE hthDin;
-
-    hthDin = CreateThread(NULL, 1024, &isr_dinThread, 0, 0, &thkdinId);
     memset(dins, 0, sizeof(dins));
     memset(dinsKb, 0, sizeof(dins));
     
