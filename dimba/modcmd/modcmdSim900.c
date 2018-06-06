@@ -197,10 +197,12 @@ sendModCmd_3StrArgs(const ModCmd *p, char *s1, char *s2, char *s3)
 ModCmdRcvHandler
 ModCmd_init(void)
 {
-    RKH_ENTER_CRITICAL();
+    RKH_SR_ALLOC();
+
+    RKH_ENTER_CRITICAL_();
   	ssp_init(&sim900Parser, &rootCmdParser);
   	parser_init();
-    RKH_EXIT_CRITICAL();
+    RKH_EXIT_CRITICAL_();
     return &doSearch;
 }
 
