@@ -54,6 +54,7 @@
 #include <stdio.h>
 
 #include "signals.h"
+#include "modpwr.h"
 #include "modmgr.h"
 #include "conmgr.h"
 
@@ -170,6 +171,8 @@ bsp_init(int argc, char *argv[])
     printBanner();
 
     processCmdLineOpts(argc, argv);
+
+    modPwr_init();
 
     rkh_fwk_init();
 

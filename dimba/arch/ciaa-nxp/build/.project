@@ -140,11 +140,6 @@
 			<locationURI>PARENT-3-PROJECT_LOC/sspcfg.h</locationURI>
 		</link>
 		<link>
-			<name>src/rkh/rkh_ciaa_port</name>
-			<type>2</type>
-			<locationURI>PARENT-4-PROJECT_LOC/third-party/rkh_ciaa_port</locationURI>
-		</link>
-		<link>
 			<name>src/rkh/rkhfwk_bittbl.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/third-party/rkh/source/fwk/src/rkhfwk_bittbl.c</locationURI>
@@ -173,6 +168,11 @@
 			<name>src/rkh/rkhmempool.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/third-party/rkh/source/mempool/src/rkhmempool.c</locationURI>
+		</link>
+		<link>
+			<name>src/rkh/rkhport.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/rkh/source/portable/arm-cortex/rkhs/arm_cm4f/ciaa_nxp/rkhport.c</locationURI>
 		</link>
 		<link>
 			<name>src/rkh/rkhqueue.c</name>

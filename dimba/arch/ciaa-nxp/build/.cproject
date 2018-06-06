@@ -33,6 +33,7 @@
 									<listOptionValue builtIn="false" value="__MULTICORE_NONE"/>
 									<listOptionValue builtIn="false" value="__CIAA_SAPI__=1"/>
 									<listOptionValue builtIn="false" value="MODPWR_CTRL_ENABLE=1"/>
+									<listOptionValue builtIn="false" value="__CIAANXP__"/>
 								</option>
 								<option id="gnu.c.compiler.option.misc.other.656698687" name="Other flags" superClass="gnu.c.compiler.option.misc.other" value="-c -fmessage-length=0 -fno-builtin -ffunction-sections -fdata-sections -fsingle-precision-constant" valueType="string"/>
 								<option id="gnu.c.compiler.option.optimization.flags.1201889724" name="Other optimization flags" superClass="gnu.c.compiler.option.optimization.flags" value="-fno-common" valueType="string"/>
@@ -136,6 +137,7 @@
 									<listOptionValue builtIn="false" value="__REDLIB__"/>
 									<listOptionValue builtIn="false" value="__MULTICORE_NONE"/>
 									<listOptionValue builtIn="false" value="MODPWR_CTRL_ENABLE=1"/>
+									<listOptionValue builtIn="false" value="__CIAANXP__"/>
 								</option>
 								<option id="gnu.c.compiler.option.misc.other.989585946" name="Other flags" superClass="gnu.c.compiler.option.misc.other" value="-c -fmessage-length=0 -fno-builtin -ffunction-sections -fdata-sections -fsingle-precision-constant" valueType="string"/>
 								<option id="gnu.c.compiler.option.optimization.flags.184349289" name="Other optimization flags" superClass="gnu.c.compiler.option.optimization.flags" value="-fno-common" valueType="string"/>
