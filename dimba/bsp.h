@@ -89,6 +89,7 @@ void bsp_timeTick(void);
 void bsp_serial_open(int ch);
 void bsp_serial_close(int ch);
 void bsp_serial_puts(int ch, char *p);
+void bsp_serial_putnchar(int ch, unsigned char *p, ruint ndata);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus

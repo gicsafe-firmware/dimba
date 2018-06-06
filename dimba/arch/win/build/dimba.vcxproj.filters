@@ -85,6 +85,9 @@
     <ClCompile Include="..\..\..\modcmd\modcmdSim900.c">
       <Filter>dimba\modcmd</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\mqttProt\mqttProt.c">
+      <Filter>dimba\mqttProt</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\third-party\MQTT-C\src\mqtt.c">
       <Filter>MQTT-C</Filter>
     </ClCompile>
@@ -120,8 +123,11 @@
     <Filter Include="dimba\parser">
       <UniqueIdentifier>{fe14fea3-8785-4a4d-8be0-f5e70d94a5f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="dimba\mqttProt">
+      <UniqueIdentifier>{ea3a0de7-30de-4c7a-a2b3-da537c3bbe1c}</UniqueIdentifier>
+    </Filter>
     <Filter Include="MQTT-C">
-      <UniqueIdentifier>{ad6a6a94-14e7-4982-8e1c-1a0390676522}</UniqueIdentifier>
+      <UniqueIdentifier>{3eb97c3d-dd65-405e-bc99-f43ad7a1d496}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

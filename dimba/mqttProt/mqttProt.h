@@ -1,22 +1,24 @@
 /**
- *  \file       modcmd.h
- *  \brief      Specification of module command abstraction.
+ *  \file       mqttProt.h
+ *  \brief      MQTT Client.
  */
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2018.05.07  LeFr  v1.0.00  Initial version
+ *  2018.06.05  LeFr  v1.0.00   Initial version
+ *  2018.05.02  DaBa  v1.0.00   Initial version
  */
 
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci lf@vortexmakes.com
+ *  DaBa  Dario Baliña db@vortexmakes.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
 /* --------------------------------- Module -------------------------------- */
-#ifndef __MODCMD_H__
-#define __MODCMD_H__
+#ifndef __MQTTPROT_H__
+#define __MQTTPROT_H__
 
 /* ----------------------------- Include files ----------------------------- */
 #include "rkh.h"
@@ -30,40 +32,11 @@ extern "C" {
 /* -------------------------------- Constants ------------------------------ */
 /* ................................ Signals ................................ */
 /* ........................ Declares active object ......................... */
+RKH_SMA_DCLR(mqttProt);
+
 /* ------------------------------- Data types ------------------------------ */
-typedef void (*ModCmdRcvHandler)(unsigned char c);
-
-typedef struct ModCmd ModCmd;
-struct ModCmd
-{
-    RKH_EVT_T evt;
-    const char *fmt;            /** contains a format string of AT command */
-    RKH_SMA_T * const *aoDest;   /** pointer to SMA that receive the modem */
-                                /*  response */
-    RKH_TNT_T waitResponseTime; /** timeout waiting for modem response */
-    RKH_TNT_T interCmdTime;     /** inter-command delay */
-};
-
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
-ModCmdRcvHandler ModCmd_init(void);
-void ModCmd_sync(void);
-void ModCmd_initStr(void);
-void ModCmd_getPinStatus(void);
-void ModCmd_setPin(rui16_t pin);
-void ModCmd_getRegStatus(void);
-void ModCmd_setManualGet(void);
-void ModCmd_setupAPN(char *apn, char *usr, char *nm);
-void ModCmd_startGPRS(void);
-void ModCmd_requestIP(void);
-void ModCmd_getConnStatus(void);
-void ModCmd_connect(char *prot, char *dmn, char *port);
-void ModCmd_disconnect(void);
-void ModCmd_sendDataRequest(void);
-void ModCmd_sendData(unsigned char *buf, ruint size);
-void ModCmd_readData(void);
-char *ModCmd_endOfXmitStr(void);
-
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus
 }

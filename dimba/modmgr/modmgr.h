@@ -42,7 +42,7 @@ struct ModMgrEvt
     ModCmd args;
     char cmd[MODMGR_MAX_SIZEOF_CMDSTR];
     unsigned char *data;
-    unsigned char nData;
+    ruint nData;
 };
 
 typedef struct ModMgrResp ModMgrResp;

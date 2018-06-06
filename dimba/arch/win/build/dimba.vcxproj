@@ -54,7 +54,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\..\third-party\rkh\source\fwk\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\mempool\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\queue\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\sm\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\sma\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\tmr\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\trc\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\portable\80x86\win32_st\vc\;$(ProjectDir)..\..\..\..\third-party\ssp\src;$(ProjectDir)..\bsp;$(ProjectDir)..\bsp\serial;$(ProjectDir)..\..\..\..\aos\ping;$(ProjectDir)..\..\..;$(ProjectDir)..\..\..\parser\sim900;$(ProjectDir)..\..\..\modcmd;$(ProjectDir)..\..\..\conmgr;$(ProjectDir)..\..\..\modmgr;$(ProjectDir)..\..\..\..\third-party\MQTT-C\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\..\third-party\rkh\source\fwk\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\mempool\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\queue\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\sm\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\sma\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\tmr\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\trc\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\portable\80x86\win32_st\vc\;$(ProjectDir)..\..\..\..\third-party\ssp\src;$(ProjectDir)..\bsp;$(ProjectDir)..\bsp\serial;$(ProjectDir)..\..\..\..\aos\ping;$(ProjectDir)..\..\..;$(ProjectDir)..\..\..\parser\sim900;$(ProjectDir)..\..\..\modcmd;$(ProjectDir)..\..\..\conmgr;$(ProjectDir)..\..\..\mqttProt;$(ProjectDir)..\..\..\modmgr;$(ProjectDir)..\..\..\..\third-party\MQTT-C\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;__W32STVC__;CIPSHUT_ON_INIT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -114,6 +114,7 @@
     <ClCompile Include="..\..\..\main.c" />
     <ClCompile Include="..\..\..\modcmd\modcmdSim900.c" />
     <ClCompile Include="..\..\..\modmgr\modmgr.c" />
+    <ClCompile Include="..\..\..\mqttProt\mqttProt.c" />
     <ClCompile Include="..\..\..\parser\sim900\sim900parser.c" />
     <ClCompile Include="..\bsp\assert.c" />
     <ClCompile Include="..\bsp\bsp.c" />

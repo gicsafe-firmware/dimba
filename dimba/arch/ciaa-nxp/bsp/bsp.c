@@ -45,7 +45,7 @@
 
 /* -------------------------------- Authors -------------------------------- */
 /*
- *  DaBa  Dario Baliña       db@vortexmakes.com
+ *  DaBa  Dario Baliï¿½a       db@vortexmakes.com
  *  LeFr  Leandro Francucci  lf@vortexmakes.com
  */
 
@@ -58,6 +58,7 @@
 #include "bsp.h"
 
 #include "signals.h"
+#include "modpwr.h"
 #include "modmgr.h"
 #include "modcmd.h"
 #include "conmgr.h"
@@ -87,16 +88,8 @@ bsp_init(int argc, char *argv[])
 
 
     boardConfig();
-    /* Module Power UP */
-    /* TODO: create modpwr abstraction */
-#if 0
-    gpioConfig( GPIO0, GPIO_OUTPUT );
-    gpioWrite( GPIO0, 1 );
-    delay( 500 );
-    gpioWrite( GPIO0, 0 );
-    delay( 2000 );
-    gpioWrite( GPIO0, 1 );
-#endif
+
+    modPwr_init();
 
     rkh_fwk_init();
 
@@ -141,6 +134,7 @@ void
 bsp_timeTick(void)
 {
     ++tstamp;
+    modPwr_ctrl();
 }
 
 RKH_TS_T
@@ -182,11 +176,14 @@ bsp_serial_puts(int ch, char *p)
     }
 }
 
+void
+bsp_serial_putnchar(int ch, unsigned char *p, ruint ndata)
+{
+    while(ndata && (ndata-- != 0))
+    {
+        uartWriteByte(UART_232, *p);
+        ++p;
+    }
+}
 
-#if 0
-#ifdef __USE_CMSIS
-#include "LPC43xx.h"
-#endif
-
-#endif
 /* ------------------------------ File footer ------------------------------ */

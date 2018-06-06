@@ -69,11 +69,11 @@ RKH_THIS_MODULE
 
 /* ----------------------------- Local macros ------------------------------ */
 /* ------------------------------- Constants ------------------------------- */
-#define ESC         0x1B
-#define DIMBA_CFG_OPTIONS    "st:f:p:m:h"
+#define ESC                 0x1B
+#define DIMBA_CFG_OPTIONS   "st:f:p:m:h"
 
-#define TEST_TX_PACKET  "----o Ping"
-#define TEST_RX_PACKET  "o---- Pong"
+#define TEST_TX_PACKET      "----o Ping"
+#define TEST_RX_PACKET      "o---- Pong"
 
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
@@ -100,9 +100,10 @@ static const char *helpMessage =
 static RKH_ROM_STATIC_EVENT(e_Term, evTerminate);
 static RKH_ROM_STATIC_EVENT(e_Open, evOpen);
 static RKH_ROM_STATIC_EVENT(e_Close, evClose);
-static RKH_ROM_STATIC_EVENT(e_Send, evSend);
 static RKH_ROM_STATIC_EVENT(e_Ok, evOk);
-static RKH_ROM_STATIC_EVENT(e_Read, evRead);
+static RKH_ROM_STATIC_EVENT(e_Recv, evRecv);
+
+static SendEvt e_Send;
 
 static void ser_rx_isr(unsigned char byte);
 static void ser_tx_isr(void);
@@ -192,8 +193,6 @@ bsp_init(int argc, char *argv[])
 void
 bsp_keyParser(int c)
 {
-    SendEvt *evtSend;
-
     switch(c)
     {
         case ESC:
@@ -210,13 +209,16 @@ bsp_keyParser(int c)
             break;
 
         case 'r':
-            RKH_SMA_POST_FIFO(conMgr, &e_Read, &bsp);
+            RKH_SMA_POST_FIFO(conMgr, &e_Recv, &bsp);
             break;
 
         case 's':
-            evtSend = RKH_ALLOC_EVT(SendEvt, evSend, &bsp);
-            evtSend->data = (unsigned char *)TEST_TX_PACKET;
-            RKH_SMA_POST_FIFO(conMgr, RKH_UPCAST(RKH_EVT_T, evtSend), &bsp);
+            RKH_SET_STATIC_EVENT(RKH_UPCAST(RKH_EVT_T, &e_Send), evSend);
+            e_Send.size = strlen(TEST_TX_PACKET);
+
+            memcpy(e_Send.buf, (unsigned char *)TEST_TX_PACKET, e_Send.size);
+
+            RKH_SMA_POST_FIFO(conMgr, RKH_UPCAST(RKH_EVT_T, &e_Send), &bsp);
             break;
 
         default:
@@ -262,6 +264,16 @@ void
 bsp_serial_puts(int ch, char *p)
 {
     while(*p!='\0')
+    {
+        tx_data(ch, *p);
+        ++p;
+    }
+}
+
+void
+bsp_serial_putnchar(int ch, unsigned char *p, ruint ndata)
+{
+    while(ndata && (ndata-- != 0))
     {
         tx_data(ch, *p);
         ++p;
