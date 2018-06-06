@@ -88,6 +88,15 @@
     <ClCompile Include="..\..\..\mqtt\mqtt.c">
       <Filter>dimba\mqtt</Filter>
     </ClCompile>
+    <ClCompile Include="..\bsp\din.c">
+      <Filter>bsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ioChgDet\ioChgDet.c">
+      <Filter>ioChgDet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\CirBuffer\CirBuffer.c">
+      <Filter>CirBuffer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rkh">
@@ -119,6 +128,12 @@
     </Filter>
     <Filter Include="dimba\mqtt">
       <UniqueIdentifier>{ea3a0de7-30de-4c7a-a2b3-da537c3bbe1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ioChgDet">
+      <UniqueIdentifier>{ff260539-8cea-43c1-ab8b-efb3dac3289f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CirBuffer">
+      <UniqueIdentifier>{dc4c6e8f-b10b-466a-8eeb-aca167e625be}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

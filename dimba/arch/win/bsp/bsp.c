@@ -57,6 +57,8 @@
 #include "modpwr.h"
 #include "modmgr.h"
 #include "conmgr.h"
+#include "CirBuffer.h"
+#include "din.h"
 
 #include "bsp.h"
 #include "getopt.h"
@@ -173,7 +175,8 @@ bsp_init(int argc, char *argv[])
     processCmdLineOpts(argc, argv);
 
     modPwr_init();
-
+    din_init();
+    
     rkh_fwk_init();
 
     RKH_FILTER_ON_GROUP(RKH_TRC_ALL_GROUPS);
@@ -232,6 +235,8 @@ bsp_keyParser(int c)
 void
 bsp_timeTick(void)
 {
+    modPwr_ctrl();
+    din_scan();
 }
 
 static
