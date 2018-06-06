@@ -1,5 +1,5 @@
 /**
- *  \file       mqtt.c
+ *  \file       mqttProt.c
  *  \brief      MQTT Client.
  */
 
@@ -19,40 +19,40 @@
 /* ----------------------------- Include files ----------------------------- */
 #include "rkh.h"
 #include "signals.h"
-#include "mqtt.h"
+#include "mqttProt.h"
 #include "conmgr.h"
 
 /* ----------------------------- Local macros ------------------------------ */
-/* ......................... Declares ModMgr_active object ........................ */
-typedef struct Mqtt Mqtt;
+/* ......................... Declares active object ........................ */
+typedef struct MQTTProt MQTTProt;
 
 /* ................... Declares states and pseudostates .................... */
-RKH_DCLR_BASIC_STATE Mqtt_inactive;
+RKH_DCLR_BASIC_STATE MQTTProt_inactive;
 
 /* ........................ Declares initial action ........................ */
-static void initialization(Mqtt *const me, RKH_EVT_T *pe);
+static void initialization(MQTTProt *const me, RKH_EVT_T *pe);
 
 /* ........................ Declares effect actions ........................ */
-static void dataReceived(Mqtt *const me, RKH_EVT_T *pe);
+static void dataReceived(MQTTProt *const me, RKH_EVT_T *pe);
 
 /* ......................... Declares entry actions ........................ */
 /* ......................... Declares exit actions ......................... */
 /* ............................ Declares guards ............................ */
 /* ........................ States and pseudostates ........................ */
-RKH_CREATE_BASIC_STATE(Mqtt_inactive, NULL, NULL, RKH_ROOT, NULL);
-RKH_CREATE_TRANS_TABLE(Mqtt_inactive)
+RKH_CREATE_BASIC_STATE(MQTTProt_inactive, NULL, NULL, RKH_ROOT, NULL);
+RKH_CREATE_TRANS_TABLE(MQTTProt_inactive)
     RKH_TRINT(evReceived, NULL, dataReceived),
 RKH_END_TRANS_TABLE
 
 /* ............................. Active object ............................. */
-struct Mqtt
+struct MQTTProt
 {
     RKH_SMA_T ao;           /* base structure */
 };
 
-RKH_SMA_CREATE(Mqtt, mqtt, 2, HCAL, &Mqtt_inactive, initialization, 
+RKH_SMA_CREATE(MQTTProt, mqttProt, 2, HCAL, &MQTTProt_inactive, initialization, 
                NULL);
-RKH_SMA_DEF_PTR(mqtt);
+RKH_SMA_DEF_PTR(mqttProt);
 
 /* ------------------------------- Constants ------------------------------- */
 /* ---------------------------- Local data types --------------------------- */
@@ -62,13 +62,13 @@ RKH_SMA_DEF_PTR(mqtt);
 /* ---------------------------- Local functions ---------------------------- */
 /* ............................ Initial action ............................. */
 static void
-initialization(Mqtt *const me, RKH_EVT_T *pe)
+initialization(MQTTProt *const me, RKH_EVT_T *pe)
 {
 	(void)pe;
 
     RKH_TR_FWK_AO(me);
     RKH_TR_FWK_QUEUE(&RKH_UPCAST(RKH_SMA_T, me)->equeue);
-    RKH_TR_FWK_STATE(me, &Mqtt_inactive);
+    RKH_TR_FWK_STATE(me, &MQTTProt_inactive);
 }
 
 /* ............................ Effect actions ............................. */
@@ -76,7 +76,7 @@ initialization(Mqtt *const me, RKH_EVT_T *pe)
 #include <stdio.h>
 
 static void
-dataReceived(Mqtt *const me, RKH_EVT_T *pe)
+dataReceived(MQTTProt *const me, RKH_EVT_T *pe)
 {
 	(void)me;
 

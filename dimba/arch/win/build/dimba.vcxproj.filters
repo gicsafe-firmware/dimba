@@ -85,17 +85,14 @@
     <ClCompile Include="..\..\..\modcmd\modcmdSim900.c">
       <Filter>dimba\modcmd</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\mqtt\mqtt.c">
-      <Filter>dimba\mqtt</Filter>
+    <ClCompile Include="..\..\..\mqttProt\mqttProt.c">
+      <Filter>dimba\mqttProt</Filter>
     </ClCompile>
-    <ClCompile Include="..\bsp\din.c">
-      <Filter>bsp</Filter>
+    <ClCompile Include="..\..\..\..\third-party\MQTT-C\src\mqtt.c">
+      <Filter>MQTT-C</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\ioChgDet\ioChgDet.c">
-      <Filter>ioChgDet</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\CirBuffer\CirBuffer.c">
-      <Filter>CirBuffer</Filter>
+    <ClCompile Include="..\..\..\..\third-party\MQTT-C\src\mqtt_pal.c">
+      <Filter>MQTT-C</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -126,14 +123,11 @@
     <Filter Include="dimba\parser">
       <UniqueIdentifier>{fe14fea3-8785-4a4d-8be0-f5e70d94a5f1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="dimba\mqtt">
+    <Filter Include="dimba\mqttProt">
       <UniqueIdentifier>{ea3a0de7-30de-4c7a-a2b3-da537c3bbe1c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ioChgDet">
-      <UniqueIdentifier>{ff260539-8cea-43c1-ab8b-efb3dac3289f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="CirBuffer">
-      <UniqueIdentifier>{dc4c6e8f-b10b-466a-8eeb-aca167e625be}</UniqueIdentifier>
+    <Filter Include="MQTT-C">
+      <UniqueIdentifier>{3eb97c3d-dd65-405e-bc99-f43ad7a1d496}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -142,9 +136,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\bsp.h">
       <Filter>dimba</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\mqtt\mqtt.h">
-      <Filter>dimba\mqtt</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

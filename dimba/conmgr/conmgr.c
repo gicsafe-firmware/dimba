@@ -22,7 +22,7 @@
 #include "modpwr.h"
 #include "modmgr.h"
 #include "modcmd.h"
-#include "mqtt.h"
+#include "mqttProt.h"
 #include "signals.h"
 #include "bsp.h"
 
@@ -531,7 +531,7 @@ sendOk(ConMgr *const me, RKH_EVT_T *pe)
     (void)pe;
     (void)me;
 
-    RKH_SMA_POST_FIFO(mqtt, &e_Sent, conMgr);
+    RKH_SMA_POST_FIFO(mqttProt, &e_Sent, conMgr);
 }
 
 static void
@@ -540,7 +540,7 @@ recvOk(ConMgr *const me, RKH_EVT_T *pe)
     (void)pe;
     (void)me;
 
-    RKH_SMA_POST_FIFO(mqtt, RKH_UPCAST(RKH_EVT_T, &e_Received), conMgr);
+    RKH_SMA_POST_FIFO(mqttProt, RKH_UPCAST(RKH_EVT_T, &e_Received), conMgr);
 }
 
 static void
@@ -549,7 +549,7 @@ sendFail(ConMgr *const me, RKH_EVT_T *pe)
     (void)pe;
     (void)me;
 
-    RKH_SMA_POST_FIFO(mqtt, &e_SendFail, conMgr);
+    RKH_SMA_POST_FIFO(mqttProt, &e_SendFail, conMgr);
 }
 
 static void
@@ -558,7 +558,7 @@ recvFail(ConMgr *const me, RKH_EVT_T *pe)
     (void)pe;
     (void)me;
 
-    RKH_SMA_POST_FIFO(mqtt, &e_RecvFail, conMgr);
+    RKH_SMA_POST_FIFO(mqttProt, &e_RecvFail, conMgr);
 }
 
 /* ............................. Entry actions ............................. */
@@ -664,7 +664,7 @@ socketConnected(ConMgr *const me)
 {
     (void)me;
 
-    RKH_SMA_POST_FIFO(mqtt, &e_NetConnected, conMgr);
+    RKH_SMA_POST_FIFO(mqttProt, &e_NetConnected, conMgr);
 }
 
 static void
@@ -725,7 +725,7 @@ socketDisconnected(ConMgr *const me)
 {
     (void)me;
 
-    RKH_SMA_POST_FIFO(mqtt, &e_NetDisconnected, conMgr);
+    RKH_SMA_POST_FIFO(mqttProt, &e_NetDisconnected, conMgr);
 }
 
 static void

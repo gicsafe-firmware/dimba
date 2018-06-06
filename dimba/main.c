@@ -18,7 +18,7 @@
 #include "rkh.h"
 #include "rkhfwk_dynevt.h"
 #include "signals.h"
-#include "mqtt.h"
+#include "mqttProt.h"
 #include "conmgr.h"
 #include "modmgr.h"
 #include "bsp.h"
@@ -39,7 +39,7 @@
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
-static RKH_EVT_T *Mqtt_qsto[MQTT_QSTO_SIZE];
+static RKH_EVT_T *MQTTProt_qsto[MQTT_QSTO_SIZE];
 static RKH_EVT_T *ConMgr_qsto[CONMGR_QSTO_SIZE];
 static RKH_EVT_T *ModMgr_qsto[MODMGR_QSTO_SIZE];
 static rui8_t evPool0Sto[SIZEOF_EP0STO], 
@@ -61,7 +61,7 @@ main(int argc, char *argv[])
     rkh_fwk_registerEvtPool(evPool1Sto, SIZEOF_EP1STO, SIZEOF_EP1_BLOCK);
     rkh_fwk_registerEvtPool(evPool2Sto, SIZEOF_EP2STO, SIZEOF_EP2_BLOCK);
 
-    RKH_SMA_ACTIVATE(mqtt, Mqtt_qsto, MQTT_QSTO_SIZE, 0, 0);
+    RKH_SMA_ACTIVATE(mqttProt, MQTTProt_qsto, MQTT_QSTO_SIZE, 0, 0);
     RKH_SMA_ACTIVATE(conMgr, ConMgr_qsto, CONMGR_QSTO_SIZE, 0, 0);
     RKH_SMA_ACTIVATE(modMgr, ModMgr_qsto, MODMGR_QSTO_SIZE, 0, 0);
 
