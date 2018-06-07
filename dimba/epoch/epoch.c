@@ -105,20 +105,20 @@ static UpdStep updSteps[] =
 unsigned long
 mktime(Time *stime)
 {
-    int month;
-    short year;
+    int month_;
+    short year_;
 
-    month = stime->tm_mon;
-    year = stime->tm_year;
-    if (0 >= (int)(month -= 2))
+    month_ = stime->tm_mon;
+    year_ = stime->tm_year;
+    if (0 >= (int)(month_ -= 2))
     {                   /* 1..12 -> 11,12,1..10 */
-        month += 12;    /* Puts Feb last since it has leap day */
-        year -= 1;
+        month_ += 12;    /* Puts Feb last since it has leap day */
+        year_ -= 1;
     }
 
     return (((
-                (UL)year/4 - (UL)year/100 + year/400 + 
-                367*(UL)month/12 + (UL)stime->tm_mday + (UL)year*365 - 719499
+                (UL)year_/4 - (UL)year_/100 + year_/400 + 
+                367*(UL)month_/12 + (UL)stime->tm_mday + (UL)year_*365 - 719499
              )*24 + stime->tm_hour  /* now have hours */
             )*60 + stime->tm_min    /* now have minutes */
            )*60 + stime->tm_sec;    /* finally seconds */
