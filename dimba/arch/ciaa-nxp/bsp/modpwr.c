@@ -19,13 +19,14 @@
 
 #include "rkh.h"
 #include "modpwr.h"
+#include "mTimeCfg.h"
 
 /* ----------------------------- Local macros ------------------------------ */
 #define CFG_PWR_KEY_GPIO()  gpioConfig(GPIO0, GPIO_OUTPUT)
 #define PWR_KEY(b)          gpioWrite(GPIO0, !b)
 
 /* ------------------------------- Constants ------------------------------- */
-#define SIM900_PWR_TIME     RKH_TIME_MS(1000)
+#define SIM900_PWR_TIME     (1000/MTIME_MODPWR_BASE)
 
 /* ---------------------------- Local data types --------------------------- */
 typedef enum ModPwrStates

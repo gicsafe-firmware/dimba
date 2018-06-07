@@ -16,9 +16,12 @@
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
 #include <stdio.h>
-
 #include "mTime.h"
 #include "mTimeCfg.h"
+
+#include "din.h"
+#include "epoch.h"
+#include "modpwr.h"
 
 /* ----------------------------- Local macros ------------------------------ */
 /* ------------------------------- Constants ------------------------------- */
@@ -30,27 +33,25 @@ none( void )
 {
 }
 
-static void(* const actions_2[])( void ) =
+static void(* const actions_20[])( void ) =
 {
 	none, 
     NULL
 };
 
-static void(* const actions_20[])( void ) =
-{
-	none, NULL
-};
-
 static void(* const actions_100[])( void ) =
 {
-	NULL
+#ifdef MODPWR_CTRL_ENABLE
+	modPwr_ctrl, 
+#endif
+    din_scan, epoch_updateByStep,
+    NULL
 };
 
 const timerChain_t timerChain[] =
 {
-	{ 2000/MTIME_TIME_TICK,		actions_2 		},
-	{ 20000/MTIME_TIME_TICK, 	actions_20 		},
-	{ 100000/MTIME_TIME_TICK,	actions_100		}
+	{ 20/MTIME_TIME_TICK,   actions_20 	},
+	{ 100/MTIME_TIME_TICK, 	actions_100	}
 };
 
 /* ----------------------- Local function prototypes ----------------------- */

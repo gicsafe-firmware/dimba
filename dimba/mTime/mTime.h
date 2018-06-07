@@ -30,13 +30,12 @@ extern "C" {
 typedef struct
 {
 	unsigned short timer;
-	void (* const *ptimeact)( void );
+	void (* const *ptimeact)(void);
 } timerChain_t;
 
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
-void mTime_interruptInit( void );
-void mTime_interruptInitHardwareTimer( unsigned short tick );
+void mTime_init(void);
 
 /*
  * 	This is the main timer interrupt In abstract form, this interrupt
@@ -46,7 +45,7 @@ void mTime_interruptInitHardwareTimer( unsigned short tick );
  * From here, is controlled all of the timing chain for the project
  * 	This timing chain is controlled	by table 'timer_chain'
  */
-void mTime_interrupt( void );
+void mTime_tick(void);
 
 
 /* -------------------- External C language linkage end -------------------- */

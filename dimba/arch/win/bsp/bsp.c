@@ -180,6 +180,8 @@ bsp_init(int argc, char *argv[])
     din_init();
     epoch_init();
     
+    mTime_init();
+
     rkh_fwk_init();
 
     RKH_FILTER_ON_GROUP(RKH_TRC_ALL_GROUPS);
@@ -238,9 +240,7 @@ bsp_keyParser(int c)
 void
 bsp_timeTick(void)
 {
-    modPwr_ctrl();
-    din_scan();
-    epoch_updateByStep();
+    mTime_tick();
 }
 
 static
@@ -290,13 +290,6 @@ bsp_serial_putnchar(int ch, unsigned char *p, ruint ndata)
         tx_data(ch, *p);
         ++p;
     }
-}
-
-void
-mTime_interruptInitHardwareTimer(unsigned short tick)
-{
-    (void)tick;
-
 }
 
 /* ------------------------------ File footer ------------------------------ */

@@ -18,6 +18,7 @@
 #include "rkh.h"
 #include "IOChgDet.h"
 #include "din.h"
+#include "mTimeCfg.h"
 
 /* ----------------------------- Local macros ------------------------------ */
 /* ------------------------------- Constants ------------------------------- */
@@ -26,7 +27,6 @@
 /* ---------------------------- Local variables ---------------------------- */
 static unsigned char dins[NUM_DIN_SIGNALS];
 static unsigned char dinsKb[NUM_DIN_SIGNALS];
-static int tick;
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
@@ -46,19 +46,12 @@ din_init(void)
 {
     memset(dins, 0, sizeof(dins));
     memset(dinsKb, 0, sizeof(dins));
-    
-    tick = DIN_SCAN_PERIOD;
 }
 
 void
 din_scan(void)
 {
     unsigned char i;
-
-    if(tick && (--tick != 0))
-        return;
-        
-    tick = DIN_SCAN_PERIOD;
 
     for(i=0; i < NUM_DIN_SIGNALS; ++i)
     {
