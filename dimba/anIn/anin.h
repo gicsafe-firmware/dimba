@@ -43,7 +43,9 @@ void anIn_captureAndFilter(void);
 
 adc_t anIn_adcRead(int channel);
 
-double anIn_get(int channel);
+adc_t anIn_get(int channel);
+
+void anIn_update(void);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus

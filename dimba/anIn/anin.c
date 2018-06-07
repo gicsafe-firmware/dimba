@@ -19,6 +19,7 @@
 #include "anin.h"
 #include "mTimeCfg.h"
 #include "emaFilter.h"
+#include "anSampler.h"
 
 /* ----------------------------- Local macros ------------------------------ */
 /* ------------------------------- Constants ------------------------------- */
@@ -58,13 +59,19 @@ anIn_captureAndFilter(void)
     }
 }
 
-double
+adc_t
 anIn_get(int channel)
 {
     if(channel > NUM_ANIN_SIGNALS)
         return 0;
 
-    return (double)(anIns[channel]);
+    return anIns[channel];
+}
+
+void
+anIn_update(void)
+{
+   anSampler_put();
 }
 
 /* ------------------------------ End of file ------------------------------ */

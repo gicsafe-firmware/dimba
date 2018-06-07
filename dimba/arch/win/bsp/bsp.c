@@ -61,6 +61,8 @@
 #include "mTime.h"
 #include "din.h"
 #include "anin.h"
+#include "anSampler.h"
+#include "ioChgDet.h"
 #include "epoch.h"
 
 #include "bsp.h"
@@ -180,6 +182,8 @@ bsp_init(int argc, char *argv[])
     modPwr_init();
     dIn_init();
 	anIn_init();
+    anSampler_init();
+    IOChgDet_init();
     epoch_init();
     
     mTime_init();
@@ -202,6 +206,40 @@ bsp_init(int argc, char *argv[])
 
     RKH_TR_FWK_ACTOR(&bsp, "bsp");
 }
+
+static
+void
+send_signalsFrame(void)
+{
+    AnSampleSet anSet;
+    IOChg ioChanges[8];
+    int nio;
+
+    RKH_SET_STATIC_EVENT(RKH_UPCAST(RKH_EVT_T, &e_Send), evSend);
+   
+    anSampler_getSet(&anSet, 2);
+    nio = IOChgDet_get(ioChanges, 1);
+    
+    if(nio != 0)
+    {
+        sprintf(e_Send.buf, "%u, AN[0]: %x\r\n"
+                            "%u, IN[%d]: %d\r\n",
+                       anSet.timeStamp, anSet.anSignal[0][0],
+             ioChanges[0].timeStamp, ioChanges[0].signalId, ioChanges[0].signalValue
+                );
+    }
+    else
+    {
+        sprintf(e_Send.buf, "%u, AN[0]: %x\r\n",
+                       anSet.timeStamp, anSet.anSignal[0][0]
+                );
+    }
+
+    e_Send.size = strlen(e_Send.buf);
+
+    RKH_SMA_POST_FIFO(conMgr, RKH_UPCAST(RKH_EVT_T, &e_Send), &bsp);
+}
+
 
 void
 bsp_keyParser(int c)
@@ -233,6 +271,11 @@ bsp_keyParser(int c)
 
             RKH_SMA_POST_FIFO(conMgr, RKH_UPCAST(RKH_EVT_T, &e_Send), &bsp);
             break;
+
+        case 'a':
+            send_signalsFrame();
+            break;
+
 
         default:
             break;

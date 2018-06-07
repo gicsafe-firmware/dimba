@@ -37,14 +37,15 @@ extern "C" {
  * 	Number of slots in table 'timerChain'declared in 'mTimeTbl.h' and
  *  user defined in 'mTimeTbl.c'.
  */
-#define NUM_TIMER_DIVISORS		2
+#define NUM_TIMER_DIVISORS		3
 
 /*
  * Scaled time slots constants
  */
-#define MTIME_MODPWR_BASE       (100/MTIME_TIME_TICK)
-#define MTIME_DIN_SCAN_PERIOD   (100/MTIME_TIME_TICK)
-#define MTIME_ANIN_SCAN_PERIOD   (1000/MTIME_TIME_TICK)
+#define MTIME_MODPWR_BASE               (100/MTIME_TIME_TICK)
+#define MTIME_DIN_SCAN_PERIOD			(100/MTIME_TIME_TICK)
+#define MTIME_ANIN_READANDFILTER_PERIOD (1000/MTIME_TIME_TICK)
+#define MTIME_ANSAMPLE_PUT_PERIOD       (5000/MTIME_TIME_TICK)
 
 /* ------------------------------- Data types ------------------------------ */
 /* -------------------------- External variables --------------------------- */
