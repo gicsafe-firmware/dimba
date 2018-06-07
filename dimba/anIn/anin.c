@@ -1,6 +1,6 @@
 /**
- *  \file       mTimeTble.c
- * 	\bried      mTime timers Table.
+ *  \file       anin.c
+ *  \brief      Implementation of Analog Inputs adquisition and filtering.
  */
 
 /* -------------------------- Development history -------------------------- */
@@ -15,47 +15,56 @@
 
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
-#include <stdio.h>
-#include "mTime.h"
-#include "mTimeCfg.h"
-
-#include "din.h"
+#include "rkh.h"
 #include "anin.h"
-#include "epoch.h"
-#include "modpwr.h"
+#include "mTimeCfg.h"
+#include "emaFilter.h"
 
 /* ----------------------------- Local macros ------------------------------ */
 /* ------------------------------- Constants ------------------------------- */
+#define ANINS_EMA_ALPHA     2
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
-static void(* const actions_100[])( void ) =
-{
-#ifdef MODPWR_CTRL_ENABLE
-	modPwr_ctrl, 
-#endif
-    dIn_scan, epoch_updateByStep,
-    NULL
-};
-
-static void(* const actions_1000[])( void ) =
-{
-	anIn_captureAndFilter, 
-    NULL
-};
-
-const timerChain_t timerChain[] =
-{
-	{ 100/MTIME_TIME_TICK, 	actions_100	},
-	{ 1000/MTIME_TIME_TICK, actions_1000 }
-};
+static adc_t anIns[NUM_ANIN_SIGNALS];
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
+adc_t
+anIn_adcRead(int channel)
+{   
+    (void)channel;
+
+    return 0x5A5A;
+}
+
 /* ---------------------------- Global functions --------------------------- */
+void
+anIn_init(void)
+{
+    memset(anIns, 0, sizeof(anIns));
+}
+
+void
+anIn_captureAndFilter(void)
+{
+    unsigned char i;
+    int16_t value;
+
+    for(i=0; i < NUM_ANIN_SIGNALS; ++i)
+    {
+        value = anIn_adcRead(i);
+        anIns[i] = emaFilter_LowPass(value, anIns[i], ANINS_EMA_ALPHA);
+    }
+}
+
+double
+anIn_get(int channel)
+{
+    if(channel > NUM_ANIN_SIGNALS)
+        return 0;
+
+    return (double)(anIns[channel]);
+}
+
 /* ------------------------------ End of file ------------------------------ */
-
-
-
-
-

@@ -1,11 +1,12 @@
 /**
- *  \file       din.h
- *  \brief      Specification of Digital Inputs HAL and change detection.
+ *  \file       emaFilter.h
+ *  \brief      Exponential Moving Average Filter routines.
+ *
  */
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2018.05.17  DaBa  v1.0.00  Initial version
+ *  2018.01.5  DaBa  v0.0.01  Initial version
  */
 
 /* -------------------------------- Authors -------------------------------- */
@@ -13,12 +14,13 @@
  *  DaBa  Dario Baliña       db@vortexmakes.com
  */
 
-/* --------------------------------- Notes --------------------------------- */
 /* --------------------------------- Module -------------------------------- */
-#ifndef __DIN_H__
-#define __DIN_H__
+#ifndef __EMAFILTER_H__
+#define __EMAFILTER_H__
 
 /* ----------------------------- Include files ----------------------------- */
+#include "stdint.h"
+
 /* ---------------------- External C language linkage ---------------------- */
 #ifdef __cplusplus
 extern "C" {
@@ -27,16 +29,30 @@ extern "C" {
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
 /* ------------------------------- Data types ------------------------------ */
-typedef enum dInSignalId
-{
-    dIn0, dIn1, dIn2, dIn3, dIn4, dIn5, dIn6, dIn7,
-    NUM_DIN_SIGNALS
-}dInSignalId;
-
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
-void dIn_init(void);
-void dIn_scan(void);
+
+/**
+ *  \brief
+ *  EMA Low Pass Filter
+ *
+ *  \param[in] new      New sample.
+ *  \param[in] last     Last filtered value.
+ *  \param[in] alph     Filtering hardness [1, 2, 4 ...],
+ *                      as higher is alpha, filtering is harder.
+ */
+int16_t emaFilter_LowPass(int16_t new, int16_t last, uint8_t alpha);
+
+/**
+ *  \brief
+ *  EMA High Pass Filter
+ *
+ *  \param[in] new      New sample.
+ *  \param[in] last     Last filtered value.
+ *  \param[in] alph     Filtering hardness [1, 2, 4 ...],
+ *                      as higher is alpha, filtering is harder.
+ */
+int16_t emaFilter_HighPass(int16_t new, int16_t last, uint8_t alpha);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus
@@ -46,4 +62,4 @@ void dIn_scan(void);
 /* ------------------------------ Module end ------------------------------- */
 #endif
 
-/* ------------------------------ End of file ------------------------------ */
+/* ------------------------------ File footer ------------------------------ */

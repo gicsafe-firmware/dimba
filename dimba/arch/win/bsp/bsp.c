@@ -60,6 +60,7 @@
 #include "CirBuffer.h"
 #include "mTime.h"
 #include "din.h"
+#include "anin.h"
 #include "epoch.h"
 
 #include "bsp.h"
@@ -177,7 +178,8 @@ bsp_init(int argc, char *argv[])
     processCmdLineOpts(argc, argv);
 
     modPwr_init();
-    din_init();
+    dIn_init();
+	anIn_init();
     epoch_init();
     
     mTime_init();

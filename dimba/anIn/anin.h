@@ -1,6 +1,6 @@
 /**
  *  \file       ain.h
- *  \brief      Specification of Analog Inputs HAL.
+ *  \brief      Specification of Analog Inputs adquisition and filtering.
  */
 
 /* -------------------------- Development history -------------------------- */
@@ -27,9 +27,23 @@ extern "C" {
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
 /* ------------------------------- Data types ------------------------------ */
+typedef enum anInSignalId
+{
+    anIn0, anIn1, anIn2, anIn3,
+    NUM_ANIN_SIGNALS
+}anInSignalId;
+
+typedef unsigned short adc_t;
+
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
-double ain_get(int channel);
+void anIn_init(void);
+
+void anIn_captureAndFilter(void);
+
+adc_t anIn_adcRead(int channel);
+
+double anIn_get(int channel);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus

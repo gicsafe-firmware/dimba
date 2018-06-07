@@ -17,6 +17,7 @@
 /* ----------------------------- Include files ----------------------------- */
 #include "adconv.h"
 #include "anSampler.h"
+#include "anIn.h"
 
 /* ----------------------------- Local macros ------------------------------ */
 /* ------------------------------- Constants ------------------------------- */
@@ -49,8 +50,7 @@ ADConv_getSample(int channel)
 {
     ADCSampleUnit sample;
 
-    /* value = get_from_adc(channel); */
-    sample = 707;
+    sample = anIn_get(channel);
     return convertToSampleValue(sample);
 }
 

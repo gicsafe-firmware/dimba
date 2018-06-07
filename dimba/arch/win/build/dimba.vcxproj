@@ -54,7 +54,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\..\third-party\rkh\source\fwk\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\mempool\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\queue\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\sm\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\sma\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\tmr\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\trc\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\portable\80x86\win32_st\vc\;$(ProjectDir)..\..\..\..\third-party\ssp\src;$(ProjectDir)..\bsp;$(ProjectDir)..\bsp\serial;$(ProjectDir)..\..\..\..\aos\ping;$(ProjectDir)..\..\..;$(ProjectDir)..\..\..\parser\sim900;$(ProjectDir)..\..\..\dIn;$(ProjectDir)..\..\..\anIn;$(ProjectDir)..\..\..\anSampler;$(ProjectDir)..\..\..\adconv;$(ProjectDir)..\..\..\modpwr;$(ProjectDir)..\..\..\modcmd;$(ProjectDir)..\..\..\conmgr;$(ProjectDir)..\..\..\mqttProt;$(ProjectDir)..\..\..\ioChgDet;$(ProjectDir)..\..\..\epoch;$(ProjectDir)..\..\..\CirBuffer;$(ProjectDir)..\..\..\rtime;$(ProjectDir)..\..\..\mTime;$(ProjectDir)..\..\..\modmgr;$(ProjectDir)..\..\..\..\third-party\MQTT-C\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\..\third-party\rkh\source\fwk\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\mempool\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\queue\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\sm\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\sma\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\tmr\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\trc\inc;$(ProjectDir)..\..\..\..\third-party\rkh\source\portable\80x86\win32_st\vc\;$(ProjectDir)..\..\..\..\third-party\ssp\src;$(ProjectDir)..\bsp;$(ProjectDir)..\bsp\serial;$(ProjectDir)..\..\..\..\aos\ping;$(ProjectDir)..\..\..;$(ProjectDir)..\..\..\parser\sim900;$(ProjectDir)..\..\..\dIn;$(ProjectDir)..\..\..\anIn;$(ProjectDir)..\..\..\anSampler;$(ProjectDir)..\..\..\adconv;$(ProjectDir)..\..\..\modpwr;$(ProjectDir)..\..\..\modcmd;$(ProjectDir)..\..\..\conmgr;$(ProjectDir)..\..\..\mqttProt;$(ProjectDir)..\..\..\ioChgDet;$(ProjectDir)..\..\..\epoch;$(ProjectDir)..\..\..\CirBuffer;$(ProjectDir)..\..\..\rtime;$(ProjectDir)..\..\..\mTime;$(ProjectDir)..\..\..\emaFilter;$(ProjectDir)..\..\..\modmgr;$(ProjectDir)..\..\..\..\third-party\MQTT-C\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;__W32STVC__;CIPSHUT_ON_INIT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -111,9 +111,11 @@
     <ClCompile Include="..\..\..\..\third-party\rkh\source\trc\src\rkhtrc_stream.c" />
     <ClCompile Include="..\..\..\..\third-party\ssp\src\ssp.c" />
     <ClCompile Include="..\..\..\adconv\adconv.c" />
+    <ClCompile Include="..\..\..\anIn\anin.c" />
     <ClCompile Include="..\..\..\anSampler\anSampler.c" />
     <ClCompile Include="..\..\..\CirBuffer\CirBuffer.c" />
     <ClCompile Include="..\..\..\conmgr\conmgr.c" />
+    <ClCompile Include="..\..\..\emaFilter\emaFilter.c" />
     <ClCompile Include="..\..\..\epoch\epoch.c" />
     <ClCompile Include="..\..\..\ioChgDet\ioChgDet.c" />
     <ClCompile Include="..\..\..\main.c" />
@@ -133,7 +135,9 @@
     <ClCompile Include="..\bsp\trace_io_tcp.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\anIn\anin.h" />
     <ClInclude Include="..\..\..\bsp.h" />
+    <ClInclude Include="..\..\..\emaFilter\emaFilter.h" />
     <ClInclude Include="..\..\..\mTime\mTime.h" />
     <ClInclude Include="..\..\..\mTime\mTimeCfg.h" />
     <ClInclude Include="..\..\..\rkhcfg.h" />
