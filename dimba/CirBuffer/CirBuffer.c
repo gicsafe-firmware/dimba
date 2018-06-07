@@ -17,6 +17,7 @@
 /* ----------------------------- Include files ----------------------------- */
 #include <string.h>
 #include "CirBuffer.h"
+#include "rkh.h"
 
 /* ----------------------------- Local macros ------------------------------ */
 /* ------------------------------- Constants ------------------------------- */
@@ -49,7 +50,9 @@ int
 cirBuffer_put(CirBuffer *const me, unsigned char *elem)
 {
     int result = 1;
+    RKH_SR_ALLOC();
 
+    RKH_ENTER_CRITICAL_();
     if ((me != (CirBuffer *)0) && (elem != (unsigned char *)0))
     {
         memcpy(me->in, elem, me->elemSize);
@@ -67,6 +70,8 @@ cirBuffer_put(CirBuffer *const me, unsigned char *elem)
         }
         result = 0;
     }
+    RKH_EXIT_CRITICAL_();
+
     return result;
 }
 
@@ -74,7 +79,9 @@ int
 cirBuffer_get(CirBuffer *const me, unsigned char *elem)
 {
     int result = 1;
+    RKH_SR_ALLOC();
 
+    RKH_ENTER_CRITICAL_();
     if ((me != (CirBuffer *)0) && (elem != (unsigned char *)0))
     {
         if (me->qty != 0)
@@ -89,6 +96,8 @@ cirBuffer_get(CirBuffer *const me, unsigned char *elem)
             result = 0;
         }
     }
+    RKH_EXIT_CRITICAL_();
+
     return result;
 }
 
@@ -97,7 +106,9 @@ cirBuffer_getBlock(CirBuffer *const me, unsigned char *destBlock,
                    int nElem)
 {
     int n, nConsumed, result = 0, offset = 0;
+    RKH_SR_ALLOC();
 
+    RKH_ENTER_CRITICAL_();
     if ((me != (CirBuffer *)0) && (destBlock != (unsigned char *)0) &&
         (nElem != 0))
     {
@@ -129,6 +140,8 @@ cirBuffer_getBlock(CirBuffer *const me, unsigned char *destBlock,
             } while (nConsumed);
         }
     }
+    RKH_EXIT_CRITICAL_();
+
     return result;
 }
 
