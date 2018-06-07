@@ -58,6 +58,7 @@
 #include "modmgr.h"
 #include "conmgr.h"
 #include "CirBuffer.h"
+#include "mTime.h"
 #include "din.h"
 #include "epoch.h"
 
@@ -289,6 +290,13 @@ bsp_serial_putnchar(int ch, unsigned char *p, ruint ndata)
         tx_data(ch, *p);
         ++p;
     }
+}
+
+void
+mTime_interruptInitHardwareTimer(unsigned short tick)
+{
+    (void)tick;
+
 }
 
 /* ------------------------------ File footer ------------------------------ */

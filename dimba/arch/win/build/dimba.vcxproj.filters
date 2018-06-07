@@ -115,6 +115,12 @@
     <ClCompile Include="..\bsp\rtime.c">
       <Filter>bsp</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\mTime\mTime.c">
+      <Filter>mTime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\mTime\mTimeTbl.c">
+      <Filter>mTime</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rkh">
@@ -165,6 +171,9 @@
     <Filter Include="adconv">
       <UniqueIdentifier>{4cbb6727-a6d1-4cc6-9a47-737445cbb205}</UniqueIdentifier>
     </Filter>
+    <Filter Include="mTime">
+      <UniqueIdentifier>{3fe071f9-30e9-44f6-b455-66e9857303d4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\rkhcfg.h">
@@ -172,6 +181,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\bsp.h">
       <Filter>dimba</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\mTime\mTime.h">
+      <Filter>mTime</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\mTime\mTimeCfg.h">
+      <Filter>mTime</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
