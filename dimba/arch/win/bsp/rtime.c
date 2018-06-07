@@ -36,15 +36,15 @@ rtime_get(void)
     struct tm *local;
 
     time(&ltime);
-    local = localtime(&ltime);
+    local = gmtime(&ltime);
 
     t.tm_sec = (unsigned char)local->tm_sec;
     t.tm_min = (unsigned char)local->tm_min;
     t.tm_hour = (unsigned char)local->tm_hour;
     t.tm_mday = (unsigned char)local->tm_mday;
-    t.tm_mon = (unsigned char)local->tm_mon;
-    t.tm_year = (short)local->tm_year;
-    t.tm_wday = (unsigned char)local->tm_wday;
+    t.tm_mon = (unsigned char)local->tm_mon + 1;
+    t.tm_year = (short)local->tm_year + 1900;
+    t.tm_wday = (unsigned char)local->tm_wday + 1;
     t.tm_isdst = (unsigned char)local->tm_isdst;
 
     return &t;
