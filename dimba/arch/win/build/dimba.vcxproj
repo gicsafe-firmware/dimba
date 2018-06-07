@@ -126,6 +126,7 @@
     <ClCompile Include="..\bsp\dIn.c" />
     <ClCompile Include="..\bsp\getopt.c" />
     <ClCompile Include="..\bsp\hook.c" />
+    <ClCompile Include="..\bsp\rtime.c" />
     <ClCompile Include="..\bsp\trace_io.c" />
     <ClCompile Include="..\bsp\trace_io_tcp.c" />
   </ItemGroup>

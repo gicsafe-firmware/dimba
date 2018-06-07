@@ -59,6 +59,7 @@
 #include "conmgr.h"
 #include "CirBuffer.h"
 #include "din.h"
+#include "epoch.h"
 
 #include "bsp.h"
 #include "getopt.h"
@@ -176,6 +177,7 @@ bsp_init(int argc, char *argv[])
 
     modPwr_init();
     din_init();
+    epoch_init();
     
     rkh_fwk_init();
 
@@ -237,6 +239,7 @@ bsp_timeTick(void)
 {
     modPwr_ctrl();
     din_scan();
+    epoch_updateByStep();
 }
 
 static

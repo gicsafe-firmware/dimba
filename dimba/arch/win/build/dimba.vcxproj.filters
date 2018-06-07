@@ -112,6 +112,9 @@
     <ClCompile Include="..\..\..\epoch\epoch.c">
       <Filter>epoch</Filter>
     </ClCompile>
+    <ClCompile Include="..\bsp\rtime.c">
+      <Filter>bsp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rkh">
