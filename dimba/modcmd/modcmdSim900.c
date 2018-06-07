@@ -98,7 +98,7 @@ static const CmdTbl cmdTbl =
     {RKH_INIT_STATIC_EVT(evCmd), 
      "AT+CIICR\r\n", 
      &conMgr, 
-     RKH_TIME_MS(10000), RKH_TIME_MS(200)},
+     RKH_TIME_MS(30000), RKH_TIME_MS(200)},
 
     {RKH_INIT_STATIC_EVT(evCmd), 
      "AT+CIFSR\r\n", 
