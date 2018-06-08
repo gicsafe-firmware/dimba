@@ -44,7 +44,7 @@ static void(* const actions_1000[])( void ) =
     NULL
 };
 
-static void(* const actions_5000[])( void ) =
+static void(* const actions_10000[])( void ) =
 {
 	anIn_update, 
     NULL
@@ -54,7 +54,7 @@ const timerChain_t timerChain[] =
 {
 	{ 100/MTIME_TIME_TICK, 	actions_100	},
 	{ 1000/MTIME_TIME_TICK, actions_1000 },
-	{ 5000/MTIME_TIME_TICK, actions_5000 }
+	{ 10000/MTIME_TIME_TICK, actions_10000 }
 };
 
 /* ----------------------- Local function prototypes ----------------------- */

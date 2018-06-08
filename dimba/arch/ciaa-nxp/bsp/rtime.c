@@ -1,6 +1,6 @@
 /**
- *  \file       mTime.c
- * 	\bried      Module to manage timer interrupt.
+ *  \file       rtime.c
+ *  \brief      Implementation of RTC abstraction for CIAA-NXP bsp.
  */
 
 /* -------------------------- Development history -------------------------- */
@@ -15,66 +15,40 @@
 
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
-#include  <stddef.h>
+//#include <time.h>
 
-#include "mTime.h"
-#include "mTimeCfg.h"
+#include "rtime.h"
 
 /* ----------------------------- Local macros ------------------------------ */
 /* ------------------------------- Constants ------------------------------- */
 /* ---------------------------- Local data types --------------------------- */
-static unsigned short counter;
-static int enabled = 0;
-
 /* ---------------------------- Global variables --------------------------- */
-extern const timerChain_t timerChain[NUM_TIMER_DIVISORS];
-
 /* ---------------------------- Local variables ---------------------------- */
-static
-void
-execute_list(void (* const *p)(void))
-{
-	for(; *p != NULL; ++p)
-		(**p)();
-}
+static Time t;
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
 /* ---------------------------- Global functions --------------------------- */
-void
-mTime_init(void)
+Time *
+rtime_get(void)
 {
-	counter = 0;
-    enabled = 1;
-}
+#if 0
+    time_t ltime;
+    struct tm *local;
 
-/*
- * 	This is the main timer interrupt In abstract form, this interrupt
- * 	is called each MTIME_TIME_TICK expressed in terms of msecs.
- * 	that is, if MTIME_TIME_TICK is set to 10, 
- *  then is called in each 10 milliseconds. 
- * From here, is controlled all of the timing chain for the project
- * 	This timing chain is controlled	by table 'timer_chain'
- */
-void
-mTime_tick(void)
-{
-	const timerChain_t *p;
-	unsigned char num;
-    
-    if(!enabled)
-    {
-        return;
-    }
-    
-	for(p = timerChain, num = NUM_TIMER_DIVISORS; num--; ++p)
-		if((counter % p->timer) == 0)
-			execute_list(p->ptimeact);
-	if(++counter >= (p-1)->timer)
-		counter = 0;
+    time(&ltime);
+    local = gmtime(&ltime);
+
+    t.tm_sec = (unsigned char)local->tm_sec;
+    t.tm_min = (unsigned char)local->tm_min;
+    t.tm_hour = (unsigned char)local->tm_hour;
+    t.tm_mday = (unsigned char)local->tm_mday;
+    t.tm_mon = (unsigned char)local->tm_mon + 1;
+    t.tm_year = (short)local->tm_year + 1900;
+    t.tm_wday = (unsigned char)local->tm_wday + 1;
+    t.tm_isdst = (unsigned char)local->tm_isdst;
+#endif
+    return &t;
 }
 
 /* ------------------------------ End of file ------------------------------ */
-
-
-

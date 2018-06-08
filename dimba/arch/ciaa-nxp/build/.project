@@ -55,6 +55,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/bsp/bsp.c</locationURI>
 		</link>
 		<link>
+			<name>src/bsp/din.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/bsp/din.c</locationURI>
+		</link>
+		<link>
 			<name>src/bsp/hook.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/bsp/hook.c</locationURI>
@@ -75,6 +80,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/bsp/modpwr.c</locationURI>
 		</link>
 		<link>
+			<name>src/bsp/rtime.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/bsp/rtime.c</locationURI>
+		</link>
+		<link>
 			<name>src/bsp/sapi</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
@@ -90,6 +100,26 @@
 			<locationURI>PARENT-1-PROJECT_LOC/bsp/uartisr.c</locationURI>
 		</link>
 		<link>
+			<name>src/dimba/CirBuffer</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>src/dimba/adconv</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/adconv</locationURI>
+		</link>
+		<link>
+			<name>src/dimba/anIn</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/anIn</locationURI>
+		</link>
+		<link>
+			<name>src/dimba/anSampler</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
 			<name>src/dimba/bsp.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/bsp.h</locationURI>
@@ -98,6 +128,31 @@
 			<name>src/dimba/conmgr</name>
 			<type>2</type>
 			<locationURI>PARENT-3-PROJECT_LOC/conmgr</locationURI>
+		</link>
+		<link>
+			<name>src/dimba/dIn</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/dIn</locationURI>
+		</link>
+		<link>
+			<name>src/dimba/emaFilter</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/emaFilter</locationURI>
+		</link>
+		<link>
+			<name>src/dimba/epoch</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>src/dimba/ioChgDet</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>src/dimba/mTime</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/mTime</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/main.c</name>
@@ -115,9 +170,9 @@
 			<locationURI>PARENT-3-PROJECT_LOC/modmgr</locationURI>
 		</link>
 		<link>
-			<name>src/dimba/mqtt</name>
+			<name>src/dimba/mqttProt</name>
 			<type>2</type>
-			<locationURI>PARENT-3-PROJECT_LOC/mqtt</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/mqttProt</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/parser</name>
@@ -128,6 +183,11 @@
 			<name>src/dimba/rkhcfg.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/rkhcfg.h</locationURI>
+		</link>
+		<link>
+			<name>src/dimba/rtime</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/rtime</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/signals.h</name>
@@ -303,6 +363,46 @@
 			<name>src/bsp/sapi/sapi_uart.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/third-party/sapi/src/sapi_uart.c</locationURI>
+		</link>
+		<link>
+			<name>src/dimba/CirBuffer/CirBuffer.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/CirBuffer/CirBuffer.c</locationURI>
+		</link>
+		<link>
+			<name>src/dimba/CirBuffer/CirBuffer.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/CirBuffer/CirBuffer.h</locationURI>
+		</link>
+		<link>
+			<name>src/dimba/anSampler/anSampler.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/anSampler/anSampler.c</locationURI>
+		</link>
+		<link>
+			<name>src/dimba/anSampler/anSampler.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/anSampler/anSampler.h</locationURI>
+		</link>
+		<link>
+			<name>src/dimba/epoch/epoch.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/epoch/epoch.c</locationURI>
+		</link>
+		<link>
+			<name>src/dimba/epoch/epoch.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/epoch/epoch.h</locationURI>
+		</link>
+		<link>
+			<name>src/dimba/ioChgDet/ioChgDet.c</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/ioChgDet/ioChgDet.c</locationURI>
+		</link>
+		<link>
+			<name>src/dimba/ioChgDet/ioChgDet.h</name>
+			<type>1</type>
+			<locationURI>PARENT-3-PROJECT_LOC/ioChgDet/ioChgDet.h</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/parser/sim900parser.c</name>

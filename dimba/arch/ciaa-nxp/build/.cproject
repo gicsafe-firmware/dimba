@@ -49,9 +49,8 @@
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../conmgr&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../modcmd&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../modmgr&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../mqtt&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../mqttProt&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/rkh_ciaa_port&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/rkh/source/fwk/inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/rkh/source/mempool/inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/rkh/source/queue/inc&quot;"/>
@@ -60,6 +59,17 @@
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/rkh/source/tmr/inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/rkh/source/trc/inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../parser/sim900&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../adconv&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../anIn&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../anSampler&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../CirBuffer&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../dIn&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../emaFilter&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../epoch&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../ioChgDet&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../mTime&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../rtime&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../modpwr&quot;"/>
 								</option>
 								<inputType id="com.crt.advproject.compiler.input.1047996959" superClass="com.crt.advproject.compiler.input"/>
 							</tool>
