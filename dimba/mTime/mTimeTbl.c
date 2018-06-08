@@ -16,41 +16,45 @@
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
 #include <stdio.h>
-
 #include "mTime.h"
 #include "mTimeCfg.h"
+
+#include "din.h"
+#include "anin.h"
+#include "epoch.h"
+#include "modpwr.h"
 
 /* ----------------------------- Local macros ------------------------------ */
 /* ------------------------------- Constants ------------------------------- */
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
-void
-none( void )
+static void(* const actions_100[])( void ) =
 {
-}
-
-static void(* const actions_2[])( void ) =
-{
-	none, 
+#ifdef MODPWR_CTRL_ENABLE
+	modPwr_ctrl, 
+#endif
+    dIn_scan, epoch_updateByStep,
     NULL
 };
 
-static void(* const actions_20[])( void ) =
+static void(* const actions_1000[])( void ) =
 {
-	none, NULL
+	anIn_captureAndFilter, 
+    NULL
 };
 
-static void(* const actions_100[])( void ) =
+static void(* const actions_5000[])( void ) =
 {
-	NULL
+	anIn_update, 
+    NULL
 };
 
 const timerChain_t timerChain[] =
 {
-	{ 2000/MTIME_TIME_TICK,		actions_2 		},
-	{ 20000/MTIME_TIME_TICK, 	actions_20 		},
-	{ 100000/MTIME_TIME_TICK,	actions_100		}
+	{ 100/MTIME_TIME_TICK, 	actions_100	},
+	{ 1000/MTIME_TIME_TICK, actions_1000 },
+	{ 5000/MTIME_TIME_TICK, actions_5000 }
 };
 
 /* ----------------------- Local function prototypes ----------------------- */

@@ -26,19 +26,17 @@ extern "C" {
 
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
-#define DIN_SCAN_PERIOD     RKH_TIME_MS(100)
-
 /* ------------------------------- Data types ------------------------------ */
-typedef enum dinSignalId
+typedef enum dInSignalId
 {
-    din0, din1, din2, din3, din4, din5, din6, din7,
+    dIn0, dIn1, dIn2, dIn3, dIn4, dIn5, dIn6, dIn7,
     NUM_DIN_SIGNALS
-}dinSignalId;
+}dInSignalId;
 
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
-void din_init(void);
-void din_scan(void);
+void dIn_init(void);
+void dIn_scan(void);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus

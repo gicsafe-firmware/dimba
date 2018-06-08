@@ -1,82 +1,51 @@
 /**
- *  \file       modpwr_sim900.c
- *  \brief      Implementation of modpwr abstraction for SIM900 on CIAA-NXP.
+ *  \file       emaFilter.c
+ *  \brief      Exponential Moving Average Filter routines.
+ *
  */
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2018.06.05  DaBa  v1.0.00  Initial version
+ *  2018.01.5  DaBa  v0.0.01  Initial version
  */
 
 /* -------------------------------- Authors -------------------------------- */
 /*
- *  DaBa  Dario Bali�a       db@vortexmakes.com
+ *  DaBa  Dario Baliña       db@vortexmakes.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
-#include "sapi.h"
-
-#include "rkh.h"
-#include "modpwr.h"
-#include "mTimeCfg.h"
+#include "emaFilter.h"
 
 /* ----------------------------- Local macros ------------------------------ */
-#define CFG_PWR_KEY_GPIO()  gpioConfig(GPIO0, GPIO_OUTPUT)
-#define PWR_KEY(b)          gpioWrite(GPIO0, !b)
-
 /* ------------------------------- Constants ------------------------------- */
-#define SIM900_PWR_TIME     (1000/MTIME_MODPWR_BASE)
-
 /* ---------------------------- Local data types --------------------------- */
-typedef enum ModPwrStates
-{
-    OnOff,
-    Toggling
-};
-
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
-static ruint state, counter;
-
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
 /* ---------------------------- Global functions --------------------------- */
-void
-modPwr_init(void)
+int16_t emaFilter_LowPass(int16_t new, int16_t last, uint8_t alpha)
 {
-    CFG_PWR_KEY_GPIO();
-    PWR_KEY(1);
-    state = OnOff;
+    int16_t out;
+
+    if(alpha == 0)
+        return new;
+
+    out = (new / alpha);
+    out += last;
+    out -= (last / alpha);
+    return out;
 }
-
-void
-modPwr_ctrl(void)
+ 
+int16_t emaFilter_HighPass(int16_t new, int16_t last, uint8_t alpha)
 {
-    switch(state)
-    {
-        case OnOff:
-            PWR_KEY(1);
-            break;
+    if(alpha == 0)
+        return new;
 
-        case Toggling:
-            PWR_KEY(0);
-            if(counter && (--counter == 0))
-            {
-                state = OnOff;
-            }
-
-            break;
-    }
-}
-
-void
-modPwr_toggle(void)
-{
-    RKH_ENTER_CRITICAL();
-    counter = SIM900_PWR_TIME;
-    state = Toggling;
-    RKH_EXIT_CRITICAL();
+    last = new - emaFilter_LowPass(new, last, alpha);
+    return last;
 }
 
 /* ------------------------------ End of file ------------------------------ */

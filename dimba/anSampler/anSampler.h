@@ -21,6 +21,7 @@
 /* ----------------------------- Include files ----------------------------- */
 #include "CirBuffer.h"
 #include "epoch.h"
+#include "anin.h"
 
 /* ---------------------- External C language linkage ---------------------- */
 #ifdef __cplusplus
@@ -31,7 +32,7 @@ extern "C" {
 /* -------------------------------- Constants ------------------------------ */
 #define AN_SAMPLING_RATE_SEC        5           
 #define MAX_AN_NUM_SAMPLES          128
-#define NUM_AN_SIGNALS              2
+#define NUM_AN_SIGNALS              NUM_ANIN_SIGNALS
 
 /* ................................ Signals ................................ */
 /* ........................ Declares active object ......................... */

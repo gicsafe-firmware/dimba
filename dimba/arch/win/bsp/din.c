@@ -1,5 +1,5 @@
 /**
- *  \file       din.c
+ *  \file       dIn.c
  *  \brief      Implementation of Digital Inputs HAL and change detection.
  */
 
@@ -18,54 +18,47 @@
 #include "rkh.h"
 #include "IOChgDet.h"
 #include "din.h"
+#include "mTimeCfg.h"
 
 /* ----------------------------- Local macros ------------------------------ */
 /* ------------------------------- Constants ------------------------------- */
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
-static unsigned char dins[NUM_DIN_SIGNALS];
-static unsigned char dinsKb[NUM_DIN_SIGNALS];
-static int tick;
+static unsigned char dIns[NUM_DIN_SIGNALS];
+static unsigned char dInsKb[NUM_DIN_SIGNALS];
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
 /* ---------------------------- Global functions --------------------------- */
-void keyb_din_parser(char c)
+void keyb_dIn_parser(char c)
 {
 	c = c - '0';
 
 	if (c > NUM_DIN_SIGNALS)
 		return;
 
-	dinsKb[c] ^= 1;
+	dInsKb[c] ^= 1;
 }
 
 void
-din_init(void)
+dIn_init(void)
 {
-    memset(dins, 0, sizeof(dins));
-    memset(dinsKb, 0, sizeof(dins));
-    
-    tick = DIN_SCAN_PERIOD;
+    memset(dIns, 0, sizeof(dIns));
+    memset(dInsKb, 0, sizeof(dIns));
 }
 
 void
-din_scan(void)
+dIn_scan(void)
 {
     unsigned char i;
 
-    if(tick && (--tick != 0))
-        return;
-        
-    tick = DIN_SCAN_PERIOD;
-
     for(i=0; i < NUM_DIN_SIGNALS; ++i)
     {
-        if(dins[i] != dinsKb[i])
+        if(dIns[i] != dInsKb[i])
         {
-            IOChgDet_put(i, dinsKb[i]);
-            dins[i] = dinsKb[i];
+            IOChgDet_put(i, dInsKb[i]);
+            dIns[i] = dInsKb[i];
         }
     }
 }

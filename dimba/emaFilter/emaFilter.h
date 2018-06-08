@@ -1,24 +1,26 @@
 /**
- *  \file       ain.h
- *  \brief      Specification of Analog Inputs adquisition and filtering.
+ *  \file       emaFilter.h
+ *  \brief      Exponential Moving Average Filter routines.
+ *
  */
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2018.05.17  DaBa  v1.0.00  Initial version
+ *  2018.01.5  DaBa  v0.0.01  Initial version
  */
 
 /* -------------------------------- Authors -------------------------------- */
 /*
- *  DaBa  Dario Baliña       db@vortexmakes.com
+ *  DaBa  Dario BaliÃ±a       db@vortexmakes.com
  */
 
-/* --------------------------------- Notes --------------------------------- */
 /* --------------------------------- Module -------------------------------- */
-#ifndef __AIN_H__
-#define __AIN_H__
+#ifndef __EMAFILTER_H__
+#define __EMAFILTER_H__
 
 /* ----------------------------- Include files ----------------------------- */
+#include "stdint.h"
+
 /* ---------------------- External C language linkage ---------------------- */
 #ifdef __cplusplus
 extern "C" {
@@ -27,25 +29,30 @@ extern "C" {
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
 /* ------------------------------- Data types ------------------------------ */
-typedef enum anInSignalId
-{
-    anIn0, anIn1, anIn2, anIn3,
-    NUM_ANIN_SIGNALS
-}anInSignalId;
-
-typedef unsigned short adc_t;
-
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
-void anIn_init(void);
 
-void anIn_captureAndFilter(void);
+/**
+ *  \brief
+ *  EMA Low Pass Filter
+ *
+ *  \param[in] new      New sample.
+ *  \param[in] last     Last filtered value.
+ *  \param[in] alph     Filtering hardness [1, 2, 4 ...],
+ *                      as higher is alpha, filtering is harder.
+ */
+int16_t emaFilter_LowPass(int16_t new, int16_t last, uint8_t alpha);
 
-adc_t anIn_adcRead(int channel);
-
-adc_t anIn_get(int channel);
-
-void anIn_update(void);
+/**
+ *  \brief
+ *  EMA High Pass Filter
+ *
+ *  \param[in] new      New sample.
+ *  \param[in] last     Last filtered value.
+ *  \param[in] alph     Filtering hardness [1, 2, 4 ...],
+ *                      as higher is alpha, filtering is harder.
+ */
+int16_t emaFilter_HighPass(int16_t new, int16_t last, uint8_t alpha);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus
@@ -55,4 +62,4 @@ void anIn_update(void);
 /* ------------------------------ Module end ------------------------------- */
 #endif
 
-/* ------------------------------ End of file ------------------------------ */
+/* ------------------------------ File footer ------------------------------ */

@@ -62,7 +62,7 @@ RKH_THIS_MODULE
 /* ------------------------------- Constants ------------------------------- */
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
-void keyb_din_parser(char c);
+void keyb_dIn_parser(char c);
 
 /* ---------------------------- Local variables ---------------------------- */
 #if defined(RKH_USE_TRC_SENDER)
@@ -99,7 +99,7 @@ isr_kbdThread(LPVOID par)      /* Win32 thread to emulate keyboard ISR */
     {
 		c = (char)_getch();
         bsp_keyParser(c);
-		keyb_din_parser(c);
+		keyb_dIn_parser(c);
     }
     return 0;
 }

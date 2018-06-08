@@ -23,17 +23,18 @@
 /* ----------------------------- Local macros ------------------------------ */
 /* ------------------------------- Constants ------------------------------- */
 /* ---------------------------- Local data types --------------------------- */
-static unsigned short main_timer_counter;
+static unsigned short counter;
+static int enabled = 0;
 
 /* ---------------------------- Global variables --------------------------- */
-extern const timerChain_t timerChain[ NUM_TIMER_DIVISORS ];
+extern const timerChain_t timerChain[NUM_TIMER_DIVISORS];
 
 /* ---------------------------- Local variables ---------------------------- */
 static
 void
-execute_list( void (* const *p)( void ) )
+execute_list(void (* const *p)(void))
 {
-	for(  ; *p != NULL; ++p  )
+	for(; *p != NULL; ++p)
 		(**p)();
 }
 
@@ -41,10 +42,10 @@ execute_list( void (* const *p)( void ) )
 /* ---------------------------- Local functions ---------------------------- */
 /* ---------------------------- Global functions --------------------------- */
 void
-mTime_interruptInit( void )
+mTime_init(void)
 {
-	mTime_interruptInitHardwareTimer( MTIME_TIME_TICK );
-	main_timer_counter = 0;
+	counter = 0;
+    enabled = 1;
 }
 
 /*
@@ -56,16 +57,19 @@ mTime_interruptInit( void )
  * 	This timing chain is controlled	by table 'timer_chain'
  */
 void
-mTime_interrupt( void )
+mTime_tick(void)
 {
 	const timerChain_t *p;
 	unsigned char num;
-
-	for( p = timerChain, num = NUM_TIMER_DIVISORS; num-- ; ++p )
-		if( ( main_timer_counter % p->timer ) == 0 )
-			execute_list( p->ptimeact );
-	if( ++main_timer_counter >= (p-1)->timer )
-		main_timer_counter = 0;
+    
+    if(!enabled)
+        return;
+    
+	for(p = timerChain, num = NUM_TIMER_DIVISORS; num--; ++p)
+		if((counter % p->timer) == 0)
+			execute_list(p->ptimeact);
+	if(++counter >= (p-1)->timer)
+		counter = 0;
 }
 
 /* ------------------------------ End of file ------------------------------ */

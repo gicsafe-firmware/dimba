@@ -1,82 +1,77 @@
 /**
- *  \file       modpwr_sim900.c
- *  \brief      Implementation of modpwr abstraction for SIM900 on CIAA-NXP.
+ *  \file       anin.c
+ *  \brief      Implementation of Analog Inputs adquisition and filtering.
  */
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2018.06.05  DaBa  v1.0.00  Initial version
+ *  2018.05.17  DaBa  v1.0.00  Initial version
  */
 
 /* -------------------------------- Authors -------------------------------- */
 /*
- *  DaBa  Dario Bali�a       db@vortexmakes.com
+ *  DaBa  Dario Baliña       db@vortexmakes.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
-#include "sapi.h"
-
 #include "rkh.h"
-#include "modpwr.h"
+#include "anin.h"
 #include "mTimeCfg.h"
+#include "emaFilter.h"
+#include "anSampler.h"
 
 /* ----------------------------- Local macros ------------------------------ */
-#define CFG_PWR_KEY_GPIO()  gpioConfig(GPIO0, GPIO_OUTPUT)
-#define PWR_KEY(b)          gpioWrite(GPIO0, !b)
-
 /* ------------------------------- Constants ------------------------------- */
-#define SIM900_PWR_TIME     (1000/MTIME_MODPWR_BASE)
-
+#define ANINS_EMA_ALPHA     2
 /* ---------------------------- Local data types --------------------------- */
-typedef enum ModPwrStates
-{
-    OnOff,
-    Toggling
-};
-
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
-static ruint state, counter;
+static adc_t anIns[NUM_ANIN_SIGNALS];
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
+adc_t
+anIn_adcRead(int channel)
+{   
+    (void)channel;
+
+    return 0x5A5A;
+}
+
 /* ---------------------------- Global functions --------------------------- */
 void
-modPwr_init(void)
+anIn_init(void)
 {
-    CFG_PWR_KEY_GPIO();
-    PWR_KEY(1);
-    state = OnOff;
+    memset(anIns, 0, sizeof(anIns));
 }
 
 void
-modPwr_ctrl(void)
+anIn_captureAndFilter(void)
 {
-    switch(state)
+    unsigned char i;
+    int16_t value;
+
+    for(i=0; i < NUM_ANIN_SIGNALS; ++i)
     {
-        case OnOff:
-            PWR_KEY(1);
-            break;
-
-        case Toggling:
-            PWR_KEY(0);
-            if(counter && (--counter == 0))
-            {
-                state = OnOff;
-            }
-
-            break;
+        value = anIn_adcRead(i);
+        anIns[i] = emaFilter_LowPass(value, anIns[i], ANINS_EMA_ALPHA);
     }
 }
 
-void
-modPwr_toggle(void)
+adc_t
+anIn_get(int channel)
 {
-    RKH_ENTER_CRITICAL();
-    counter = SIM900_PWR_TIME;
-    state = Toggling;
-    RKH_EXIT_CRITICAL();
+    if(channel > NUM_ANIN_SIGNALS)
+        return 0;
+
+    return anIns[channel];
+}
+
+void
+anIn_update(void)
+{
+   anSampler_put();
 }
 
 /* ------------------------------ End of file ------------------------------ */
