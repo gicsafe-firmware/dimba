@@ -67,7 +67,13 @@ enum Signals
     evNetConnected,
     evNetDisconnected,
     evDisconnected,
-	evTerminate     /* press the key escape on the keyboard */
+	evTerminate,     /* press the key escape on the keyboard */
+	evConnRefused,
+	evWaitConnectTout,
+    evConnAccepted,
+    evActivate,
+    evDeactivate,
+    evSyncTout
 };
 
 /* ------------------------------- Data types ------------------------------ */

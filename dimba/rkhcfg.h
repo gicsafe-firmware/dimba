@@ -214,7 +214,7 @@
  *	If the #RKH_CFG_SMA_CHOICE_EN and #RKH_CFG_SMA_PSEUDOSTATE_EN are set to
  *	1, the RKH allows choice pseudostate usage.
  */
-#define RKH_CFG_SMA_CHOICE_EN           RKH_DISABLED
+#define RKH_CFG_SMA_CHOICE_EN           RKH_ENABLED
 
 /**
  *	If the #RKH_CFG_SMA_CONDITIONAL_EN and #RKH_CFG_SMA_PSEUDOSTATE_EN are
@@ -333,7 +333,7 @@
  *  \range
  *  \default    RKH_DISABLED
  */
-#define RKH_CFG_SMA_RT_CTOR_EN          RKH_DISABLED
+#define RKH_CFG_SMA_RT_CTOR_EN          RKH_ENABLED
 
 /**
  *  \brief

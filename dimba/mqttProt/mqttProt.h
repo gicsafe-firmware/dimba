@@ -37,6 +37,8 @@ RKH_SMA_DCLR(mqttProt);
 /* ------------------------------- Data types ------------------------------ */
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
+void MQTTProt_ctor(void);
+
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus
 }
