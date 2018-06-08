@@ -174,35 +174,45 @@ bsp_init(int argc, char *argv[])
     RKH_TR_FWK_ACTOR(&bsp, "bsp");
 }
 
+#define NUM_AN_SAMPLES_GET  10
+#define NUM_DI_SAMPLES_GET  8
+
 static
 void
 send_signalsFrame(void)
 {
     AnSampleSet anSet;
-    IOChg ioChanges[8];
-    int nio;
+    IOChg ioChg[NUM_DI_SAMPLES_GET];
+    int n, l, i, j;
+    char *p;
 
     RKH_SET_STATIC_EVENT(RKH_UPCAST(RKH_EVT_T, &e_Send), evSend);
    
-    anSampler_getSet(&anSet, 2);
-    nio = IOChgDet_get(ioChanges, 1);
-    
-    if(nio != 0)
+    n = anSampler_getSet(&anSet, NUM_AN_SAMPLES_GET);
+   
+    p = (char *)(e_Send.buf);
+    l = 0;
+
+    for(i=0; i < NUM_AN_SIGNALS; ++i)
     {
-        sprintf(e_Send.buf, "%u, AN[0]: %x\r\n"
-                            "%u, IN[%d]: %d\r\n",
-                       anSet.timeStamp, anSet.anSignal[0][0],
-             ioChanges[0].timeStamp, ioChanges[0].signalId, ioChanges[0].signalValue
-                );
-    }
-    else
-    {
-        sprintf(e_Send.buf, "%u, AN[0]: %x\r\n",
-                       anSet.timeStamp, anSet.anSignal[0][0]
-                );
+        l += sprintf(p + l, "ts:%u, AN[%d]", anSet.timeStamp, i);
+        for(j=0; j<n; ++j)
+        {
+            l += sprintf(p + l,", %d", anSet.anSignal[i][j]);
+        }
+        l += sprintf(p + l, "\r\n");
     }
 
-    e_Send.size = strlen(e_Send.buf);
+    n = IOChgDet_get(ioChg, NUM_DI_SAMPLES_GET);
+    
+    for(i=0; i < n; ++i)
+    {
+        l += sprintf(p + l, "ts:%u, DI[%d]:%d\r\n", ioChg[i].timeStamp,
+                                                       ioChg[i].signalId,
+                                                       ioChg[i].signalValue );
+    }
+
+    e_Send.size = l;
 
     RKH_SMA_POST_FIFO(conMgr, RKH_UPCAST(RKH_EVT_T, &e_Send), &bsp);
 }

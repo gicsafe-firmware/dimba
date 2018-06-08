@@ -28,6 +28,7 @@
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
 static adc_t anIns[NUM_ANIN_SIGNALS];
+static adc_t anIns_simu[NUM_ANIN_SIGNALS] = {1000, 2000, 3000, 4000};
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
@@ -36,7 +37,7 @@ anIn_adcRead(int channel)
 {   
     (void)channel;
 
-    return 0x5A5A;
+    return anIns_simu[channel];
 }
 
 /* ---------------------------- Global functions --------------------------- */

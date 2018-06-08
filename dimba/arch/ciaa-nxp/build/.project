@@ -25,6 +25,11 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>src/MQTT-C</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
 			<name>src/bsp</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
