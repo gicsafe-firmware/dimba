@@ -70,6 +70,8 @@ enum Signals
 	evTerminate,     /* press the key escape on the keyboard */
 	evConnRefused,
 	evWaitConnectTout,
+	evWaitPublishTout,
+	evWaitSyncTout,
     evConnAccepted,
     evActivate,
     evDeactivate,

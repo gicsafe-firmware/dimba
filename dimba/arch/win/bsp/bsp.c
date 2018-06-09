@@ -110,7 +110,6 @@ static RKH_ROM_STATIC_EVENT(e_Open, evOpen);
 static RKH_ROM_STATIC_EVENT(e_Close, evClose);
 static RKH_ROM_STATIC_EVENT(e_Ok, evOk);
 static RKH_ROM_STATIC_EVENT(e_Recv, evRecv);
-
 static SendEvt e_Send;
 
 static void ser_rx_isr(unsigned char byte);

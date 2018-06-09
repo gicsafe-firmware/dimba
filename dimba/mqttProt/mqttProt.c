@@ -18,13 +18,16 @@
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
 #include "rkh.h"
+#include "rkhtmr.h"
 #include "signals.h"
 #include "mqttProt.h"
 #include "conmgr.h"
+#include "mqtt.h"
 
 /* ----------------------------- Local macros ------------------------------ */
 /* ......................... Declares active object ........................ */
 typedef struct MQTTProt MQTTProt;
+typedef struct SyncRegion SyncRegion;
 
 /* ................... Declares states and pseudostates .................... */
 RKH_DCLR_BASIC_STATE Sync_idle, Sync_waitSync, Sync_receiving, 
@@ -41,7 +44,6 @@ RKH_DCLR_CHOICE_STATE Sync_c10, Sync_c12, Sync_c14, Sync_c25, Sync_c31,
 static void init(MQTTProt *const me, RKH_EVT_T *pe);
 
 /* ........................ Declares effect actions ........................ */
-static void initPublishing(MQTTProt *const me, RKH_EVT_T *pe);
 static void publish(MQTTProt *const me, RKH_EVT_T *pe);
 static void initRecvAll(MQTTProt *const me, RKH_EVT_T *pe);
 static void recvFail(MQTTProt *const me, RKH_EVT_T *pe);
@@ -57,13 +59,15 @@ static void initSendOk(MQTTProt *const me, RKH_EVT_T *pe);
 static void sendOneMsg(MQTTProt *const me, RKH_EVT_T *pe);
 static void endSendAll(MQTTProt *const me, RKH_EVT_T *pe);
 static void nextSend(MQTTProt *const me, RKH_EVT_T *pe);
+static void handleRecvMsg(MQTTProt *const me, RKH_EVT_T *pe);
 
 /* ......................... Declares entry actions ........................ */
 static void enWaitToConnect(MQTTProt *const me, RKH_EVT_T *pe);
-static void BrokerConnect(MQTTProt *const me, RKH_EVT_T *pe);
+static void brokerConnect(MQTTProt *const me, RKH_EVT_T *pe);
 static void enWaitSync(MQTTProt *const me, RKH_EVT_T *pe);
 static void recvAll(MQTTProt *const me, RKH_EVT_T *pe);
 static void sendAll(MQTTProt *const me, RKH_EVT_T *pe);
+static void enWaitToPublish(MQTTProt *const me, RKH_EVT_T *pe);
 
 /* ......................... Declares exit actions ......................... */
 static void exWaitToConnect(MQTTProt *const me, RKH_EVT_T *pe);
@@ -138,7 +142,7 @@ RKH_CREATE_TRANS_TABLE(Client_connected)
     RKH_TRREG(evNetDisconnected, NULL, NULL, &Client_netError),
 RKH_END_TRANS_TABLE
 
-RKH_CREATE_BASIC_STATE(Client_tryConnect, BrokerConnect, NULL, 
+RKH_CREATE_BASIC_STATE(Client_tryConnect, brokerConnect, NULL, 
                        &Client_connected, NULL);
 RKH_CREATE_TRANS_TABLE(Client_tryConnect)
     RKH_TRCOMPLETION(NULL, NULL, &Client_c7),
@@ -152,13 +156,13 @@ RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(Client_awaitingAck, NULL, NULL, &Client_connected, NULL);
 RKH_CREATE_TRANS_TABLE(Client_awaitingAck)
-    RKH_TRREG(evConnAccepted, NULL, initPublishing, &Client_waitToPublish),
+    RKH_TRREG(evConnAccepted, NULL, NULL, &Client_waitToPublish),
 RKH_END_TRANS_TABLE
 
-RKH_CREATE_BASIC_STATE(Client_waitToPublish, NULL, exWaitToPublish, 
+RKH_CREATE_BASIC_STATE(Client_waitToPublish, enWaitToPublish, exWaitToPublish, 
                        &Client_connected, NULL);
 RKH_CREATE_TRANS_TABLE(Client_waitToPublish)
-    RKH_TRINT(evConnAccepted, NULL, publish),
+    RKH_TRINT(evWaitPublishTout, NULL, publish),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(Client_netError, NULL, NULL, RKH_ROOT, NULL);
@@ -174,9 +178,9 @@ RKH_END_BRANCH_TABLE
 
 RKH_CREATE_CHOICE_STATE(Sync_c10);
 RKH_CREATE_BRANCH_TABLE(Sync_c10)
-	RKH_BRANCH(isConsumed,      NULL,       &Sync_c12),
-	RKH_BRANCH(isUnpackError,   parseError, &Sync_endCycle),
-	RKH_BRANCH(ELSE,            noConsumed, &Sync_c14),
+	RKH_BRANCH(isConsumed,      handleRecvMsg,  &Sync_c12),
+	RKH_BRANCH(isUnpackError,   parseError,     &Sync_endCycle),
+	RKH_BRANCH(ELSE,            noConsumed,     &Sync_c14),
 RKH_END_BRANCH_TABLE
 
 RKH_CREATE_CHOICE_STATE(Sync_c12);
@@ -216,15 +220,29 @@ RKH_CREATE_BRANCH_TABLE(Sync_c38)
 RKH_END_BRANCH_TABLE
 
 /* ............................. Active object ............................. */
-struct MQTTProt
+struct SyncRegion
 {
-    RKH_SMA_T ao;           /* Base structure */
-    RKHSmaVtbl vtbl;        /* Virtual table */
-    RKH_SM_T sync;          /* Sync orthogonal region */
+    RKH_SM_T sm;            /* Orthogonal region */
+    MQTTProt *itsMQTTProt;
+    RKH_TMR_T syncTmr;
 };
 
-RKH_SMA_CREATE(MQTTProt, mqttProt, 2, HCAL, &Client_idle, init, 
-               NULL);
+struct MQTTProt
+{
+    RKH_SMA_T ao;               /* Base structure */
+    RKHSmaVtbl vtbl;            /* Virtual table */
+    SyncRegion itsSyncRegion;   /* Sync orthogonal region */
+    RKH_TMR_T publishTmr;
+    RKH_TMR_T tryConnTmr;
+    struct mqtt_client client;
+    uint8_t sendbuf[2048];  /* sendbuf should be large enough to hold */
+                            /* multiple whole mqtt messages */
+    uint8_t recvbuf[1024];  /* recvbuf should be large enough any whole */
+                            /* mqtt message expected to be received */
+    enum MQTTErrors operRes;
+};
+
+RKH_SMA_CREATE(MQTTProt, mqttProt, 2, HCAL, &Client_idle, init, NULL);
 RKH_SMA_DEF_PTR(mqttProt);
 RKH_SM_CONST_CREATE(syncRegion, 0, HCAL, &Sync_idle, NULL, NULL);
 
@@ -232,13 +250,24 @@ RKH_SM_CONST_CREATE(syncRegion, 0, HCAL, &Sync_idle, NULL, NULL);
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
+static RKH_ROM_STATIC_EVENT(objEvWaitConnectTout, evWaitConnectTout);
+static RKH_ROM_STATIC_EVENT(objEvWaitPublishTout, evWaitPublishTout);
+static RKH_ROM_STATIC_EVENT(objEvWaitSyncTout, evWaitSyncTout);
+static RKH_ROM_STATIC_EVENT(objEvRecv, evRecv);
+static SendEvt objEvSend;
+static LocalSendAll localSend;
+static LocalRecvAll localRecv;
+
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
 void 
 dispatch(RKH_SMA_T *me, void *arg)
 {
+    SyncRegion *region;
+    
+    region = &(RKH_DOWNCAST(MQTTProt, me)->itsSyncRegion);
     rkh_sm_dispatch((RKH_SM_T *)me, (RKH_EVT_T *)arg);
-    rkh_sm_dispatch(&RKH_DOWNCAST(MQTTProt, me)->sync, (RKH_EVT_T *)arg);
+    rkh_sm_dispatch(RKH_UPCAST(RKH_SM_T, region), (RKH_EVT_T *)arg);
 }
 
 /* ............................ Initial action ............................. */
@@ -250,184 +279,289 @@ init(MQTTProt *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_AO(me);
     RKH_TR_FWK_QUEUE(&RKH_UPCAST(RKH_SMA_T, me)->equeue);
     RKH_TR_FWK_STATE(me, &Client_idle);
+
+    mqtt_init(&me->client, 0, me->sendbuf, sizeof(me->sendbuf), 
+              me->recvbuf, sizeof(me->recvbuf), 0);
 }
 
 /* ............................ Effect actions ............................. */
-static void
-initPublishing(MQTTProt *const me, RKH_EVT_T *pe)
-{
-}
-
 static void 
 publish(MQTTProt *const me, RKH_EVT_T *pe)
 {
+    const char *topic;
+    char application_message[128];
+
+    /* Get digital input changes and analog input samples */
+    /* Format a payload to send */
+    /* mqtt_publish(...); */
+
+    topic = "datetime";
+    strcpy(application_message, "The time is 2018-06-04 08:12:12");
+    me->operRes = mqtt_publish(&me->client, 
+                               topic, 
+                               application_message, 
+                               strlen(application_message) + 1, 
+                               MQTT_PUBLISH_QOS_0);
 }
 
 static void 
 initRecvAll(MQTTProt *const me, RKH_EVT_T *pe)
 {
+    mqtt_initRecvAll();
 }
 
 static void 
 recvFail(MQTTProt *const me, RKH_EVT_T *pe)
 {
+    MQTTProt *realMe;
+
+    realMe = ((SyncRegion *)me)->itsMQTTProt;
+    mqtt_recvFail(&realMe->client, &localRecv); /* an error occurred */
 }
 
 static void 
 parseRecv(MQTTProt *const me, RKH_EVT_T *pe)
 {
+    MQTTProt *realMe;
+
+    realMe = ((SyncRegion *)me)->itsMQTTProt;
+    mqtt_parseRecv(&realMe->client, &localRecv);
 }
 
 static void 
 sendMsgFail(MQTTProt *const me, RKH_EVT_T *pe)
 {
+    MQTTProt *realMe;
+
+    realMe = ((SyncRegion *)me)->itsMQTTProt;
+    mqtt_sendMsgFail(&realMe->client, &localSend);
 }
 
 static void 
 setMsgState(MQTTProt *const me, RKH_EVT_T *pe)
 {
+    MQTTProt *realMe;
+
+    realMe = ((SyncRegion *)me)->itsMQTTProt;
+    mqtt_setMsgState(&realMe->client, &localSend);
 }
 
 static void 
 parseError(MQTTProt *const me, RKH_EVT_T *pe)
 {
+    MQTTProt *realMe;
+
+    realMe = ((SyncRegion *)me)->itsMQTTProt;
+    mqtt_parseError(&realMe->client, &localRecv);
 }
 
 static void 
 noConsumed(MQTTProt *const me, RKH_EVT_T *pe)
 {
+    MQTTProt *realMe;
+
+    realMe = ((SyncRegion *)me)->itsMQTTProt;
+    mqtt_noConsumed(&realMe->client, &localRecv);
 }
 
 static void 
 cleanBuf(MQTTProt *const me, RKH_EVT_T *pe)
 {
+    MQTTProt *realMe;
+
+    realMe = ((SyncRegion *)me)->itsMQTTProt;
+    mqtt_cleanBuf(&realMe->client, &localRecv);
 }
 
 static void 
 recvMsgError(MQTTProt *const me, RKH_EVT_T *pe)
 {
+    MQTTProt *realMe;
+
+    realMe = ((SyncRegion *)me)->itsMQTTProt;
+    mqtt_recvMsgError(&realMe->client, &localRecv);
 }
 
 static void 
 initSendAll(MQTTProt *const me, RKH_EVT_T *pe)
 {
+    MQTTProt *realMe;
+
+    realMe = ((SyncRegion *)me)->itsMQTTProt;
+    mqtt_initSendAll(&realMe->client, &localSend);
 }
 
 static void 
 initSendOk(MQTTProt *const me, RKH_EVT_T *pe)
 {
+    (void *)me;
+    (void *)pe;
 }
 
 static void 
 sendOneMsg(MQTTProt *const me, RKH_EVT_T *pe)
 {
+    MQTTProt *realMe;
+
+    realMe = ((SyncRegion *)me)->itsMQTTProt;
+    mqtt_sendOneMsg(&realMe->client, &localSend);
 }
 
 static void 
 endSendAll(MQTTProt *const me, RKH_EVT_T *pe)
 {
+     mqtt_endSendAll(&me->client);
 }
 
 static void 
 nextSend(MQTTProt *const me, RKH_EVT_T *pe)
 {
+    mqtt_nextSend(&localSend);
+}
+
+static void 
+handleRecvMsg(MQTTProt *const me, RKH_EVT_T *pe)
+{
+    MQTTProt *realMe;
+
+    realMe = ((SyncRegion *)me)->itsMQTTProt;
+    mqtt_handleRecvMsg(&realMe->client, &localRecv);
 }
 
 /* ............................. Entry actions ............................. */
 static void 
 enWaitToConnect(MQTTProt *const me, RKH_EVT_T *pe)
 {
+    RKH_TMR_INIT(&me->tryConnTmr, &objEvWaitConnectTout, NULL);
+    RKH_TMR_ONESHOT(&me->tryConnTmr, RKH_UPCAST(RKH_SMA_T, me), 
+                    WAIT_CONNECT_TIME);
 }
 
 static void 
-BrokerConnect(MQTTProt *const me, RKH_EVT_T *pe)
+brokerConnect(MQTTProt *const me, RKH_EVT_T *pe)
 {
+    me->operRes = mqtt_connect(&me->client, 
+                               "publishing_client", 
+                               NULL, NULL, 0, NULL, NULL, 0, 400);
 }
 
 static void 
 enWaitSync(MQTTProt *const me, RKH_EVT_T *pe)
 {
+    SyncRegion *realMe;
+
+    realMe = (SyncRegion *)me;
+    RKH_TMR_INIT(&realMe->syncTmr, &objEvWaitSyncTout, NULL);
+    RKH_TMR_ONESHOT(&realMe->syncTmr, 
+                    RKH_UPCAST(RKH_SMA_T, realMe->itsMQTTProt), 
+                    SYNC_TIME);
 }
 
 static void 
 recvAll(MQTTProt *const me, RKH_EVT_T *pe)
 {
+    MQTTProt *realMe;
+
+    realMe = ((SyncRegion *)me)->itsMQTTProt;
+    mqtt_recvAll(&realMe->client, &localRecv);
+    RKH_SMA_POST_FIFO(conMgr, &objEvRecv, realMe);
 }
 
 static void 
 sendAll(MQTTProt *const me, RKH_EVT_T *pe)
 {
+    MQTTProt *realMe;
+
+    realMe = ((SyncRegion *)me)->itsMQTTProt;
+    RKH_SET_STATIC_EVENT(RKH_UPCAST(RKH_EVT_T, &objEvSend), evSend);
+    objEvSend.size = 0;
+    /*objEvSend.buf = */
+    RKH_SMA_POST_FIFO(conMgr, &objEvSend, realMe);
+}
+
+static void 
+enWaitToPublish(MQTTProt *const me, RKH_EVT_T *pe)
+{
+    RKH_TMR_INIT(&me->publishTmr, &objEvWaitPublishTout, NULL);
+    RKH_TMR_PERIODIC(&me->publishTmr, RKH_UPCAST(RKH_SMA_T, me), 0, 
+                     PUBLISH_TIME);
 }
 
 /* ............................. Exit actions .............................. */
 static void 
 exWaitToConnect(MQTTProt *const me, RKH_EVT_T *pe)
 {
+    rkh_tmr_stop(&me->tryConnTmr);
 }
 
 static void 
 exWaitToPublish(MQTTProt *const me, RKH_EVT_T *pe)
 {
+    rkh_tmr_stop(&me->publishTmr);
 }
 
 static void 
 exWaitSync(MQTTProt *const me, RKH_EVT_T *pe)
 {
+    SyncRegion *realMe;
+
+    realMe = (SyncRegion *)me;
+    rkh_tmr_stop(&realMe->syncTmr);
 }
 
 /* ................................ Guards ................................. */
 static rbool_t 
 isConnectOk(const RKH_SM_T *me, RKH_EVT_T *pe)
 {
-    return RKH_FALSE;
+    return RKH_UPCAST(MQTTProt, me)->operRes == MQTT_OK ? RKH_TRUE: RKH_FALSE;
 }
 
 static rbool_t 
 isConsumed(const RKH_SM_T *me, RKH_EVT_T *pe)
 {
-    return RKH_FALSE;
+    return mqtt_isConsumed(&localRecv);
 }
 
 static rbool_t 
 isUnpackError(const RKH_SM_T *me, RKH_EVT_T *pe)
 {
-    return RKH_FALSE;
+    return mqtt_isUnpackError(&localRecv);
 }
 
 static rbool_t 
 isNotError(const RKH_SM_T *me, RKH_EVT_T *pe)
 {
-    return RKH_FALSE;
+    return mqtt_isNotError(&localRecv);
 }
 
 static rbool_t 
 isRecvBufFull(const RKH_SM_T *me, RKH_EVT_T *pe)
 {
-    return RKH_FALSE;
+    return mqtt_isRecvBufFull(&localRecv);
 }
 
 static rbool_t 
 isInitOk(const RKH_SM_T *me, RKH_EVT_T *pe)
 {
-    return RKH_FALSE;
+    return mqtt_isInitOk(&localSend);
 }
 
 static rbool_t 
 isThereMsg(const RKH_SM_T *me, RKH_EVT_T *pe)
 {
-    return RKH_FALSE;
+    return mqtt_isThereMsg(&localSend);
 }
 
 static rbool_t 
 isNotResend(const RKH_SM_T *me, RKH_EVT_T *pe)
 {
-    return RKH_FALSE;
+    return localSend.resend == 0;
 }
 
 static rbool_t 
 isSetMsgStateOk(const RKH_SM_T *me, RKH_EVT_T *pe)
 {
-    return RKH_FALSE;
+    return mqtt_isSetMsgStateResult(&localSend);
 }
 
 /* ---------------------------- Global functions --------------------------- */
@@ -440,7 +574,8 @@ MQTTProt_ctor(void)
     me->vtbl = rkhSmaVtbl;
     me->vtbl.task = dispatch;
     rkh_sma_ctor(RKH_UPCAST(RKH_SMA_T, me), &me->vtbl);
-    RKH_SM_INIT(&me->sync, syncRegion, 0, HCAL, Sync_idle, NULL, NULL);
+    RKH_SM_INIT((RKH_SM_T *)&(me->itsSyncRegion), syncRegion, 0, HCAL, Sync_idle, 
+                NULL, NULL);
 }
 
 /* ------------------------------ End of file ------------------------------ */
