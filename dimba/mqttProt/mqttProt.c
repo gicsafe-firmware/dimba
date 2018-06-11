@@ -102,7 +102,7 @@ RKH_END_TRANS_TABLE
 RKH_CREATE_BASIC_STATE(Sync_WaitSync, enWaitSync, exWaitSync, &Sync_Active, 
                        NULL);
 RKH_CREATE_TRANS_TABLE(Sync_WaitSync)
-    RKH_TRREG(evSyncTout, NULL, initRecvAll, &Sync_Receiving),
+    RKH_TRREG(evWaitSyncTout, NULL, initRecvAll, &Sync_Receiving),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(Sync_Receiving, recvAll, NULL, &Sync_Active, NULL);
@@ -309,6 +309,34 @@ init(MQTTProt *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_AO(me);
     RKH_TR_FWK_QUEUE(&RKH_UPCAST(RKH_SMA_T, me)->equeue);
     RKH_TR_FWK_STATE(me, &Client_Idle);
+    RKH_TR_FWK_STATE(me, &Sync_Idle);
+    RKH_TR_FWK_STATE(me, &Sync_WaitSync);
+    RKH_TR_FWK_STATE(me, &Sync_Receiving);
+    RKH_TR_FWK_STATE(me, &Sync_EndCycle);
+    RKH_TR_FWK_STATE(me, &Sync_Sending);
+    RKH_TR_FWK_STATE(me, &Client_Idle);
+    RKH_TR_FWK_STATE(me, &Client_ConnRefused);
+    RKH_TR_FWK_STATE(me, &Client_TryConnect);
+    RKH_TR_FWK_STATE(me, &Client_WaitToConnect);
+    RKH_TR_FWK_STATE(me, &Client_AwaitingAck);
+    RKH_TR_FWK_STATE(me, &Client_WaitToPublish);
+    RKH_TR_FWK_STATE(me, &Client_NetError);
+    RKH_TR_FWK_STATE(me, &Sync_Active);
+    RKH_TR_FWK_STATE(me, &Client_Connected);
+    RKH_TR_FWK_STATE(me, &Sync_C10);
+    RKH_TR_FWK_STATE(me, &Sync_C12);
+    RKH_TR_FWK_STATE(me, &Sync_C14);
+    RKH_TR_FWK_STATE(me, &Sync_C25);
+    RKH_TR_FWK_STATE(me, &Sync_C31);
+    RKH_TR_FWK_STATE(me, &Sync_C32);
+    RKH_TR_FWK_STATE(me, &Sync_C38);
+    RKH_TR_FWK_STATE(me, &Client_C7);
+    RKH_TR_FWK_SIG(evConnAccepted);
+    RKH_TR_FWK_SIG(evConnRefused);
+    RKH_TR_FWK_SIG(evActivate);
+    RKH_TR_FWK_SIG(evWaitConnectTout);
+    RKH_TR_FWK_SIG(evWaitPublishTout);
+    RKH_TR_FWK_SIG(evWaitSyncTout);
 
     RKH_SET_STATIC_EVENT(RKH_UPCAST(RKH_EVT_T, &evSendObj), evSend);
     RKH_SET_STATIC_EVENT(RKH_UPCAST(RKH_EVT_T, &evConnRefusedObj), 
@@ -620,8 +648,10 @@ MQTTProt_ctor(void)
     me->vtbl = rkhSmaVtbl;
     me->vtbl.task = dispatch;
     rkh_sma_ctor(RKH_UPCAST(RKH_SMA_T, me), &me->vtbl);
-    RKH_SM_INIT((RKH_SM_T *)&(me->itsSyncRegion), syncRegion, 0, HCAL, Sync_Idle, 
-                NULL, NULL);
+
+    me->itsSyncRegion.itsMQTTProt = me;
+    RKH_SM_INIT((RKH_SM_T *)&(me->itsSyncRegion), syncRegion, 0, HCAL, 
+                Sync_Idle, NULL, NULL);
 }
 
 /* ------------------------------ End of file ------------------------------ */
