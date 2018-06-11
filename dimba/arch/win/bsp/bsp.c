@@ -177,6 +177,9 @@ send_signalsFrame(void)
 
     e_Send.size = l;
 
+    printf("Write GPRS Socket:\r\n");
+    printf("%s\r\n", e_Send.buf);
+
     RKH_SMA_POST_FIFO(conMgr, RKH_UPCAST(RKH_EVT_T, &e_Send), &bsp);
 }
 
@@ -194,13 +197,6 @@ bsp_init(int argc, char *argv[])
     modPwr_init();
     dIn_init();
 	anIn_init();
-
-}
-
-void
-bsp_publishActor(void)
-{
-    RKH_TR_FWK_ACTOR(&bsp, "bsp");
 }
 
 void
@@ -214,14 +210,17 @@ bsp_keyParser(int c)
             break;
 
         case 'o':
+            printf("Open GPRS Socket\r\n");
             RKH_SMA_POST_FIFO(conMgr, &e_Open, &bsp);
             break;
 
         case 'c':
+            printf("Close GPRS Socket\r\n");
             RKH_SMA_POST_FIFO(conMgr, &e_Close, &bsp);
             break;
 
         case 'r':
+            printf("Read GPRS Socket\r\n");
             RKH_SMA_POST_FIFO(conMgr, &e_Recv, &bsp);
             break;
 
@@ -230,6 +229,9 @@ bsp_keyParser(int c)
             e_Send.size = strlen(TEST_TX_PACKET);
 
             memcpy(e_Send.buf, (unsigned char *)TEST_TX_PACKET, e_Send.size);
+
+            printf("Write GPRS Socket:\r\n");
+            printf("%s\r\n", e_Send.buf);
 
             RKH_SMA_POST_FIFO(conMgr, RKH_UPCAST(RKH_EVT_T, &e_Send), &bsp);
             break;
@@ -255,7 +257,7 @@ void
 ser_rx_isr( unsigned char byte )
 {
     cmdParser(byte);
-	putchar(byte);
+//	putchar(byte);
 }
 
 static
@@ -270,6 +272,7 @@ bsp_serial_open(int ch)
     init_serial_hard(ch, &ser_cback );
     connect_serial(ch);
     cmdParser = ModCmd_init();
+    RKH_TR_FWK_ACTOR(&bsp, "bsp");
 }
 
 void

@@ -50,7 +50,6 @@ enum
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
 void bsp_init(int argc, char *argv[]);
-void bsp_publishActor(void);
 
 void bsp_keyParser(int c);
 void bsp_timeTick(void);

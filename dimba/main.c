@@ -88,8 +88,6 @@ main(int argc, char *argv[])
 
     RKH_TRC_OPEN();
 
-    bsp_publishActor();
-
     rkh_dynEvt_init();
     rkh_fwk_registerEvtPool(evPool0Sto, SIZEOF_EP0STO, SIZEOF_EP0_BLOCK);
     rkh_fwk_registerEvtPool(evPool1Sto, SIZEOF_EP1STO, SIZEOF_EP1_BLOCK);

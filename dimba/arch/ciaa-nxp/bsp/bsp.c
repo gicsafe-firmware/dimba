@@ -59,33 +59,11 @@ bsp_init(int argc, char *argv[])
     (void)argc;
     (void)argv;
 
-
     boardConfig();
 
     modPwr_init();
     dIn_init();
 	anIn_init();
-    anSampler_init();
-    IOChgDet_init();
-    epoch_init();
-    
-    mTime_init();
-
-    rkh_fwk_init();
-
-    RKH_FILTER_ON_GROUP(RKH_TRC_ALL_GROUPS);
-    RKH_FILTER_ON_EVENT(RKH_TRC_ALL_EVENTS);
-	RKH_FILTER_OFF_EVENT(MODCMD_USR_TRACE);
-	RKH_FILTER_OFF_GROUP_ALL_EVENTS(RKH_TG_USR);
-    //RKH_FILTER_OFF_EVENT(RKH_TE_TMR_TOUT);
-    RKH_FILTER_OFF_EVENT(RKH_TE_SM_STATE);
-    RKH_FILTER_OFF_EVENT(RKH_TE_SMA_FIFO);
-    RKH_FILTER_OFF_EVENT(RKH_TE_SMA_LIFO);
-    //RKH_FILTER_OFF_SMA(modMgr);
-    RKH_FILTER_OFF_SMA(conMgr);
-    RKH_FILTER_OFF_ALL_SIGNALS();
-
-    RKH_TRC_OPEN();
 }
 
 #if 0
