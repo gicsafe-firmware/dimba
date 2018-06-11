@@ -60,6 +60,7 @@ static void sendOneMsg(MQTTProt *const me, RKH_EVT_T *pe);
 static void endSendAll(MQTTProt *const me, RKH_EVT_T *pe);
 static void nextSend(MQTTProt *const me, RKH_EVT_T *pe);
 static void handleRecvMsg(MQTTProt *const me, RKH_EVT_T *pe);
+static void activateSync(MQTTProt *const me, RKH_EVT_T *pe);
 
 /* ......................... Declares entry actions ........................ */
 static void enWaitToConnect(MQTTProt *const me, RKH_EVT_T *pe);
@@ -123,7 +124,7 @@ RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(Client_idle, NULL, NULL, RKH_ROOT, NULL);
 RKH_CREATE_TRANS_TABLE(Client_idle)
-    RKH_TRREG(evNetConnected, NULL, NULL, &Client_connected),
+    RKH_TRREG(evNetConnected, NULL, activateSync, &Client_connected),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(Client_connRefused, NULL, NULL, RKH_ROOT, NULL);
@@ -250,11 +251,12 @@ RKH_SM_CONST_CREATE(syncRegion, 0, HCAL, &Sync_idle, NULL, NULL);
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
-static RKH_ROM_STATIC_EVENT(objEvWaitConnectTout, evWaitConnectTout);
-static RKH_ROM_STATIC_EVENT(objEvWaitPublishTout, evWaitPublishTout);
-static RKH_ROM_STATIC_EVENT(objEvWaitSyncTout, evWaitSyncTout);
-static RKH_ROM_STATIC_EVENT(objEvRecv, evRecv);
-static SendEvt objEvSend;
+static RKH_ROM_STATIC_EVENT(evWaitConnectToutObj, evWaitConnectTout);
+static RKH_ROM_STATIC_EVENT(evWaitPublishToutObj, evWaitPublishTout);
+static RKH_ROM_STATIC_EVENT(evWaitSyncToutObj, evWaitSyncTout);
+static RKH_ROM_STATIC_EVENT(evRecvObj, evRecv);
+static RKH_ROM_STATIC_EVENT(evActivateObj, evActivate);
+static SendEvt evSendObj;
 static LocalSendAll localSend;
 static LocalRecvAll localRecv;
 
@@ -323,8 +325,13 @@ static void
 parseRecv(MQTTProt *const me, RKH_EVT_T *pe)
 {
     MQTTProt *realMe;
+    ReceivedEvt *evt;
 
     realMe = ((SyncRegion *)me)->itsMQTTProt;
+    evt = RKH_DOWNCAST(ReceivedEvt, pe);
+
+    memcpy(realMe->client.recv_buffer.curr, evt->buf, evt->size);
+    localRecv.rv = evt->size;
     mqtt_parseRecv(&realMe->client, &localRecv);
 }
 
@@ -428,11 +435,17 @@ handleRecvMsg(MQTTProt *const me, RKH_EVT_T *pe)
     mqtt_handleRecvMsg(&realMe->client, &localRecv);
 }
 
+static void 
+activateSync(MQTTProt *const me, RKH_EVT_T *pe)
+{
+    RKH_SMA_POST_FIFO(me, &evActivateObj, me);
+}
+
 /* ............................. Entry actions ............................. */
 static void 
 enWaitToConnect(MQTTProt *const me, RKH_EVT_T *pe)
 {
-    RKH_TMR_INIT(&me->tryConnTmr, &objEvWaitConnectTout, NULL);
+    RKH_TMR_INIT(&me->tryConnTmr, &evWaitConnectToutObj, NULL);
     RKH_TMR_ONESHOT(&me->tryConnTmr, RKH_UPCAST(RKH_SMA_T, me), 
                     WAIT_CONNECT_TIME);
 }
@@ -451,7 +464,7 @@ enWaitSync(MQTTProt *const me, RKH_EVT_T *pe)
     SyncRegion *realMe;
 
     realMe = (SyncRegion *)me;
-    RKH_TMR_INIT(&realMe->syncTmr, &objEvWaitSyncTout, NULL);
+    RKH_TMR_INIT(&realMe->syncTmr, &evWaitSyncToutObj, NULL);
     RKH_TMR_ONESHOT(&realMe->syncTmr, 
                     RKH_UPCAST(RKH_SMA_T, realMe->itsMQTTProt), 
                     SYNC_TIME);
@@ -463,8 +476,7 @@ recvAll(MQTTProt *const me, RKH_EVT_T *pe)
     MQTTProt *realMe;
 
     realMe = ((SyncRegion *)me)->itsMQTTProt;
-    mqtt_recvAll(&realMe->client, &localRecv);
-    RKH_SMA_POST_FIFO(conMgr, &objEvRecv, realMe);
+    RKH_SMA_POST_FIFO(conMgr, &evRecvObj, realMe);
 }
 
 static void 
@@ -473,16 +485,16 @@ sendAll(MQTTProt *const me, RKH_EVT_T *pe)
     MQTTProt *realMe;
 
     realMe = ((SyncRegion *)me)->itsMQTTProt;
-    RKH_SET_STATIC_EVENT(RKH_UPCAST(RKH_EVT_T, &objEvSend), evSend);
-    objEvSend.size = 0;
-    /*objEvSend.buf = */
-    RKH_SMA_POST_FIFO(conMgr, &objEvSend, realMe);
+    RKH_SET_STATIC_EVENT(RKH_UPCAST(RKH_EVT_T, &evSendObj), evSend);
+    evSendObj.size = 0;
+    memcpy(evSendObj.buf, localSend.msg->start, localSend.msg->size);
+    RKH_SMA_POST_FIFO(conMgr, &evSendObj, realMe);
 }
 
 static void 
 enWaitToPublish(MQTTProt *const me, RKH_EVT_T *pe)
 {
-    RKH_TMR_INIT(&me->publishTmr, &objEvWaitPublishTout, NULL);
+    RKH_TMR_INIT(&me->publishTmr, &evWaitPublishToutObj, NULL);
     RKH_TMR_PERIODIC(&me->publishTmr, RKH_UPCAST(RKH_SMA_T, me), 0, 
                      PUBLISH_TIME);
 }
