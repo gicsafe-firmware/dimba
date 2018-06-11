@@ -190,7 +190,7 @@
  *	hierarchical state machines uses up to 4 transition segments.
  *	Currently #RKH_CFG_SMA_MAX_TRC_SEGS cannot exceed 8.
  */
-#define RKH_CFG_SMA_MAX_TRC_SEGS        2u
+#define RKH_CFG_SMA_MAX_TRC_SEGS        8u
 
 /**
  *	If the #RKH_CFG_SMA_PSEUDOSTATE_EN is set to 1, the RKH allows
