@@ -50,6 +50,9 @@ RKH_THIS_MODULE
 #define TEST_TX_PACKET      "----o Ping"
 #define TEST_RX_PACKET      "o---- Pong"
 
+#define NUM_AN_SAMPLES_GET  10
+#define NUM_DI_SAMPLES_GET  8
+
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
 SERIAL_T serials[ NUM_CHANNELS ] =
@@ -135,6 +138,50 @@ processCmdLineOpts(int argc, char **argv)
         }
 }
 
+static
+void
+send_signalsFrame(void)
+{
+    AnSampleSet anSet;
+    IOChg ioChg[NUM_DI_SAMPLES_GET];
+    int n, l, i, j;
+    char *p;
+
+    RKH_SET_STATIC_EVENT(RKH_UPCAST(RKH_EVT_T, &e_Send), evSend);
+   
+    n = anSampler_getSet(&anSet, NUM_AN_SAMPLES_GET);
+   
+    p = (char *)(e_Send.buf);
+    l = 0;
+
+    for(i=0; i < NUM_AN_SIGNALS; ++i)
+    {
+        l += sprintf(p + l, "ts:%u, AN[%d]", anSet.timeStamp, i);
+
+        for(j=0; j<n; ++j)
+        {
+            l += sprintf(p + l,", %d.%02d",
+                               (char)((anSet.anSignal[i][j] & 0xFF00) >> 8),
+                               (char)(anSet.anSignal[i][j] & 0x00FF));
+        }
+
+        l += sprintf(p + l, "\r\n");
+    }
+
+    n = IOChgDet_get(ioChg, NUM_DI_SAMPLES_GET);
+    
+    for(i=0; i < n; ++i)
+    {
+        l += sprintf(p + l, "ts:%u, DI[%d]:%d\r\n", ioChg[i].timeStamp,
+                                                    ioChg[i].signalId,
+                                                    ioChg[i].signalValue );
+    }
+
+    e_Send.size = l;
+
+    RKH_SMA_POST_FIFO(conMgr, RKH_UPCAST(RKH_EVT_T, &e_Send), &bsp);
+}
+
 /* ---------------------------- Global functions --------------------------- */
 void
 bsp_init(int argc, char *argv[])
@@ -173,50 +220,6 @@ bsp_init(int argc, char *argv[])
 
     RKH_TR_FWK_ACTOR(&bsp, "bsp");
 }
-
-#define NUM_AN_SAMPLES_GET  10
-#define NUM_DI_SAMPLES_GET  8
-
-static
-void
-send_signalsFrame(void)
-{
-    AnSampleSet anSet;
-    IOChg ioChg[NUM_DI_SAMPLES_GET];
-    int n, l, i, j;
-    char *p;
-
-    RKH_SET_STATIC_EVENT(RKH_UPCAST(RKH_EVT_T, &e_Send), evSend);
-   
-    n = anSampler_getSet(&anSet, NUM_AN_SAMPLES_GET);
-   
-    p = (char *)(e_Send.buf);
-    l = 0;
-
-    for(i=0; i < NUM_AN_SIGNALS; ++i)
-    {
-        l += sprintf(p + l, "ts:%u, AN[%d]", anSet.timeStamp, i);
-        for(j=0; j<n; ++j)
-        {
-            l += sprintf(p + l,", %d", anSet.anSignal[i][j]);
-        }
-        l += sprintf(p + l, "\r\n");
-    }
-
-    n = IOChgDet_get(ioChg, NUM_DI_SAMPLES_GET);
-    
-    for(i=0; i < n; ++i)
-    {
-        l += sprintf(p + l, "ts:%u, DI[%d]:%d\r\n", ioChg[i].timeStamp,
-                                                       ioChg[i].signalId,
-                                                       ioChg[i].signalValue );
-    }
-
-    e_Send.size = l;
-
-    RKH_SMA_POST_FIFO(conMgr, RKH_UPCAST(RKH_EVT_T, &e_Send), &bsp);
-}
-
 
 void
 bsp_keyParser(int c)
