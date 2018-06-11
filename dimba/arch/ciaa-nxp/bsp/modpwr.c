@@ -33,7 +33,7 @@ typedef enum ModPwrStates
 {
     OnOff,
     Toggling
-};
+}ModPwrStates;
 
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */

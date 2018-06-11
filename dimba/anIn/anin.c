@@ -24,19 +24,35 @@
 /* ----------------------------- Local macros ------------------------------ */
 /* ------------------------------- Constants ------------------------------- */
 #define ANINS_EMA_ALPHA     2
+#define RAND_SEED           (1234U)
+
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
 static adc_t anIns[NUM_ANIN_SIGNALS];
+static adc_t anIns_simu[NUM_ANIN_SIGNALS] = {614, 819, 1024, 0};
+static rui32_t l_rnd;  /* random seed */
 
 /* ----------------------- Local function prototypes ----------------------- */
+static rui32_t 
+lrand( void )
+{  
+    /* 
+     * A very cheap pseudo-random-number generator.
+     * "Super-Duper" Linear Congruential Generator (LCG)
+     * LCG(2^32, 3*7*11*13*23, 0, seed) [MS]
+     */
+    l_rnd = l_rnd * (3*7*11*13*23);
+    return l_rnd >> 8;
+}
+
 /* ---------------------------- Local functions ---------------------------- */
 adc_t
 anIn_adcRead(int channel)
 {   
     (void)channel;
 
-    return 0x5A5A;
+    return anIns_simu[channel] + (lrand() % 10);
 }
 
 /* ---------------------------- Global functions --------------------------- */
@@ -44,6 +60,7 @@ void
 anIn_init(void)
 {
     memset(anIns, 0, sizeof(anIns));
+    l_rnd = RAND_SEED;
 }
 
 void

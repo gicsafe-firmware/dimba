@@ -45,7 +45,7 @@ extern "C" {
 #define MTIME_MODPWR_BASE               (100/MTIME_TIME_TICK)
 #define MTIME_DIN_SCAN_PERIOD			(100/MTIME_TIME_TICK)
 #define MTIME_ANIN_READANDFILTER_PERIOD (1000/MTIME_TIME_TICK)
-#define MTIME_ANSAMPLE_PUT_PERIOD       (5000/MTIME_TIME_TICK)
+#define MTIME_ANSAMPLE_PUT_PERIOD       (10000/MTIME_TIME_TICK)
 
 /* ------------------------------- Data types ------------------------------ */
 /* -------------------------- External variables --------------------------- */

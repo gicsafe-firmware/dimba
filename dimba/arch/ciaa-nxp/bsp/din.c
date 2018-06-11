@@ -1,6 +1,6 @@
 /**
- *  \file       mTime.c
- * 	\bried      Module to manage timer interrupt.
+ *  \file       dIn.c
+ *  \brief      Implementation of Digital Inputs HAL and change detection.
  */
 
 /* -------------------------- Development history -------------------------- */
@@ -15,66 +15,52 @@
 
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
-#include  <stddef.h>
-
-#include "mTime.h"
+#include "rkh.h"
+#include "IOChgDet.h"
+#include "din.h"
 #include "mTimeCfg.h"
 
 /* ----------------------------- Local macros ------------------------------ */
 /* ------------------------------- Constants ------------------------------- */
 /* ---------------------------- Local data types --------------------------- */
-static unsigned short counter;
-static int enabled = 0;
-
 /* ---------------------------- Global variables --------------------------- */
-extern const timerChain_t timerChain[NUM_TIMER_DIVISORS];
-
 /* ---------------------------- Local variables ---------------------------- */
-static
-void
-execute_list(void (* const *p)(void))
-{
-	for(; *p != NULL; ++p)
-		(**p)();
-}
+static unsigned char dIns[NUM_DIN_SIGNALS];
+static unsigned char dInsKb[NUM_DIN_SIGNALS];
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
 /* ---------------------------- Global functions --------------------------- */
-void
-mTime_init(void)
+void keyb_dIn_parser(char c)
 {
-	counter = 0;
-    enabled = 1;
+	c = c - '0';
+
+	if (c > NUM_DIN_SIGNALS)
+		return;
+
+	dInsKb[c] ^= 1;
 }
 
-/*
- * 	This is the main timer interrupt In abstract form, this interrupt
- * 	is called each MTIME_TIME_TICK expressed in terms of msecs.
- * 	that is, if MTIME_TIME_TICK is set to 10, 
- *  then is called in each 10 milliseconds. 
- * From here, is controlled all of the timing chain for the project
- * 	This timing chain is controlled	by table 'timer_chain'
- */
 void
-mTime_tick(void)
+dIn_init(void)
 {
-	const timerChain_t *p;
-	unsigned char num;
-    
-    if(!enabled)
+    memset(dIns, 0, sizeof(dIns));
+    memset(dInsKb, 0, sizeof(dIns));
+}
+
+void
+dIn_scan(void)
+{
+    unsigned char i;
+
+    for(i=0; i < NUM_DIN_SIGNALS; ++i)
     {
-        return;
+        if(dIns[i] != dInsKb[i])
+        {
+            IOChgDet_put(i, dInsKb[i]);
+            dIns[i] = dInsKb[i];
+        }
     }
-    
-	for(p = timerChain, num = NUM_TIMER_DIVISORS; num--; ++p)
-		if((counter % p->timer) == 0)
-			execute_list(p->ptimeact);
-	if(++counter >= (p-1)->timer)
-		counter = 0;
 }
 
 /* ------------------------------ End of file ------------------------------ */
-
-
-

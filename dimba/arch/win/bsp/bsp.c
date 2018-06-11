@@ -1,38 +1,5 @@
-/*
- *  --------------------------------------------------------------------------
- *
- *                                Framework RKH
- *                                -------------
- *
- *            State-machine framework for reactive embedded systems
- *
- *                      Copyright (C) 2010 Leandro Francucci.
- *          All rights reserved. Protected by international copyright laws.
- *
- *
- *  RKH is free software: you can redistribute it and/or modify it under the
- *  terms of the GNU General Public License as published by the Free Software
- *  Foundation, either version 3 of the License, or (at your option) any
- *  later version.
- *
- *  RKH is distributed in the hope that it will be useful, but WITHOUT ANY
- *  WARRANTY; without even the implied warranty of MERCHANTABILITY or
- *  FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
- *  more details.
- *
- *  You should have received a copy of the GNU General Public License along
- *  with RKH, see copying.txt file.
- *
- *  Contact information:
- *  RKH site: http://vortexmakes.com/que-es/
- *  RKH GitHub: https://github.com/vortexmakes/RKH
- *  RKH Sourceforge: https://sourceforge.net/projects/rkh-reactivesys/
- *  e-mail: lf@vortexmakes.com
- *  ---------------------------------------------------------------------------
- */
-
 /**
- *  \file       bsp_blinky.c
+ *  \file       bsp.c
  *  \brief      BSP for 80x86 OS win32
  *
  *  \ingroup    bsp
@@ -52,26 +19,24 @@
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
 #include <stdio.h>
-
-#include "signals.h"
-#include "modpwr.h"
-#include "modmgr.h"
-#include "conmgr.h"
-#include "CirBuffer.h"
-#include "mTime.h"
-#include "din.h"
-#include "anin.h"
-#include "anSampler.h"
-#include "ioChgDet.h"
-#include "epoch.h"
-
+#include "rkh.h"
 #include "bsp.h"
 #include "getopt.h"
-#include "rkh.h"
 #include "trace_io_cfg.h"
 #include "wserial.h"
 #include "wserdefs.h"
+
+#include "signals.h"
 #include "modcmd.h"
+#include "modmgr.h"
+#include "conmgr.h"
+#include "modpwr.h"
+#include "din.h"
+#include "anin.h"
+#include "ioChgDet.h"
+#include "anSampler.h"
+#include "mTime.h"
+
 
 RKH_THIS_MODULE
 
@@ -82,6 +47,9 @@ RKH_THIS_MODULE
 
 #define TEST_TX_PACKET      "----o Ping"
 #define TEST_RX_PACKET      "o---- Pong"
+
+#define NUM_AN_SAMPLES_GET  10
+#define NUM_DI_SAMPLES_GET  8
 
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
@@ -167,6 +135,53 @@ processCmdLineOpts(int argc, char **argv)
         }
 }
 
+static
+void
+send_signalsFrame(void)
+{
+    AnSampleSet anSet;
+    IOChg ioChg[NUM_DI_SAMPLES_GET];
+    int n, l, i, j;
+    char *p;
+
+    RKH_SET_STATIC_EVENT(RKH_UPCAST(RKH_EVT_T, &e_Send), evSend);
+   
+    n = anSampler_getSet(&anSet, NUM_AN_SAMPLES_GET);
+   
+    p = (char *)(e_Send.buf);
+    l = 0;
+
+    for(i=0; i < NUM_AN_SIGNALS; ++i)
+    {
+        l += sprintf(p + l, "ts:%u, AN[%d]", anSet.timeStamp, i);
+
+        for(j=0; j<n; ++j)
+        {
+            l += sprintf(p + l,", %d.%02d",
+                               (char)((anSet.anSignal[i][j] & 0xFF00) >> 8),
+                               (char)(anSet.anSignal[i][j] & 0x00FF));
+        }
+
+        l += sprintf(p + l, "\r\n");
+    }
+
+    n = IOChgDet_get(ioChg, NUM_DI_SAMPLES_GET);
+    
+    for(i=0; i < n; ++i)
+    {
+        l += sprintf(p + l, "ts:%u, DI[%d]:%d\r\n", ioChg[i].timeStamp,
+                                                    ioChg[i].signalId,
+                                                    ioChg[i].signalValue );
+    }
+
+    e_Send.size = l;
+
+    printf("Write GPRS Socket:\r\n");
+    printf("%s\r\n", e_Send.buf);
+
+    RKH_SMA_POST_FIFO(conMgr, RKH_UPCAST(RKH_EVT_T, &e_Send), &bsp);
+}
+
 /* ---------------------------- Global functions --------------------------- */
 void
 bsp_init(int argc, char *argv[])
@@ -181,64 +196,7 @@ bsp_init(int argc, char *argv[])
     modPwr_init();
     dIn_init();
 	anIn_init();
-    anSampler_init();
-    IOChgDet_init();
-    epoch_init();
-    
-    mTime_init();
-
-    rkh_fwk_init();
-
-    RKH_FILTER_ON_GROUP(RKH_TRC_ALL_GROUPS);
-    RKH_FILTER_ON_EVENT(RKH_TRC_ALL_EVENTS);
-	RKH_FILTER_OFF_EVENT(MODCMD_USR_TRACE);
-	RKH_FILTER_OFF_GROUP_ALL_EVENTS(RKH_TG_USR);
-    //RKH_FILTER_OFF_EVENT(RKH_TE_TMR_TOUT);
-    RKH_FILTER_OFF_EVENT(RKH_TE_SM_STATE);
-    RKH_FILTER_OFF_EVENT(RKH_TE_SMA_FIFO);
-    RKH_FILTER_OFF_EVENT(RKH_TE_SMA_LIFO);
-    //RKH_FILTER_OFF_SMA(modMgr);
-    RKH_FILTER_OFF_SMA(conMgr);
-    RKH_FILTER_OFF_ALL_SIGNALS();
-
-    RKH_TRC_OPEN();
-
-    RKH_TR_FWK_ACTOR(&bsp, "bsp");
 }
-
-static
-void
-send_signalsFrame(void)
-{
-    AnSampleSet anSet;
-    IOChg ioChanges[8];
-    int nio;
-
-    RKH_SET_STATIC_EVENT(RKH_UPCAST(RKH_EVT_T, &e_Send), evSend);
-   
-    anSampler_getSet(&anSet, 2);
-    nio = IOChgDet_get(ioChanges, 1);
-    
-    if(nio != 0)
-    {
-        sprintf(e_Send.buf, "%u, AN[0]: %x\r\n"
-                            "%u, IN[%d]: %d\r\n",
-                       anSet.timeStamp, anSet.anSignal[0][0],
-             ioChanges[0].timeStamp, ioChanges[0].signalId, ioChanges[0].signalValue
-                );
-    }
-    else
-    {
-        sprintf(e_Send.buf, "%u, AN[0]: %x\r\n",
-                       anSet.timeStamp, anSet.anSignal[0][0]
-                );
-    }
-
-    e_Send.size = strlen(e_Send.buf);
-
-    RKH_SMA_POST_FIFO(conMgr, RKH_UPCAST(RKH_EVT_T, &e_Send), &bsp);
-}
-
 
 void
 bsp_keyParser(int c)
@@ -251,14 +209,17 @@ bsp_keyParser(int c)
             break;
 
         case 'o':
+            printf("Open GPRS Socket\r\n");
             RKH_SMA_POST_FIFO(conMgr, &e_Open, &bsp);
             break;
 
         case 'c':
+            printf("Close GPRS Socket\r\n");
             RKH_SMA_POST_FIFO(conMgr, &e_Close, &bsp);
             break;
 
         case 'r':
+            printf("Read GPRS Socket\r\n");
             RKH_SMA_POST_FIFO(conMgr, &e_Recv, &bsp);
             break;
 
@@ -267,6 +228,9 @@ bsp_keyParser(int c)
             e_Send.size = strlen(TEST_TX_PACKET);
 
             memcpy(e_Send.buf, (unsigned char *)TEST_TX_PACKET, e_Send.size);
+
+            printf("Write GPRS Socket:\r\n");
+            printf("%s\r\n", e_Send.buf);
 
             RKH_SMA_POST_FIFO(conMgr, RKH_UPCAST(RKH_EVT_T, &e_Send), &bsp);
             break;
@@ -292,7 +256,7 @@ void
 ser_rx_isr( unsigned char byte )
 {
     cmdParser(byte);
-	putchar(byte);
+//	putchar(byte);
 }
 
 static
@@ -307,6 +271,7 @@ bsp_serial_open(int ch)
     init_serial_hard(ch, &ser_cback );
     connect_serial(ch);
     cmdParser = ModCmd_init();
+    RKH_TR_FWK_ACTOR(&bsp, "bsp");
 }
 
 void

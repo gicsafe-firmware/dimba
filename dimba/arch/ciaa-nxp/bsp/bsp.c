@@ -1,38 +1,5 @@
-/*
- *  --------------------------------------------------------------------------
- *
- *                                Framework RKH
- *                                -------------
- *
- *            State-machine framework for reactive embedded systems
- *
- *                      Copyright (C) 2010 Leandro Francucci.
- *          All rights reserved. Protected by international copyright laws.
- *
- *
- *  RKH is free software: you can redistribute it and/or modify it under the
- *  terms of the GNU General Public License as published by the Free Software
- *  Foundation, either version 3 of the License, or (at your option) any
- *  later version.
- *
- *  RKH is distributed in the hope that it will be useful, but WITHOUT ANY
- *  WARRANTY; without even the implied warranty of MERCHANTABILITY or
- *  FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
- *  more details.
- *
- *  You should have received a copy of the GNU General Public License along
- *  with RKH, see copying.txt file.
- *
- *  Contact information:
- *  RKH site: http://vortexmakes.com/que-es/
- *  RKH GitHub: https://github.com/vortexmakes/RKH
- *  RKH Sourceforge: https://sourceforge.net/projects/rkh-reactivesys/
- *  e-mail: lf@vortexmakes.com
- *  ---------------------------------------------------------------------------
- */
-
 /**
- *  \file       bsp_blinky.c
+ *  \file       bsp.c
  *  \brief      BSP for CIAA-NXP Prototype
  *
  *  \ingroup    bsp
@@ -45,7 +12,7 @@
 
 /* -------------------------------- Authors -------------------------------- */
 /*
- *  DaBa  Dario Bali�a       db@vortexmakes.com
+ *  DaBa  Dario Baliña       db@vortexmakes.com
  *  LeFr  Leandro Francucci  lf@vortexmakes.com
  */
 
@@ -62,7 +29,13 @@
 #include "modmgr.h"
 #include "modcmd.h"
 #include "conmgr.h"
-
+#include "CirBuffer.h"
+#include "mTime.h"
+#include "din.h"
+#include "anin.h"
+#include "anSampler.h"
+#include "ioChgDet.h"
+#include "epoch.h"
 
 RKH_THIS_MODULE
 
@@ -86,26 +59,11 @@ bsp_init(int argc, char *argv[])
     (void)argc;
     (void)argv;
 
-
     boardConfig();
 
     modPwr_init();
-
-    rkh_fwk_init();
-
-    RKH_FILTER_ON_GROUP(RKH_TRC_ALL_GROUPS);
-    RKH_FILTER_ON_EVENT(RKH_TRC_ALL_EVENTS);
-	RKH_FILTER_OFF_EVENT(MODCMD_USR_TRACE);
-	RKH_FILTER_OFF_GROUP_ALL_EVENTS(RKH_TG_USR);
-    //RKH_FILTER_OFF_EVENT(RKH_TE_TMR_TOUT);
-    RKH_FILTER_OFF_EVENT(RKH_TE_SM_STATE);
-    RKH_FILTER_OFF_EVENT(RKH_TE_SMA_FIFO);
-    RKH_FILTER_OFF_EVENT(RKH_TE_SMA_LIFO);
-    //RKH_FILTER_OFF_SMA(modMgr);
-    RKH_FILTER_OFF_SMA(conMgr);
-    RKH_FILTER_OFF_ALL_SIGNALS();
-
-    RKH_TRC_OPEN();
+    dIn_init();
+	anIn_init();
 }
 
 #if 0
