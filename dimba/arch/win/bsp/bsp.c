@@ -19,26 +19,24 @@
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
 #include <stdio.h>
-
-#include "signals.h"
-#include "modpwr.h"
-#include "modmgr.h"
-#include "conmgr.h"
-#include "CirBuffer.h"
-#include "mTime.h"
-#include "din.h"
-#include "anin.h"
-#include "anSampler.h"
-#include "ioChgDet.h"
-#include "epoch.h"
-
+#include "rkh.h"
 #include "bsp.h"
 #include "getopt.h"
-#include "rkh.h"
 #include "trace_io_cfg.h"
 #include "wserial.h"
 #include "wserdefs.h"
+
+#include "signals.h"
 #include "modcmd.h"
+#include "modmgr.h"
+#include "conmgr.h"
+#include "modpwr.h"
+#include "din.h"
+#include "anin.h"
+#include "ioChgDet.h"
+#include "anSampler.h"
+#include "mTime.h"
+
 
 RKH_THIS_MODULE
 
@@ -196,28 +194,12 @@ bsp_init(int argc, char *argv[])
     modPwr_init();
     dIn_init();
 	anIn_init();
-    anSampler_init();
-    IOChgDet_init();
-    epoch_init();
-    
-    mTime_init();
 
-    rkh_fwk_init();
+}
 
-    RKH_FILTER_ON_GROUP(RKH_TRC_ALL_GROUPS);
-    RKH_FILTER_ON_EVENT(RKH_TRC_ALL_EVENTS);
-	RKH_FILTER_OFF_EVENT(MODCMD_USR_TRACE);
-	RKH_FILTER_OFF_GROUP_ALL_EVENTS(RKH_TG_USR);
-    //RKH_FILTER_OFF_EVENT(RKH_TE_TMR_TOUT);
-    RKH_FILTER_OFF_EVENT(RKH_TE_SM_STATE);
-    RKH_FILTER_OFF_EVENT(RKH_TE_SMA_FIFO);
-    RKH_FILTER_OFF_EVENT(RKH_TE_SMA_LIFO);
-    //RKH_FILTER_OFF_SMA(modMgr);
-    RKH_FILTER_OFF_SMA(conMgr);
-    RKH_FILTER_OFF_ALL_SIGNALS();
-
-    RKH_TRC_OPEN();
-
+void
+bsp_publishActor(void)
+{
     RKH_TR_FWK_ACTOR(&bsp, "bsp");
 }
 

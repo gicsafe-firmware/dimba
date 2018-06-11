@@ -17,11 +17,16 @@
 /* ----------------------------- Include files ----------------------------- */
 #include "rkh.h"
 #include "rkhfwk_dynevt.h"
+#include "bsp.h"
 #include "signals.h"
 #include "mqttProt.h"
 #include "conmgr.h"
 #include "modmgr.h"
-#include "bsp.h"
+#include "mTime.h"
+#include "epoch.h"
+#include "anSampler.h"
+#include "ioChgDet.h"
+#include "CirBuffer.h"
 
 /* ----------------------------- Local macros ------------------------------ */
 #define MQTT_QSTO_SIZE      4
@@ -50,12 +55,41 @@ static RKH_ROM_STATIC_EVENT(e_Open, evOpen);
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
+static void
+setupTraceFilters(void)
+{
+    RKH_FILTER_ON_GROUP(RKH_TRC_ALL_GROUPS);
+    RKH_FILTER_ON_EVENT(RKH_TRC_ALL_EVENTS);
+	RKH_FILTER_OFF_EVENT(MODCMD_USR_TRACE);
+	RKH_FILTER_OFF_GROUP_ALL_EVENTS(RKH_TG_USR);
+    //RKH_FILTER_OFF_EVENT(RKH_TE_TMR_TOUT);
+    RKH_FILTER_OFF_EVENT(RKH_TE_SM_STATE);
+    RKH_FILTER_OFF_EVENT(RKH_TE_SMA_FIFO);
+    RKH_FILTER_OFF_EVENT(RKH_TE_SMA_LIFO);
+    //RKH_FILTER_OFF_SMA(modMgr);
+    RKH_FILTER_OFF_SMA(conMgr);
+    RKH_FILTER_OFF_ALL_SIGNALS();
+}
+
 /* ---------------------------- Global functions --------------------------- */
 int
 main(int argc, char *argv[])
 {
     bsp_init(argc, argv);
     
+    anSampler_init();
+    IOChgDet_init();
+    epoch_init();
+    mTime_init();
+
+    rkh_fwk_init();
+
+    setupTraceFilters();
+
+    RKH_TRC_OPEN();
+
+    bsp_publishActor();
+
     rkh_dynEvt_init();
     rkh_fwk_registerEvtPool(evPool0Sto, SIZEOF_EP0STO, SIZEOF_EP0_BLOCK);
     rkh_fwk_registerEvtPool(evPool1Sto, SIZEOF_EP1STO, SIZEOF_EP1_BLOCK);
