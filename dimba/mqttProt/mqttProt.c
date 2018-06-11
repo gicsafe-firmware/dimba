@@ -438,7 +438,9 @@ handleRecvMsg(MQTTProt *const me, RKH_EVT_T *pe)
 static void 
 activateSync(MQTTProt *const me, RKH_EVT_T *pe)
 {
-    RKH_SMA_POST_FIFO(me, &evActivateObj, me);
+    RKH_SMA_POST_FIFO(RKH_UPCAST(RKH_SMA_T, me), 
+                      RKH_UPCAST(RKH_EVT_T, &evActivateObj), 
+                      me);
 }
 
 /* ............................. Entry actions ............................. */
@@ -488,7 +490,7 @@ sendAll(MQTTProt *const me, RKH_EVT_T *pe)
     RKH_SET_STATIC_EVENT(RKH_UPCAST(RKH_EVT_T, &evSendObj), evSend);
     evSendObj.size = 0;
     memcpy(evSendObj.buf, localSend.msg->start, localSend.msg->size);
-    RKH_SMA_POST_FIFO(conMgr, &evSendObj, realMe);
+    RKH_SMA_POST_FIFO(conMgr, RKH_UPCAST(RKH_EVT_T, &evSendObj), realMe);
 }
 
 static void 
