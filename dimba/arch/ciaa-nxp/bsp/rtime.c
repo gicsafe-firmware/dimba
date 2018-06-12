@@ -15,9 +15,8 @@
 
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
-//#include <time.h>
-
 #include "rtime.h"
+#include "sapi_rtc.h"
 
 /* ----------------------------- Local macros ------------------------------ */
 /* ------------------------------- Constants ------------------------------- */
@@ -25,6 +24,7 @@
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
 static Time t;
+static rtc_t rtc;
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
@@ -32,23 +32,32 @@ static Time t;
 Time *
 rtime_get(void)
 {
-#if 0
-    time_t ltime;
-    struct tm *local;
+    rtcRead(&rtc);
 
-    time(&ltime);
-    local = gmtime(&ltime);
+    t.tm_sec = rtc.sec;
+    t.tm_min = rtc.min;
+    t.tm_hour = rtc.hour;
+    t.tm_mday = rtc.mday;
+    t.tm_mon = rtc.month;
+    t.tm_year = rtc.year;
+    t.tm_wday = rtc.wday;
+    t.tm_isdst = 0;
 
-    t.tm_sec = (unsigned char)local->tm_sec;
-    t.tm_min = (unsigned char)local->tm_min;
-    t.tm_hour = (unsigned char)local->tm_hour;
-    t.tm_mday = (unsigned char)local->tm_mday;
-    t.tm_mon = (unsigned char)local->tm_mon + 1;
-    t.tm_year = (short)local->tm_year + 1900;
-    t.tm_wday = (unsigned char)local->tm_wday + 1;
-    t.tm_isdst = (unsigned char)local->tm_isdst;
-#endif
     return &t;
+}
+
+void
+rtime_set(Time *pt)
+{
+   rtc.sec = pt->tm_sec;
+   rtc.min = pt->tm_min;
+   rtc.hour = pt->tm_hour;
+   rtc.wday = pt->tm_wday;
+   rtc.mday = pt->tm_mday;
+   rtc.month = pt->tm_mon;
+   rtc.year = pt->tm_year;
+
+   rtcConfig(&rtc);
 }
 
 /* ------------------------------ End of file ------------------------------ */
