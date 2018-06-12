@@ -235,17 +235,23 @@ SSP_END_BR_TABLE
 /* ------------------------- AT+CIPSEND -------------------------- */
 SSP_CREATE_NORMAL_NODE(at_plus_cipsend);
 SSP_CREATE_BR_TABLE(at_plus_cipsend)
+#ifdef _SEND_WITH_TERMINATOR
 	SSPBR(">", cmd_ok,  &at_plus_cipsending),
+#else
+	SSPBR(">", cmd_ok,  &at_plus_cipsent),
+#endif
 SSP_END_BR_TABLE
 
+#ifdef _SEND_WITH_TERMINATOR
 SSP_CREATE_NORMAL_NODE(at_plus_cipsending);
 SSP_CREATE_BR_TABLE(at_plus_cipsending)
 	SSPBR("\x1A", NULL,  &at_plus_cipsent),
 SSP_END_BR_TABLE
+#endif
 
 SSP_CREATE_NORMAL_NODE(at_plus_cipsent);
 SSP_CREATE_BR_TABLE(at_plus_cipsent)
-	SSPBR("SEND OK", cmd_ok,  &rootCmdParser),
+	SSPBR("SEND OK\r\n", cmd_ok,  &rootCmdParser),
 SSP_END_BR_TABLE
 
 /* --------------------------------------------------------------- */

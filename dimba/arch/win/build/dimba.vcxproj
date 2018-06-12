@@ -111,7 +111,6 @@
     <ClCompile Include="..\..\..\..\third-party\rkh\source\trc\src\rkhtrc_stream.c" />
     <ClCompile Include="..\..\..\..\third-party\ssp\src\ssp.c" />
     <ClCompile Include="..\..\..\adconv\adconv.c" />
-    <ClCompile Include="..\..\..\anIn\anin.c" />
     <ClCompile Include="..\..\..\anSampler\anSampler.c" />
     <ClCompile Include="..\..\..\CirBuffer\CirBuffer.c" />
     <ClCompile Include="..\..\..\conmgr\conmgr.c" />
@@ -125,6 +124,7 @@
     <ClCompile Include="..\..\..\mTime\mTime.c" />
     <ClCompile Include="..\..\..\mTime\mTimeTbl.c" />
     <ClCompile Include="..\..\..\parser\sim900\sim900parser.c" />
+    <ClCompile Include="..\bsp\anin.c" />
     <ClCompile Include="..\bsp\assert.c" />
     <ClCompile Include="..\bsp\bsp.c" />
     <ClCompile Include="..\bsp\dIn.c" />
@@ -135,7 +135,6 @@
     <ClCompile Include="..\bsp\trace_io_tcp.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\anIn\anin.h" />
     <ClInclude Include="..\..\..\bsp.h" />
     <ClInclude Include="..\..\..\emaFilter\emaFilter.h" />
     <ClInclude Include="..\..\..\mTime\mTime.h" />

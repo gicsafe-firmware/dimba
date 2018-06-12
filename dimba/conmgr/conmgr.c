@@ -272,13 +272,13 @@ RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_waitOk, NULL, NULL, &ConMgr_sending, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_waitOk)
-    RKH_TRREG(evOk, NULL,  sendOk, &ConMgr_sendingFinal),
+    RKH_TRREG(evOk, NULL,  sendOk, &ConMgr_sendingFinal),    
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_receiving, NULL, NULL, &ConMgr_connected, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_receiving)
     RKH_TRREG(evOk, NULL,  recvOk, &ConMgr_idle),
-    RKH_TRREG(evNoResponse, NULL, recvFail, &ConMgr_idle),
+	RKH_TRREG(evNoResponse, NULL, recvFail, &ConMgr_idle),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_COND_STATE(ConMgr_checkConnectTry);
@@ -516,7 +516,7 @@ sendRequest(ConMgr *const me, RKH_EVT_T *pe)
 
     me->psend = RKH_UPCAST(SendEvt, pe);
 
-    ModCmd_sendDataRequest();
+    ModCmd_sendDataRequest(me->psend->size);
 }
 
 static void

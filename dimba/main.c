@@ -101,7 +101,7 @@ main(int argc, char *argv[])
     RKH_SMA_ACTIVATE(modMgr, ModMgr_qsto, MODMGR_QSTO_SIZE, 0, 0);
     RKH_SMA_ACTIVATE(mqttProt, MQTTProt_qsto, MQTTPROT_QSTO_SIZE, 0, 0);
 
-//    RKH_SMA_POST_FIFO(conMgr, &e_Open, 0);
+    RKH_SMA_POST_FIFO(conMgr, &e_Open, 0);
 
     rkh_fwk_enter();
 
