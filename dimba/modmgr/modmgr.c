@@ -201,7 +201,9 @@ sendData(ModMgr *const me, RKH_EVT_T *pe)
     me->pCmd = RKH_UPCAST(ModMgrEvt, pe);
 
     bsp_serial_putnchar(GSM_PORT, me->pCmd->data, me->pCmd->nData);
+#ifdef _SEND_WITH_TERMINATOR
     bsp_serial_puts(GSM_PORT, ModCmd_endOfXmitStr());
+#endif
 }
 
 static void
