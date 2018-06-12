@@ -16,6 +16,7 @@
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
 #include "rkh.h"
+#include "sapi.h"
 #include "IOChgDet.h"
 #include "din.h"
 #include "mTimeCfg.h"
@@ -25,40 +26,35 @@
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
-static unsigned char dIns[NUM_DIN_SIGNALS];
-static unsigned char dInsKb[NUM_DIN_SIGNALS];
+static bool_t dIns[NUM_DIN_SIGNALS];
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
 /* ---------------------------- Global functions --------------------------- */
-void keyb_dIn_parser(char c)
-{
-	c = c - '0';
-
-	if (c > NUM_DIN_SIGNALS)
-		return;
-
-	dInsKb[c] ^= 1;
-}
-
 void
 dIn_init(void)
 {
-    memset(dIns, 0, sizeof(dIns));
-    memset(dInsKb, 0, sizeof(dIns));
+    int i;
+    for(i=0; i < NUM_DIN_SIGNALS; ++i)
+    {
+        gpioConfig(DI0+i, GPIO_INPUT);
+        dIns[i] = 0;
+    }
 }
 
 void
 dIn_scan(void)
 {
-    unsigned char i;
+    int i;
+    bool_t din;
 
     for(i=0; i < NUM_DIN_SIGNALS; ++i)
     {
-        if(dIns[i] != dInsKb[i])
+        din = gpioRead(DI0+i);
+        if(dIns[i] != din)
         {
-            IOChgDet_put(i, dInsKb[i]);
-            dIns[i] = dInsKb[i];
+            IOChgDet_put(i, din);
+            dIns[i] = din;
         }
     }
 }

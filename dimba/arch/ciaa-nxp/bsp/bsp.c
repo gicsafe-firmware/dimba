@@ -36,6 +36,7 @@
 #include "anSampler.h"
 #include "ioChgDet.h"
 #include "epoch.h"
+#include "rtime.h"
 
 RKH_THIS_MODULE
 
@@ -49,6 +50,7 @@ static ModCmdRcvHandler cmdParser;
 static RKH_ROM_STATIC_EVENT(e_Term, evTerminate);
 static RKH_ROM_STATIC_EVENT(e_Close, evClose);
 static RKH_ROM_STATIC_EVENT(e_Ok, evOk);
+static const Time t = { 0, 36, 23, 11, 6, 2018, 2, 0 };
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
@@ -64,35 +66,16 @@ bsp_init(int argc, char *argv[])
     modPwr_init();
     dIn_init();
 	anIn_init();
+
+    //rtime_set(&t);
 }
-
-#if 0
-void
-bsp_keyParser(int c)
-{
-    switch(c)
-    {
-        case ESC:
-            RKH_SMA_POST_FIFO(modMgr, &e_Term, 0);
-            rkhport_fwk_stop();
-            break;
-
-        case 'o':
-            RKH_SMA_POST_FIFO(conMgr, &e_Open, 0);
-            break;
-
-        case 'c':
-            RKH_SMA_POST_FIFO(conMgr, &e_Close, 0);
-            break;
-    }
-}
-#endif
 
 void
 bsp_timeTick(void)
 {
     ++tstamp;
     modPwr_ctrl();
+    mTime_tick();
 }
 
 RKH_TS_T

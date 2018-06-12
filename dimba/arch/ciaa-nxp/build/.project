@@ -50,6 +50,11 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>src/bsp/anin.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/bsp/anin.c</locationURI>
+		</link>
+		<link>
 			<name>src/bsp/assert.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/bsp/assert.c</locationURI>
@@ -315,6 +320,11 @@
 			<locationURI>PARENT-4-PROJECT_LOC/third-party/LPCOpen/lpc_board_ciaa_edu_4337/src/sysinit.c</locationURI>
 		</link>
 		<link>
+			<name>src/bsp/lpc_chip/adc_18xx_43xx.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/LPCOpen/lpc_chip_43xx/src/adc_18xx_43xx.c</locationURI>
+		</link>
+		<link>
 			<name>src/bsp/lpc_chip/chip_18xx_43xx.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/third-party/LPCOpen/lpc_chip_43xx/src/chip_18xx_43xx.c</locationURI>
@@ -330,9 +340,19 @@
 			<locationURI>PARENT-4-PROJECT_LOC/third-party/LPCOpen/lpc_chip_43xx/src/gpio_18xx_43xx.c</locationURI>
 		</link>
 		<link>
+			<name>src/bsp/lpc_chip/rtc_18xx_43xx.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/LPCOpen/lpc_chip_43xx/src/rtc_18xx_43xx.c</locationURI>
+		</link>
+		<link>
 			<name>src/bsp/lpc_chip/uart_18xx_43xx.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/third-party/LPCOpen/lpc_chip_43xx/src/uart_18xx_43xx.c</locationURI>
+		</link>
+		<link>
+			<name>src/bsp/sapi/sapi_adc.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/sapi/src/sapi_adc.c</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/sapi/sapi_board.c</name>
@@ -358,6 +378,11 @@
 			<name>src/bsp/sapi/sapi_print.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/third-party/sapi/src/sapi_print.c</locationURI>
+		</link>
+		<link>
+			<name>src/bsp/sapi/sapi_rtc.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/sapi/src/sapi_rtc.c</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/sapi/sapi_tick.c</name>

@@ -32,6 +32,7 @@ extern "C" {
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
 Time *rtime_get(void);
+void rtime_set(Time *pt);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus

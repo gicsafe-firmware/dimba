@@ -41,8 +41,6 @@ void anIn_init(void);
 
 void anIn_captureAndFilter(void);
 
-adc_t anIn_adcRead(int channel);
-
 adc_t anIn_get(int channel);
 
 void anIn_update(void);
