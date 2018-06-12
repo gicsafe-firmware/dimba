@@ -245,7 +245,7 @@ struct MQTTProt
 
 RKH_SMA_CREATE(MQTTProt, mqttProt, 2, HCAL, &Client_Idle, init, NULL);
 RKH_SMA_DEF_PTR(mqttProt);
-RKH_SM_CONST_CREATE(syncRegion, 0, HCAL, &Sync_Idle, NULL, NULL);
+RKH_SM_CONST_CREATE(syncRegion, 3, HCAL, &Sync_Idle, NULL, NULL);
 
 /* ------------------------------- Constants ------------------------------- */
 /* ---------------------------- Local data types --------------------------- */
@@ -257,6 +257,8 @@ struct ConnRefusedEvt
 };
 
 /* ---------------------------- Global variables --------------------------- */
+RKH_SM_T *MQTTProt_syncRegion;
+
 /* ---------------------------- Local variables ---------------------------- */
 static RKH_ROM_STATIC_EVENT(evWaitConnectToutObj, evWaitConnectTout);
 static RKH_ROM_STATIC_EVENT(evWaitPublishToutObj, evWaitPublishTout);
@@ -307,6 +309,7 @@ init(MQTTProt *const me, RKH_EVT_T *pe)
 	(void)pe;
 
     RKH_TR_FWK_AO(me);
+    RKH_TR_FWK_AO(MQTTProt_syncRegion);
     RKH_TR_FWK_QUEUE(&RKH_UPCAST(RKH_SMA_T, me)->equeue);
     RKH_TR_FWK_STATE(me, &Client_Idle);
     RKH_TR_FWK_STATE(me, &Sync_Idle);
@@ -337,6 +340,7 @@ init(MQTTProt *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_SIG(evWaitConnectTout);
     RKH_TR_FWK_SIG(evWaitPublishTout);
     RKH_TR_FWK_SIG(evWaitSyncTout);
+    RKH_FILTER_OFF_SMA(MQTTProt_syncRegion);
 
     RKH_SET_STATIC_EVENT(RKH_UPCAST(RKH_EVT_T, &evSendObj), evSend);
     RKH_SET_STATIC_EVENT(RKH_UPCAST(RKH_EVT_T, &evConnRefusedObj), 
@@ -548,7 +552,7 @@ sendAll(MQTTProt *const me, RKH_EVT_T *pe)
     MQTTProt *realMe;
 
     realMe = ((SyncRegion *)me)->itsMQTTProt;
-    evSendObj.size = 0;
+    evSendObj.size = localSend.msg->size;
     memcpy(evSendObj.buf, localSend.msg->start, localSend.msg->size);
     RKH_SMA_POST_FIFO(conMgr, RKH_UPCAST(RKH_EVT_T, &evSendObj), realMe);
 }
@@ -652,6 +656,7 @@ MQTTProt_ctor(void)
     me->itsSyncRegion.itsMQTTProt = me;
     RKH_SM_INIT((RKH_SM_T *)&(me->itsSyncRegion), syncRegion, 0, HCAL, 
                 Sync_Idle, NULL, NULL);
+    MQTTProt_syncRegion = (RKH_SM_T *)&(me->itsSyncRegion);
 }
 
 /* ------------------------------ End of file ------------------------------ */

@@ -446,7 +446,7 @@
  *	If the #RKH_CFG_TRC_SM_DCH_EN and #RKH_CFG_TRC_SM_EN are set to 1 then
  *	RKH will include the "start a state machine" trace record.
  */
-#define RKH_CFG_TRC_SM_DCH_EN          RKH_DISABLED
+#define RKH_CFG_TRC_SM_DCH_EN          RKH_ENABLED
 
 /**
  *	If the #RKH_CFG_TRC_SM_CLRH_EN and #RKH_CFG_TRC_SM_EN are set to 1 then
@@ -497,7 +497,7 @@
  *	RKH will include the "state or pseudostate in a compound transition"
  *	trace record.
  */
-#define RKH_CFG_TRC_SM_TS_STATE_EN      RKH_DISABLED
+#define RKH_CFG_TRC_SM_TS_STATE_EN      RKH_ENABLED
 
 /**
  *	If the #RKH_CFG_TRC_SM_CLRH_EN and #RKH_CFG_TRC_SM_EN are set to 1 then
