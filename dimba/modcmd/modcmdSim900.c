@@ -121,7 +121,7 @@ static const CmdTbl cmdTbl =
      RKH_TIME_MS(1000), RKH_TIME_MS(100)},
 
     {RKH_INIT_STATIC_EVT(evCmd), 
-     "AT+CIPSEND\r\n", 
+     "AT+CIPSEND=%d\r\n", 
      &conMgr, 
      RKH_TIME_MS(3000), RKH_TIME_MS(100)},
 
@@ -279,9 +279,9 @@ ModCmd_disconnect(void)
 }
 
 void
-ModCmd_sendDataRequest(void)
+ModCmd_sendDataRequest(rui16_t len)
 {
-    sendModCmd_noArgs(&cmdTbl.sendDataRequest);
+    sendModCmd_rui16(&cmdTbl.sendDataRequest, len);
 }
 
 void

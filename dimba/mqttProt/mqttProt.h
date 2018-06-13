@@ -30,6 +30,10 @@ extern "C" {
 
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
+#define WAIT_CONNECT_TIME       RKH_TIME_SEC(10)
+#define PUBLISH_TIME            RKH_TIME_MIN(5)
+#define SYNC_TIME               RKH_TIME_MS(500)
+
 /* ................................ Signals ................................ */
 /* ........................ Declares active object ......................... */
 RKH_SMA_DCLR(mqttProt);

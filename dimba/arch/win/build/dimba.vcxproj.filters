@@ -121,11 +121,11 @@
     <ClCompile Include="..\..\..\mTime\mTimeTbl.c">
       <Filter>mTime</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\anIn\anin.c">
-      <Filter>anIn</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\emaFilter\emaFilter.c">
       <Filter>emaFilter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsp\anin.c">
+      <Filter>bsp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -177,9 +177,6 @@
     <Filter Include="mTime">
       <UniqueIdentifier>{3fe071f9-30e9-44f6-b455-66e9857303d4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="anIn">
-      <UniqueIdentifier>{ecb5a42c-e8bc-4bdb-809d-9a01a8609f18}</UniqueIdentifier>
-    </Filter>
     <Filter Include="emaFilter">
       <UniqueIdentifier>{ed3d27f4-8d26-4731-b2fa-25519912d539}</UniqueIdentifier>
     </Filter>
@@ -199,9 +196,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\mTime\mTimeCfg.h">
       <Filter>mTime</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\anIn\anin.h">
-      <Filter>anIn</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\emaFilter\emaFilter.h">
       <Filter>emaFilter</Filter>

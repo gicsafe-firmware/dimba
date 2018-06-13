@@ -78,7 +78,6 @@ static RKH_ROM_STATIC_EVENT(e_Open, evOpen);
 static RKH_ROM_STATIC_EVENT(e_Close, evClose);
 static RKH_ROM_STATIC_EVENT(e_Ok, evOk);
 static RKH_ROM_STATIC_EVENT(e_Recv, evRecv);
-
 static SendEvt e_Send;
 
 static void ser_rx_isr(unsigned char byte);
@@ -231,7 +230,6 @@ bsp_keyParser(int c)
             memcpy(e_Send.buf, (unsigned char *)TEST_TX_PACKET, e_Send.size);
 
             printf("Write GPRS Socket:\r\n");
-            printf("%s\r\n", e_Send.buf);
 
             RKH_SMA_POST_FIFO(conMgr, RKH_UPCAST(RKH_EVT_T, &e_Send), &bsp);
             break;

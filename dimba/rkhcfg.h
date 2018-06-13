@@ -17,7 +17,7 @@
  *	Specify the maximum number of state machine applications (SMA) to be used
  *	by the application (can be a number in the range [1..64]).
  */
-#define RKH_CFG_FWK_MAX_SMA             3u
+#define RKH_CFG_FWK_MAX_SMA             4u
 
 /**
  *	If the dynamic event support (see #RKH_CFG_FWK_DYN_EVT_EN) is set to
@@ -47,7 +47,7 @@
  *	Specify the maximum number of event signals to be used by the
  *	application.
  */
-#define RKH_CFG_FWK_MAX_SIGNALS         32u
+#define RKH_CFG_FWK_MAX_SIGNALS         48u
 
 /**
  *  Specify the data type of event size. The valid values [in bits] are
@@ -190,7 +190,7 @@
  *	hierarchical state machines uses up to 4 transition segments.
  *	Currently #RKH_CFG_SMA_MAX_TRC_SEGS cannot exceed 8.
  */
-#define RKH_CFG_SMA_MAX_TRC_SEGS        2u
+#define RKH_CFG_SMA_MAX_TRC_SEGS        8u
 
 /**
  *	If the #RKH_CFG_SMA_PSEUDOSTATE_EN is set to 1, the RKH allows
@@ -446,7 +446,7 @@
  *	If the #RKH_CFG_TRC_SM_DCH_EN and #RKH_CFG_TRC_SM_EN are set to 1 then
  *	RKH will include the "start a state machine" trace record.
  */
-#define RKH_CFG_TRC_SM_DCH_EN          RKH_DISABLED
+#define RKH_CFG_TRC_SM_DCH_EN          RKH_ENABLED
 
 /**
  *	If the #RKH_CFG_TRC_SM_CLRH_EN and #RKH_CFG_TRC_SM_EN are set to 1 then
@@ -497,7 +497,7 @@
  *	RKH will include the "state or pseudostate in a compound transition"
  *	trace record.
  */
-#define RKH_CFG_TRC_SM_TS_STATE_EN      RKH_DISABLED
+#define RKH_CFG_TRC_SM_TS_STATE_EN      RKH_ENABLED
 
 /**
  *	If the #RKH_CFG_TRC_SM_CLRH_EN and #RKH_CFG_TRC_SM_EN are set to 1 then
