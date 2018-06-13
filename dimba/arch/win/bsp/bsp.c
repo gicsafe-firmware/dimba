@@ -255,7 +255,7 @@ void
 ser_rx_isr( unsigned char byte )
 {
     cmdParser(byte);
-	putchar(byte);
+//	putchar(byte);
 }
 
 static
