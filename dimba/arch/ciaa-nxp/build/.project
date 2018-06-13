@@ -335,6 +335,11 @@
 			<locationURI>PARENT-4-PROJECT_LOC/third-party/LPCOpen/lpc_chip_43xx/src/clock_18xx_43xx.c</locationURI>
 		</link>
 		<link>
+			<name>src/bsp/lpc_chip/dac_18xx_43xx.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/LPCOpen/lpc_chip_43xx/src/dac_18xx_43xx.c</locationURI>
+		</link>
+		<link>
 			<name>src/bsp/lpc_chip/gpio_18xx_43xx.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/third-party/LPCOpen/lpc_chip_43xx/src/gpio_18xx_43xx.c</locationURI>
@@ -358,6 +363,11 @@
 			<name>src/bsp/sapi/sapi_board.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/third-party/sapi/src/sapi_board.c</locationURI>
+		</link>
+		<link>
+			<name>src/bsp/sapi/sapi_dac.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/sapi/src/sapi_dac.c</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/sapi/sapi_datatypes.c</name>

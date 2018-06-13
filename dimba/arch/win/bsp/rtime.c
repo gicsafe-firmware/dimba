@@ -16,6 +16,7 @@
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
 #include <time.h>
+#include <stdio.h>
 
 #include "rtime.h"
 
@@ -50,4 +51,15 @@ rtime_get(void)
     return &t;
 }
 
+void
+rtime_set(Time *pt)
+{
+    printf("\r\nLocal time updated\r\n");
+    printf("%d/%d/%d,%d:%d:%d\r\n", pt->tm_year, 
+                                pt->tm_mon,
+                                pt->tm_mday,
+                                pt->tm_hour,
+                                pt->tm_min,
+                                pt->tm_sec );
+}
 /* ------------------------------ End of file ------------------------------ */

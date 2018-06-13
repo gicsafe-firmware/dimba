@@ -22,6 +22,7 @@
 
 /* ----------------------------- Include files ----------------------------- */
 #include "rkh.h"
+#include "epoch.h"
 
 /* ---------------------- External C language linkage ---------------------- */
 #ifdef __cplusplus
@@ -55,6 +56,11 @@ extern "C" {
  * Specifies the maximum tries for setting APN configuration.
  */
 #define MAX_CONFIG_RETRY    5
+
+/**
+ * Specifies the time waiting for Time Sync Message by Network.
+ */
+#define WAIT_NETCLOCK_TIME  RKH_TIME_MS(10000)
 
 /**
  * Specifies a time delay after config error before to restart connection.
@@ -137,6 +143,13 @@ struct ReceivedEvt
     RKH_EVT_T evt;
     unsigned char buf[RECV_BUFF_SIZE];
     ruint size;
+};
+
+typedef struct LocalTimeEvt LocalTimeEvt;
+struct LocalTimeEvt
+{
+    RKH_EVT_T evt;
+    Time time;
 };
 
 /* -------------------------- External variables --------------------------- */
