@@ -50,6 +50,16 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>src/MQTT-C/mqtt.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/MQTT-C/src/mqtt.c</locationURI>
+		</link>
+		<link>
+			<name>src/MQTT-C/mqtt_pal.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/MQTT-C/src/mqtt_pal.c</locationURI>
+		</link>
+		<link>
 			<name>src/bsp/anin.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/bsp/anin.c</locationURI>
