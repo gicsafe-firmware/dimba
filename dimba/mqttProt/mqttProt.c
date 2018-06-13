@@ -561,7 +561,7 @@ static void
 enWaitToPublish(MQTTProt *const me, RKH_EVT_T *pe)
 {
     RKH_TMR_INIT(&me->publishTmr, &evWaitPublishToutObj, NULL);
-    RKH_TMR_PERIODIC(&me->publishTmr, RKH_UPCAST(RKH_SMA_T, me), 0, 
+    RKH_TMR_PERIODIC(&me->publishTmr, RKH_UPCAST(RKH_SMA_T, me), PUBLISH_TIME, 
                      PUBLISH_TIME);
 }
 
