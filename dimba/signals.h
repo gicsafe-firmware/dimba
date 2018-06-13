@@ -77,7 +77,8 @@ enum Signals
     evDeactivate,
     evSyncTout,
     evNetClockSync,
-    evLocalTime
+    evLocalTime,
+    evUnlocked
 };
 
 /* ------------------------------- Data types ------------------------------ */
