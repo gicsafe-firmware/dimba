@@ -516,7 +516,7 @@ sendRequest(ConMgr *const me, RKH_EVT_T *pe)
 
     me->psend = RKH_UPCAST(SendEvt, pe);
 
-    ModCmd_sendDataRequest(me->psend->size);
+    ModCmd_sendDataRequest((rui16_t)(me->psend->size));
 }
 
 static void
