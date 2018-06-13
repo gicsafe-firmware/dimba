@@ -20,10 +20,13 @@
 #include "signals.h"
 #include "modmgr.h"
 #include "conmgr.h"
+#include <stdlib.h>
 
 /* ----------------------------- Local macros ------------------------------ */
 /* ------------------------------- Constants ------------------------------- */
 #define END_OF_RECV_STR     "\r\nOK\r\n"
+#define YEAR2K              2000
+#define LTBUFF_SIZE         5
 
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
@@ -40,14 +43,22 @@ SSP_DCLR_NORMAL_NODE at, waitOK, at_plus_c, at_plus_ci, at_plus_cip,
                      at_plus_cipclose,
                      at_plus_cipsend, at_plus_cipsending, at_plus_cipsent,
                      at_plus_cpin, at_plus_creg, pinStatus, wpinSet, pinSet,
-                     plus_c, plus_creg, at_plus_cipstatus, at_plus_cifsr;
+                     plus_c, plus_creg, at_plus_cipstatus, at_plus_cifsr,
+                     netClockSync,
+                     at_plus_cclk, cclk_end;
 
-SSP_DCLR_TRN_NODE at_plus_ciprxget_data;
+SSP_DCLR_TRN_NODE at_plus_ciprxget_data, cclk_year, cclk_month, cclk_day,
+                  cclk_hour, cclk_min;
 
 static rui8_t isURC;
 
 static unsigned char *prx;
-ReceivedEvt *precv;
+static ReceivedEvt *precv;
+
+static LocalTimeEvt localTimeEvt;
+static Time *lTime;
+static char ltbuf[LTBUFF_SIZE];
+static char *plt;
 
 /* ----------------------- Local function prototypes ----------------------- */
 static void cmd_ok(unsigned char pos);
@@ -71,6 +82,21 @@ static void disconnected(unsigned char pos);
 static void data_init(unsigned char pos);
 static void data_collect(unsigned char c);
 static void data_ready(unsigned char pos);
+static void netClock_rcv(unsigned char pos);
+static void lTimeInit(unsigned char pos);
+static void yearCollect(unsigned char c);
+
+#define monthCollect    yearCollect
+#define dayCollect      yearCollect
+#define hourCollect     yearCollect
+#define minCollect      yearCollect
+
+static void yearGet(unsigned char pos);
+static void monthGet(unsigned char pos);
+static void dayGet(unsigned char pos);
+static void hourGet(unsigned char pos);
+static void minGet(unsigned char pos);
+static void lTimeGet(unsigned char pos);
 
 /* ---------------------------- Local functions ---------------------------- */
 
@@ -80,6 +106,7 @@ SSP_CREATE_BR_TABLE(rootCmdParser)
 	SSPBR("CONNECT OK", NULL,     &rootCmdParser),
 	SSPBR("AT",         NULL,     &at),
 	SSPBR("+C",         NULL,     &plus_c),
+	SSPBR("*PSUTTZ",    isURC_set, &netClockSync),
 SSP_END_BR_TABLE
 
 SSP_CREATE_NORMAL_NODE(at);
@@ -95,6 +122,8 @@ SSP_CREATE_BR_TABLE(at_plus_c)
 	SSPBR("REG?\r\n\r\n",   NULL,   &at_plus_creg),
 	SSPBR("STT=",           NULL,   &waitOK),
 	SSPBR("I",              NULL,   &at_plus_ci),
+	SSPBR("LTS=1",          NULL,   &waitOK),
+	SSPBR("CLK?",           NULL,   &at_plus_cclk),
 	SSPBR("\r\n",   NULL,  &rootCmdParser),
 SSP_END_BR_TABLE
 
@@ -118,6 +147,7 @@ SSP_CREATE_NORMAL_NODE(at_plus_cips);
 SSP_CREATE_BR_TABLE(at_plus_cips)
 	SSPBR("TA",          NULL,  &at_plus_cipsta),
 	SSPBR("END",         NULL,  &at_plus_cipsend),
+	SSPBR("HUT",         NULL,  &waitOK),
 	SSPBR("\r\n",        NULL,  &rootCmdParser),
 SSP_END_BR_TABLE
 
@@ -162,6 +192,43 @@ SSP_CREATE_NORMAL_NODE(at_plus_creg);
 SSP_CREATE_BR_TABLE(at_plus_creg)
 	SSPBR("1,",      NULL,  &plus_creg),
 	SSPBR("\r\n",    NULL,  &rootCmdParser),
+SSP_END_BR_TABLE
+
+/* --------------------------------------------------------------- */
+/* --------------------------- AT+CCCLK --------------------------- */
+SSP_CREATE_NORMAL_NODE(at_plus_cclk);
+SSP_CREATE_BR_TABLE(at_plus_cclk)
+	SSPBR("+CCLK: \"",  lTimeInit,  &cclk_year),
+SSP_END_BR_TABLE
+
+SSP_CREATE_TRN_NODE(cclk_year, yearCollect);
+SSP_CREATE_BR_TABLE(cclk_year)
+	SSPBR("/",      yearGet,  &cclk_month),
+SSP_END_BR_TABLE
+
+SSP_CREATE_TRN_NODE(cclk_month, monthCollect);
+SSP_CREATE_BR_TABLE(cclk_month)
+	SSPBR("/",      monthGet,  &cclk_day),
+SSP_END_BR_TABLE
+
+SSP_CREATE_TRN_NODE(cclk_day, dayCollect);
+SSP_CREATE_BR_TABLE(cclk_day)
+	SSPBR(",",      dayGet,  &cclk_hour),
+SSP_END_BR_TABLE
+
+SSP_CREATE_TRN_NODE(cclk_hour, hourCollect);
+SSP_CREATE_BR_TABLE(cclk_hour)
+	SSPBR(":",      hourGet,  &cclk_min),
+SSP_END_BR_TABLE
+
+SSP_CREATE_TRN_NODE(cclk_min, minCollect);
+SSP_CREATE_BR_TABLE(cclk_min)
+	SSPBR(":",      minGet,  &cclk_end),
+SSP_END_BR_TABLE
+
+SSP_CREATE_NORMAL_NODE(cclk_end);
+SSP_CREATE_BR_TABLE(cclk_end)
+	SSPBR("OK\r\n", lTimeGet,  &rootCmdParser),
 SSP_END_BR_TABLE
 
 /* --------------------------------------------------------------- */
@@ -295,6 +362,13 @@ SSP_CREATE_BR_TABLE(plus_creg)
 	SSPBR("4",     no_registered, &rootCmdParser),
 	SSPBR("5",     registered,    &rootCmdParser),
 	SSPBR("\r\n",  NULL,          &rootCmdParser),
+SSP_END_BR_TABLE
+
+/* --------------------------------------------------------------- */
+/* -------------------- Unsolicited *PSUTTZ... ------------------- */
+SSP_CREATE_NORMAL_NODE(netClockSync);
+SSP_CREATE_BR_TABLE(netClockSync)
+	SSPBR("\r\n",   netClock_rcv, &rootCmdParser),
 SSP_END_BR_TABLE
 
 /* --------------------------------------------------------------- */
@@ -479,7 +553,108 @@ data_ready(unsigned char pos)
    
     sendModResp_noArgs(evOk);
 }
-/************************************/
+
+static void
+netClock_rcv(unsigned char pos)
+{
+    (void)pos;
+    
+    sendModResp_noArgs(evNetClockSync);
+}
+
+static void
+lTimeInit(unsigned char pos)
+{
+	(void)pos;
+
+    plt = ltbuf;
+    *plt = '\0';
+
+    RKH_SET_STATIC_EVENT(RKH_UPCAST(RKH_EVT_T, &localTimeEvt), evLocalTime);
+    lTime = &localTimeEvt.time;
+}
+
+static void
+yearCollect(unsigned char c)
+{
+    if(plt >= ltbuf + LTBUFF_SIZE)
+        return;
+
+    *plt = c;
+    ++plt;
+}
+
+static void
+yearGet(unsigned char pos)
+{
+	(void)pos;
+
+    *plt = '\0';
+
+    lTime->tm_year = (short)(YEAR2K + atoi(ltbuf));
+
+    plt = ltbuf;
+}
+
+static void
+monthGet(unsigned char pos)
+{
+	(void)pos;
+
+    *plt = '\0';
+
+    lTime->tm_mon = (unsigned char)atoi(ltbuf);
+
+    plt = ltbuf;
+}
+
+static void
+dayGet(unsigned char pos)
+{
+	(void)pos;
+
+    *plt = '\0';
+
+    lTime->tm_mday = (unsigned char)atoi(ltbuf);
+
+    plt = ltbuf;
+}
+
+static void
+hourGet(unsigned char pos)
+{
+	(void)pos;
+
+    *plt = '\0';
+
+    lTime->tm_hour = (unsigned char)atoi(ltbuf);
+
+    plt = ltbuf;
+}
+
+static void
+minGet(unsigned char pos)
+{
+	(void)pos;
+
+    *plt = '\0';
+
+    lTime->tm_min = (unsigned char)atoi(ltbuf);
+
+    plt = ltbuf;
+}
+
+static void
+lTimeGet(unsigned char pos)
+{
+	(void)pos;
+
+    lTime->tm_sec = 0;
+    RKH_SMA_POST_FIFO(conMgr, RKH_UPCAST(RKH_EVT_T, &localTimeEvt),
+						      &sim900parser);
+
+    sendModResp_noArgs(evReg);
+}
 
 /* ---------------------------- Global functions --------------------------- */
 void

@@ -38,7 +38,10 @@ struct CmdTbl
     ModCmd getPinStatus;
     ModCmd setPin;
     ModCmd getRegStatus;
+    ModCmd enableNetTime;
+    ModCmd cipShutdown;
     ModCmd setManualGet;
+    ModCmd getLocalTime;
     ModCmd setAPN;
     ModCmd startGPRS;
     ModCmd requestIP;
@@ -62,11 +65,7 @@ static const CmdTbl cmdTbl =
      RKH_TIME_MS(1000), RKH_TIME_MS(100)},
 
     {RKH_INIT_STATIC_EVT(evCmd), 
-#ifdef CIPSHUT_ON_INIT
-     "ATE1+CREG=1;+CIPSHUT\r\n",
-#else
      "ATE1+CREG=1\r\n",
-#endif
      &conMgr, 
      RKH_TIME_MS(5000), RKH_TIME_MS(100)},
 
@@ -86,14 +85,29 @@ static const CmdTbl cmdTbl =
      RKH_TIME_MS(300), RKH_TIME_MS(500)},
 
     {RKH_INIT_STATIC_EVT(evCmd), 
+     "AT+CLTS=1\r\n",
+     &conMgr, 
+     RKH_TIME_MS(300), RKH_TIME_MS(100)},
+
+    {RKH_INIT_STATIC_EVT(evCmd), 
+     "AT+CIPSHUT\r\n",
+     &conMgr, 
+     RKH_TIME_MS(3000), RKH_TIME_MS(200)},
+
+    {RKH_INIT_STATIC_EVT(evCmd), 
      "AT+CIPRXGET=1\r\n",
+     &conMgr, 
+     RKH_TIME_MS(300), RKH_TIME_MS(100)},
+
+    {RKH_INIT_STATIC_EVT(evCmd), 
+     "AT+CCLK?\r\n",
      &conMgr, 
      RKH_TIME_MS(300), RKH_TIME_MS(100)},
 
     {RKH_INIT_STATIC_EVT(evCmd), 
      "AT+CSTT=\"%s\",\"%s\",\"%s\"\r\n", 
      &conMgr, 
-     RKH_TIME_MS(300), RKH_TIME_MS(500)},
+     RKH_TIME_MS(1000), RKH_TIME_MS(500)},
 
     {RKH_INIT_STATIC_EVT(evCmd), 
      "AT+CIICR\r\n", 
@@ -237,9 +251,27 @@ ModCmd_getRegStatus(void)
 }
 
 void 
+ModCmd_enableNetTime(void)
+{
+    sendModCmd_noArgs(&cmdTbl.enableNetTime);
+}
+
+void 
+ModCmd_cipShutdown(void)
+{
+    sendModCmd_noArgs(&cmdTbl.cipShutdown);
+}
+
+void 
 ModCmd_setManualGet(void)
 {
     sendModCmd_noArgs(&cmdTbl.setManualGet);
+}
+
+void 
+ModCmd_getLocalTime(void)
+{
+    sendModCmd_noArgs(&cmdTbl.getLocalTime);
 }
 
 void 

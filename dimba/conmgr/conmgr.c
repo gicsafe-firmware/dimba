@@ -24,6 +24,7 @@
 #include "modcmd.h"
 #include "mqttProt.h"
 #include "signals.h"
+#include "rtime.h"
 #include "bsp.h"
 
 /* ----------------------------- Local macros ------------------------------ */
@@ -32,9 +33,11 @@ typedef struct ConMgr ConMgr;
 
 /* ................... Declares states and pseudostates .................... */
 RKH_DCLR_BASIC_STATE ConMgr_inactive, ConMgr_sync,
-                ConMgr_init, ConMgr_pin, ConMgr_setPin, ConMgr_waitReg,
-                ConMgr_unregistered, ConMgr_failure,
-                ConMgr_setManualGet, ConMgr_setAPN, ConMgr_enableGPRS,
+                ConMgr_init, ConMgr_pin, ConMgr_setPin, ConMgr_enableNetTime,
+                ConMgr_cipShutdown, ConMgr_setManualGet,
+                ConMgr_waitReg, ConMgr_unregistered, ConMgr_failure,
+                ConMgr_waitNetClockSync, ConMgr_localTime,
+                ConMgr_setAPN, ConMgr_enableGPRS,
                 ConMgr_checkIP, ConMgr_waitRetryConfig, ConMgr_waitingServer,
                 ConMgr_idle, ConMgr_waitPrompt, ConMgr_waitOk,
                 ConMgr_receiving, ConMgr_waitRetryConnect,
@@ -55,6 +58,8 @@ static void init(ConMgr *const me, RKH_EVT_T *pe);
 static void open(ConMgr *const me, RKH_EVT_T *pe);
 static void close(ConMgr *const me, RKH_EVT_T *pe);
 static void initializeInit(ConMgr *const me, RKH_EVT_T *pe);
+static void localTimeGet(ConMgr *const me, RKH_EVT_T *pe);
+static void rtimeSync(ConMgr *const me, RKH_EVT_T *pe);
 static void configureInit(ConMgr *const me, RKH_EVT_T *pe);
 static void configTry(ConMgr *const me, RKH_EVT_T *pe);
 static void requestIp(ConMgr *const me, RKH_EVT_T *pe);
@@ -75,9 +80,12 @@ static void sendSync(ConMgr *const me);
 static void sendInit(ConMgr *const me);
 static void checkPin(ConMgr *const me);
 static void setPin(ConMgr *const me);
+static void netTimeEnable(ConMgr *const me);
+static void cipShutdown(ConMgr *const me);
 static void unregEntry(ConMgr *const me);
 static void failureEntry(ConMgr *const me);
 static void setupManualGet(ConMgr *const me);
+static void waitNetClockSyncEntry(ConMgr *const me);
 static void waitRetryConfigEntry(ConMgr *const me);
 static void setupAPN(ConMgr *const me);
 static void startGPRS(ConMgr *const me);
@@ -89,6 +97,7 @@ static void idleEntry(ConMgr *const me);
 
 /* ......................... Declares exit actions ......................... */
 static void unregExit(ConMgr *const me);
+static void waitNetClockSyncExit(ConMgr *const me);
 static void waitRetryConnExit(ConMgr *const me);
 static void failureExit(ConMgr *const me);
 static void connectingExit(ConMgr *const me);
@@ -147,12 +156,23 @@ RKH_CREATE_BASIC_STATE(ConMgr_pin, checkPin, NULL, &ConMgr_initialize, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_pin)
     RKH_TRREG(evSimPin,     NULL, NULL, &ConMgr_setPin),
     RKH_TRREG(evSimError,   NULL, NULL, &ConMgr_failure),
-    RKH_TRREG(evSimReady,   NULL, NULL, &ConMgr_setManualGet),
+    RKH_TRREG(evSimReady,   NULL, NULL, &ConMgr_enableNetTime),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_setPin, setPin, NULL, &ConMgr_initialize, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_setPin)
     RKH_TRREG(evOk,         NULL, NULL,   &ConMgr_pin),
+RKH_END_TRANS_TABLE
+
+RKH_CREATE_BASIC_STATE(ConMgr_enableNetTime, netTimeEnable, NULL, 
+                                                    &ConMgr_initialize, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_enableNetTime)
+    RKH_TRREG(evOk,         NULL, NULL, &ConMgr_cipShutdown),
+RKH_END_TRANS_TABLE
+
+RKH_CREATE_BASIC_STATE(ConMgr_cipShutdown, cipShutdown, NULL, &ConMgr_initialize, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_cipShutdown)
+    RKH_TRREG(evOk,         NULL, NULL, &ConMgr_setManualGet),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_setManualGet, setupManualGet, NULL, 
@@ -162,7 +182,7 @@ RKH_CREATE_TRANS_TABLE(ConMgr_setManualGet)
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_COMP_REGION_STATE(ConMgr_registered, NULL, NULL, &ConMgr_active, 
-                             &ConMgr_configure, configureInit,
+                             &ConMgr_waitNetClockSync, NULL,
                              RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_registered)
     RKH_TRREG(evNoReg, NULL, NULL,   &ConMgr_unregistered),
@@ -180,9 +200,23 @@ RKH_CREATE_TRANS_TABLE(ConMgr_failure)
     RKH_TRREG(evTimeout, NULL,  NULL, &ConMgr_active),
 RKH_END_TRANS_TABLE
 
+RKH_CREATE_BASIC_STATE(ConMgr_waitNetClockSync, 
+                            waitNetClockSyncEntry, waitNetClockSyncExit,
+                            &ConMgr_registered, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_waitNetClockSync)
+    RKH_TRREG(evTimeout,       NULL, localTimeGet, &ConMgr_localTime),
+    RKH_TRREG(evNetClockSync,  NULL, localTimeGet, &ConMgr_localTime),
+RKH_END_TRANS_TABLE
+
+RKH_CREATE_BASIC_STATE(ConMgr_localTime, NULL, NULL, &ConMgr_registered, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_localTime)
+    RKH_TRREG(evLocalTime,     NULL, rtimeSync,  &ConMgr_configure),
+    RKH_TRREG(evNoResponse,    NULL, NULL,       &ConMgr_configure),
+RKH_END_TRANS_TABLE
+
 RKH_CREATE_HISTORY_STORAGE(ConMgr_configure);
 RKH_CREATE_COMP_REGION_STATE(ConMgr_configure, NULL, NULL, &ConMgr_registered, 
-                             &ConMgr_setAPN, NULL,
+                             &ConMgr_setAPN, configureInit,
                              RKH_SHISTORY, NULL, NULL, NULL,
                              RKH_GET_HISTORY_STORAGE(ConMgr_configure));
 RKH_CREATE_TRANS_TABLE(ConMgr_configure)
@@ -221,7 +255,7 @@ RKH_END_BRANCH_TABLE
 RKH_CREATE_BASIC_STATE(ConMgr_waitRetryConfig, waitRetryConfigEntry, NULL,
                                                     &ConMgr_registered, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_waitRetryConfig)
-    RKH_TRREG(evTimeout,  NULL,    configTry, &ConMgr_configure),
+    RKH_TRREG(evTimeout,  NULL,    configTry, &ConMgr_configureHist),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_COMP_REGION_STATE(ConMgr_connecting, NULL, NULL, 
@@ -350,14 +384,20 @@ init(ConMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_STATE(me, &ConMgr_active);
     RKH_TR_FWK_STATE(me, &ConMgr_initialize);
     RKH_TR_FWK_STATE(me, &ConMgr_sync);
+    RKH_TR_FWK_STATE(me, &ConMgr_checkSyncTry);
 	RKH_TR_FWK_STATE(me, &ConMgr_init);
     RKH_TR_FWK_STATE(me, &ConMgr_pin);
     RKH_TR_FWK_STATE(me, &ConMgr_setPin);
+    RKH_TR_FWK_STATE(me, &ConMgr_enableNetTime);
+    RKH_TR_FWK_STATE(me, &ConMgr_cipShutdown);
     RKH_TR_FWK_STATE(me, &ConMgr_initializeFinal);
     RKH_TR_FWK_STATE(me, &ConMgr_registered);
     RKH_TR_FWK_STATE(me, &ConMgr_unregistered);
     RKH_TR_FWK_STATE(me, &ConMgr_failure);
+    RKH_TR_FWK_STATE(me, &ConMgr_waitNetClockSync);
+    RKH_TR_FWK_STATE(me, &ConMgr_localTime);
     RKH_TR_FWK_STATE(me, &ConMgr_configure);
+    RKH_TR_FWK_STATE(me, &ConMgr_configureHist);
     RKH_TR_FWK_STATE(me, &ConMgr_setManualGet);
     RKH_TR_FWK_STATE(me, &ConMgr_setAPN);
     RKH_TR_FWK_STATE(me, &ConMgr_enableGPRS);
@@ -375,6 +415,7 @@ init(ConMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_STATE(me, &ConMgr_sendingFinal);
     RKH_TR_FWK_STATE(me, &ConMgr_receiving);
     RKH_TR_FWK_STATE(me, &ConMgr_waitRetryConnect);
+    RKH_TR_FWK_STATE(me, &ConMgr_checkConnectTry);
     RKH_TR_FWK_STATE(me, &ConMgr_disconnecting);
     RKH_TR_FWK_TIMER(&me->timer);
     RKH_TR_FWK_SIG(evOpen);
@@ -404,6 +445,8 @@ init(ConMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_SIG(evNetDisconnected);
     RKH_TR_FWK_SIG(evDisconnected);
     RKH_TR_FWK_SIG(evTerminate);
+    RKH_TR_FWK_SIG(evNetClockSync);
+    RKH_TR_FWK_SIG(evLocalTime);
 
     RKH_TMR_INIT(&me->timer, &e_tout, NULL);
     me->retryCount = 0;
@@ -438,6 +481,23 @@ initializeInit(ConMgr *const me, RKH_EVT_T *pe)
     (void)pe;
 
     me->retryCount = 0;
+}
+
+static void
+localTimeGet(ConMgr *const me, RKH_EVT_T *pe)
+{
+	(void)me;
+	(void)pe;
+
+    ModCmd_getLocalTime();
+}
+
+static void 
+rtimeSync(ConMgr *const me, RKH_EVT_T *pe)
+{
+	(void)me;
+
+    rtime_set(&(RKH_UPCAST(LocalTimeEvt, pe)->time));
 }
 
 static void
@@ -596,6 +656,22 @@ setPin(ConMgr *const me)
     ModCmd_setPin(SIM_PIN_NUMBER);
 }
 
+static void
+netTimeEnable(ConMgr *const me)
+{
+    (void)me;
+
+    ModCmd_enableNetTime();
+}
+
+static void
+cipShutdown(ConMgr *const me)
+{
+    (void)me;
+
+    ModCmd_cipShutdown();
+}
+
 static void 
 unregEntry(ConMgr *const me)
 {
@@ -628,6 +704,13 @@ setupManualGet(ConMgr *const me)
     ModCmd_setManualGet();
 }
    
+static void
+waitNetClockSyncEntry(ConMgr *const me)
+{
+    RKH_SET_STATIC_EVENT(&e_tout, evTimeout);
+    RKH_TMR_ONESHOT(&me->timer, RKH_UPCAST(RKH_SMA_T, me), WAIT_NETCLOCK_TIME);
+}
+
 static void
 setupAPN(ConMgr *const me)
 {
@@ -691,6 +774,12 @@ idleEntry(ConMgr *const me)
 /* ............................. Exit actions ............................. */
 static void 
 unregExit(ConMgr *const me)
+{
+    rkh_tmr_stop(&me->timer);
+}
+
+static void
+waitNetClockSyncExit(ConMgr *const me)
 {
     rkh_tmr_stop(&me->timer);
 }
