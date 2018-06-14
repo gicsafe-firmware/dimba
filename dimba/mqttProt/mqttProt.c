@@ -374,23 +374,78 @@ init(MQTTProt *const me, RKH_EVT_T *pe)
 }
 
 /* ............................ Effect actions ............................. */
+
+#include "ioChgDet.h"
+#include "anSampler.h"
+
+#define NUM_AN_SAMPLES_GET  10
+#define NUM_DI_SAMPLES_GET  8
+
+char application_message[512];
+
+static
+int
+getMessage(void)
+{
+    AnSampleSet anSet;
+    IOChg ioChg[NUM_DI_SAMPLES_GET];
+    int n, l, i, j;
+    char *p;
+
+    n = anSampler_getSet(&anSet, NUM_AN_SAMPLES_GET);
+   
+    p = application_message;
+    l = 0;
+
+    if(n > 0)
+    {
+        for(i=0; i < NUM_AN_SIGNALS; ++i)
+        {
+            l += sprintf(p + l, "ts:%u, AN[%d], %d[sec]", 
+                    anSet.timeStamp, AN_SAMPLING_RATE_SEC, i);
+
+            for(j=0; j<n; ++j)
+            {
+                l += sprintf(p + l,", %d.%02d",
+                               (char)((anSet.anSignal[i][j] & 0xFF00) >> 8),
+                               (char)(anSet.anSignal[i][j] & 0x00FF));
+            }
+
+            l += sprintf(p + l, "\r\n");
+        }
+    }
+
+    n = IOChgDet_get(ioChg, NUM_DI_SAMPLES_GET);
+    
+    for(i=0; i < n; ++i)
+    {
+        l += sprintf(p + l, "ts:%u, DI[%d]:%d\r\n", ioChg[i].timeStamp,
+                                                    ioChg[i].signalId,
+                                                    ioChg[i].signalValue );
+    }
+
+    return l;
+}
+
 static void 
 publish(MQTTProt *const me, RKH_EVT_T *pe)
 {
     const char *topic;
-    char application_message[128];
+    int size;
 
     /* Get digital input changes and analog input samples */
     /* Format a payload to send */
     /* mqtt_publish(...); */
 
-    topic = "datetime";
-    strcpy(application_message, "The time is 2018-06-04 08:12:12");
+    topic = "dimba/test";
+
+    size = getMessage();
+    
     me->operRes = mqtt_publish(&me->client, 
                                topic, 
                                application_message, 
-                               strlen(application_message) + 1, 
-                               MQTT_PUBLISH_QOS_0);
+                               size,
+                               MQTT_PUBLISH_QOS_1);
 }
 
 static void 
