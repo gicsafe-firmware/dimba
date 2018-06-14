@@ -48,6 +48,7 @@ Epoch epoch_init(void);
 Epoch epoch_get(void);
 void epoch_updateNow(void);
 Epoch epoch_updateByStep(void);
+unsigned long epoch_mktime(Time *stime);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus
