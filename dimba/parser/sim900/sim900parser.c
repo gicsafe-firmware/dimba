@@ -649,7 +649,7 @@ lTimeGet(unsigned char pos)
 {
 	(void)pos;
 
-    lTime->tm_sec = 0;
+    lTime->tm_sec = 30;
     RKH_SMA_POST_FIFO(conMgr, RKH_UPCAST(RKH_EVT_T, &localTimeEvt),
 						      &sim900parser);
 

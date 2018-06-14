@@ -31,6 +31,7 @@ extern "C" {
 /* ------------------------------- Data types ------------------------------ */
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
+void rtime_init(void);
 Time *rtime_get(void);
 void rtime_set(Time *pt);
 

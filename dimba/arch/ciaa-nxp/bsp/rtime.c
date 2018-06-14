@@ -23,12 +23,20 @@
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
+static const Time dft = { 0, 36, 23, 11, 6, 2018, 2, 0 };
 static Time t;
 static rtc_t rtc;
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
 /* ---------------------------- Global functions --------------------------- */
+void
+rtime_init(void)
+{
+    Chip_RTC_Init(LPC_RTC);
+    Chip_RTC_Enable(LPC_RTC, ENABLE);
+}
+
 Time *
 rtime_get(void)
 {
@@ -57,7 +65,7 @@ rtime_set(Time *pt)
    rtc.month = pt->tm_mon;
    rtc.year = pt->tm_year;
 
-   rtcConfig(&rtc);
+   rtcWrite(&rtc);
 }
 
 /* ------------------------------ End of file ------------------------------ */

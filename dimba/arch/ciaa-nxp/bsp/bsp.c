@@ -50,7 +50,6 @@ static ModCmdRcvHandler cmdParser;
 static RKH_ROM_STATIC_EVENT(e_Term, evTerminate);
 static RKH_ROM_STATIC_EVENT(e_Close, evClose);
 static RKH_ROM_STATIC_EVENT(e_Ok, evOk);
-static const Time t = { 0, 36, 23, 11, 6, 2018, 2, 0 };
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
@@ -69,7 +68,7 @@ bsp_init(int argc, char *argv[])
 
     dacConfig(DAC_ENABLE);
     dacWrite(AO, 512);
-    //rtime_set(&t);
+    rtime_init();
 }
 
 void
