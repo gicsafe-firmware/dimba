@@ -385,7 +385,7 @@ char application_message[512];
 
 static
 int
-getMessage(void)
+prepareMessage(void)
 {
     AnSampleSet anSet;
     IOChg ioChg[NUM_DI_SAMPLES_GET];
@@ -401,12 +401,12 @@ getMessage(void)
     {
         for(i=0; i < NUM_AN_SIGNALS; ++i)
         {
-            l += sprintf(p + l, "ts:%u, AN[%d], %d[sec]", 
+            l += sprintf(p + l, "ts:%08d, tsm=%d, AN[%1d]", 
                     anSet.timeStamp, AN_SAMPLING_RATE_SEC, i);
 
             for(j=0; j<n; ++j)
             {
-                l += sprintf(p + l,", %d.%02d",
+                l += sprintf(p + l,", %02d.%02d",
                                (char)((anSet.anSignal[i][j] & 0xFF00) >> 8),
                                (char)(anSet.anSignal[i][j] & 0x00FF));
             }
@@ -439,7 +439,7 @@ publish(MQTTProt *const me, RKH_EVT_T *pe)
 
     topic = "dimba/test";
 
-    size = getMessage();
+    size = prepareMessage();
     
     me->operRes = mqtt_publish(&me->client, 
                                topic, 
