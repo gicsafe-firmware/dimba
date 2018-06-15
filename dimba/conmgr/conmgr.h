@@ -114,6 +114,9 @@ extern "C" {
     #define MOSQUITTO_SERVER    "test.mosquitto.org"
     #define MOSQUITTO_PORT      "1883"
 
+    #define LINSSE_SERVER       "linsse.com.ar"
+    #define LINSSE_PORT         "2000"
+
     #define DOCKLIGHT_SERVER    "181.230.72.86"
     #define DOCKLIGHT_PORT      "33498"
 
@@ -121,8 +124,8 @@ extern "C" {
     #define DOCKLIGHT_BIS_PORT   "33498"
 
 #define CONNECTION_PROT         "TCP"
-#define CONNECTION_DOMAIN       MOSQUITTO_SERVER 
-#define CONNECTION_PORT         MOSQUITTO_PORT
+#define CONNECTION_DOMAIN       LINSSE_SERVER 
+#define CONNECTION_PORT         LINSSE_PORT
 
 /* ................................ Signals ................................ */
 /* ........................ Declares active object ......................... */

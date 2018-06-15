@@ -12,7 +12,7 @@
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci lf@vortexmakes.com
- *  DaBa  Dario Baliña db@vortexmakes.com
+ *  DaBa  Dario Baliï¿½a db@vortexmakes.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
@@ -437,7 +437,7 @@ publish(MQTTProt *const me, RKH_EVT_T *pe)
     /* Format a payload to send */
     /* mqtt_publish(...); */
 
-    topic = "dimba/test";
+    topic = "/dimba/test";
 
     size = prepareMessage();
     
@@ -613,7 +613,7 @@ brokerConnect(MQTTProt *const me, RKH_EVT_T *pe)
 {
     me->operRes = mqtt_connect(&me->client, 
                                "publishing_client", 
-                               NULL, NULL, 0, NULL, NULL, 0, 400);
+                               NULL, NULL, 0, "gicsafe", "gicsafe", 0, 400);
 }
 
 static void 
