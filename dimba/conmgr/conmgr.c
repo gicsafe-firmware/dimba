@@ -34,7 +34,7 @@ typedef struct ConMgr ConMgr;
 /* ................... Declares states and pseudostates .................... */
 RKH_DCLR_BASIC_STATE ConMgr_inactive, ConMgr_sync,
                 ConMgr_init, ConMgr_pin, ConMgr_setPin, ConMgr_enableNetTime,
-                ConMgr_cipShutdown, ConMgr_setManualGet,
+                ConMgr_getImei, ConMgr_cipShutdown, ConMgr_setManualGet,
                 ConMgr_waitReg, ConMgr_unregistered, ConMgr_failure,
                 ConMgr_waitNetClockSync, ConMgr_localTime,
                 ConMgr_setAPN, ConMgr_enableGPRS,
@@ -58,6 +58,7 @@ static void init(ConMgr *const me, RKH_EVT_T *pe);
 static void open(ConMgr *const me, RKH_EVT_T *pe);
 static void close(ConMgr *const me, RKH_EVT_T *pe);
 static void initializeInit(ConMgr *const me, RKH_EVT_T *pe);
+static void storeImei(ConMgr *const me, RKH_EVT_T *pe);
 static void localTimeGet(ConMgr *const me, RKH_EVT_T *pe);
 static void rtimeSync(ConMgr *const me, RKH_EVT_T *pe);
 static void configureInit(ConMgr *const me, RKH_EVT_T *pe);
@@ -81,6 +82,7 @@ static void sendInit(ConMgr *const me);
 static void checkPin(ConMgr *const me);
 static void setPin(ConMgr *const me);
 static void netTimeEnable(ConMgr *const me);
+static void getImei(ConMgr *const me);
 static void cipShutdown(ConMgr *const me);
 static void unregEntry(ConMgr *const me);
 static void failureEntry(ConMgr *const me);
@@ -167,7 +169,12 @@ RKH_END_TRANS_TABLE
 RKH_CREATE_BASIC_STATE(ConMgr_enableNetTime, netTimeEnable, NULL, 
                                                     &ConMgr_initialize, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_enableNetTime)
-    RKH_TRREG(evOk,         NULL, NULL, &ConMgr_cipShutdown),
+    RKH_TRREG(evOk,         NULL, NULL, &ConMgr_getImei),
+RKH_END_TRANS_TABLE
+
+RKH_CREATE_BASIC_STATE(ConMgr_getImei, getImei, NULL, &ConMgr_initialize, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_getImei)
+    RKH_TRREG(evImei,       NULL, storeImei, &ConMgr_cipShutdown),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_cipShutdown, cipShutdown, NULL, &ConMgr_initialize, NULL);
@@ -369,6 +376,8 @@ static RKH_ROM_STATIC_EVENT(e_RecvFail, evRecvFail);
 
 ReceivedEvt e_Received;
 
+static char Imei[IMEI_BUF_SIZE];
+
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
 /* ............................ Initial action ............................. */
@@ -389,6 +398,7 @@ init(ConMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_STATE(me, &ConMgr_pin);
     RKH_TR_FWK_STATE(me, &ConMgr_setPin);
     RKH_TR_FWK_STATE(me, &ConMgr_enableNetTime);
+    RKH_TR_FWK_STATE(me, &ConMgr_getImei);
     RKH_TR_FWK_STATE(me, &ConMgr_cipShutdown);
     RKH_TR_FWK_STATE(me, &ConMgr_initializeFinal);
     RKH_TR_FWK_STATE(me, &ConMgr_registered);
@@ -481,6 +491,17 @@ initializeInit(ConMgr *const me, RKH_EVT_T *pe)
     (void)pe;
 
     me->retryCount = 0;
+}
+
+static void
+storeImei(ConMgr *const me, RKH_EVT_T *pe)
+{
+    ImeiEvt *p;
+
+	(void)pe;
+
+    p = RKH_UPCAST(ImeiEvt, pe);
+    strcpy(Imei, p->buf);
 }
 
 static void
@@ -662,6 +683,14 @@ netTimeEnable(ConMgr *const me)
     (void)me;
 
     ModCmd_enableNetTime();
+}
+
+static void
+getImei(ConMgr *const me)
+{
+    (void)me;
+
+    ModCmd_getImei();
 }
 
 static void
@@ -857,6 +886,12 @@ ReceivedEvt *
 ConMgr_ReceiveDataGetRef(void)
 {
     return &e_Received;
+}
+
+char *
+ConMgr_Imei(void)
+{
+    return Imei;
 }
 
 /* ------------------------------ End of file ------------------------------ */
