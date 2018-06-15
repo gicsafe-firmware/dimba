@@ -40,7 +40,8 @@ void modPwr_off(void);
 
 #define modPwr_init();
 #define modPwr_ctrl();
-#define modPwr_toggle();
+#define modPwr_on();
+#define modPwr_off();
 
 #endif
 

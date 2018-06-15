@@ -498,7 +498,7 @@ storeImei(ConMgr *const me, RKH_EVT_T *pe)
 {
     ImeiEvt *p;
 
-	(void)pe;
+	(void)me;
 
     p = RKH_UPCAST(ImeiEvt, pe);
     strcpy(Imei, p->buf);
