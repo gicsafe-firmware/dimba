@@ -103,7 +103,7 @@ static UpdStep updSteps[] =
 };
 
 unsigned long
-mktime(Time *stime)
+epoch_mktime(Time *stime)
 {
     int month_;
     short year_;
@@ -145,7 +145,7 @@ epoch_updateNow(void)
     Time *currTime;
 
     currTime = rtime_get();
-    currEpoch = mktime(currTime);
+    currEpoch = epoch_mktime(currTime);
 }
 
 Epoch 

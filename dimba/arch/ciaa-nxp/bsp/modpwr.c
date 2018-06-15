@@ -24,7 +24,16 @@
 /* ----------------------------- Local macros ------------------------------ */
 #define CFG_PWR_KEY_GPIO()  gpioConfig(GPIO0, GPIO_OUTPUT)
 #define PWR_KEY(b)          gpioWrite(GPIO0, !b)
+#define CFG_POWER_GPIO()    gpioConfig(DO0, GPIO_OUTPUT)
+#define POWER(b)            gpioWrite(DO0, b)
 
+#define modPwr_toggle() \
+        { \
+            RKH_ENTER_CRITICAL(); \
+            counter = SIM900_PWR_TIME; \
+            state = Toggling; \
+            RKH_EXIT_CRITICAL(); \
+        }
 /* ------------------------------- Constants ------------------------------- */
 #define SIM900_PWR_TIME     (1000/MTIME_MODPWR_BASE)
 
@@ -47,6 +56,8 @@ modPwr_init(void)
 {
     CFG_PWR_KEY_GPIO();
     PWR_KEY(1);
+    CFG_POWER_GPIO();
+    POWER(0);
     state = OnOff;
 }
 
@@ -70,13 +81,19 @@ modPwr_ctrl(void)
     }
 }
 
+
 void
-modPwr_toggle(void)
+modPwr_off(void)
 {
-    RKH_ENTER_CRITICAL();
-    counter = SIM900_PWR_TIME;
-    state = Toggling;
-    RKH_EXIT_CRITICAL();
+    POWER(0);
+    modPwr_toggle();
+}
+
+void
+modPwr_on(void)
+{
+    POWER(1);
+    modPwr_toggle();
 }
 
 /* ------------------------------ End of file ------------------------------ */

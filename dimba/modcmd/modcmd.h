@@ -53,6 +53,7 @@ void ModCmd_getPinStatus(void);
 void ModCmd_setPin(rui16_t pin);
 void ModCmd_getRegStatus(void);
 void ModCmd_enableNetTime(void);
+void ModCmd_getImei(void);
 void ModCmd_cipShutdown(void);
 void ModCmd_setManualGet(void);
 void ModCmd_getLocalTime(void);

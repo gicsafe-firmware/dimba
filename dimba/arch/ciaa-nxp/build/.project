@@ -155,6 +155,11 @@
 			<locationURI>PARENT-3-PROJECT_LOC/dIn</locationURI>
 		</link>
 		<link>
+			<name>src/dimba/date</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/date</locationURI>
+		</link>
+		<link>
 			<name>src/dimba/emaFilter</name>
 			<type>2</type>
 			<locationURI>PARENT-3-PROJECT_LOC/emaFilter</locationURI>

@@ -127,6 +127,9 @@
     <ClCompile Include="..\bsp\anin.c">
       <Filter>bsp</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\date\date.c">
+      <Filter>date</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rkh">
@@ -182,6 +185,9 @@
     </Filter>
     <Filter Include="adconv">
       <UniqueIdentifier>{4cbb6727-a6d1-4cc6-9a47-737445cbb205}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="date">
+      <UniqueIdentifier>{ecb85ffd-0c8c-4f42-bae5-2ddd9d91249c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

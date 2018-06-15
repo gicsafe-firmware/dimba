@@ -25,9 +25,6 @@ extern "C" {
 #endif
 
 /* --------------------------------- Macros -------------------------------- */
-#define modPwr_off()          modPwr_toggle()
-#define modPwr_on()           modPwr_toggle()
-
 /* -------------------------------- Constants ------------------------------ */
 /* ------------------------------- Data types ------------------------------ */
 /* -------------------------- External variables --------------------------- */
@@ -36,13 +33,15 @@ extern "C" {
 
 void modPwr_init(void);
 void modPwr_ctrl(void);
-void modPwr_toggle(void);
+void modPwr_on(void);
+void modPwr_off(void);
 
 #else
 
 #define modPwr_init();
 #define modPwr_ctrl();
-#define modPwr_toggle();
+#define modPwr_on();
+#define modPwr_off();
 
 #endif
 

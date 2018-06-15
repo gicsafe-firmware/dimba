@@ -348,6 +348,20 @@
  */
 #define RKH_CFG_SMA_VFUNCT_EN           RKH_ENABLED
 
+/**
+ *  \brief
+ *  If RKH_CFG_SMA_ORTHREG_EN is set to RKH_ENABLED, the state machine 
+ *  functions are reentrant, therefore it could be used as workaround to 
+ *  easily emulates a state machine or composite state with orthogonal 
+ *  regions, for example, dispatching the same event to multiple state 
+ *  machines (regions) at the same time.
+ *
+ *  \type       Boolean
+ *  \range
+ *  \default    RKH_DISABLED
+ */
+#define RKH_CFG_SMA_ORTHREG_EN          RKH_ENABLED
+
 /* --- Configuration options related to trace facility -------------------- */
 
 /**
@@ -536,7 +550,7 @@
  *	Specify the maximum number of trace events in the stream. The smaller
  *	this number, the lower the RAM consumption.
  */
-#define RKH_CFG_TRC_SIZEOF_STREAM       256u
+#define RKH_CFG_TRC_SIZEOF_STREAM       512u
 
 /* --- Configuration options related to queue (by reference) facility ----- */
 

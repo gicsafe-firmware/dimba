@@ -30,9 +30,9 @@ extern "C" {
 
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
-#define WAIT_CONNECT_TIME       RKH_TIME_SEC(10)
-#define PUBLISH_TIME            RKH_TIME_SEC(5) /*RKH_TIME_MIN(5)*/
-#define SYNC_TIME               RKH_TIME_MS(1000)
+#define WAIT_CONNECT_TIME       RKH_TIME_MIN(1)
+#define PUBLISH_TIME            /*RKH_TIME_SEC(30)*/ RKH_TIME_MIN(5)
+#define SYNC_TIME               RKH_TIME_SEC(10)
 
 /* ................................ Signals ................................ */
 /* ........................ Declares active object ......................... */

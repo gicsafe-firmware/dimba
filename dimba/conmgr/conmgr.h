@@ -23,6 +23,7 @@
 /* ----------------------------- Include files ----------------------------- */
 #include "rkh.h"
 #include "epoch.h"
+#include "modMgr.h"
 
 /* ---------------------- External C language linkage ---------------------- */
 #ifdef __cplusplus
@@ -89,6 +90,12 @@ extern "C" {
 #define RECV_BUFF_SIZE      1024
 
 /**
+ *  ImeiEvt process definitions
+ */
+#define IMEI_LENGTH         15
+#define IMEI_BUF_SIZE       IMEI_LENGTH + 1
+
+/**
  * GSM Network Provider and Connection specific configurations.
  */
 /* .................................. APN .................................. */
@@ -151,13 +158,21 @@ struct ReceivedEvt
 typedef struct LocalTimeEvt LocalTimeEvt;
 struct LocalTimeEvt
 {
-    RKH_EVT_T evt;
+    ModMgrResp e;
     Time time;
+};
+
+typedef struct ImeiEvt ImeiEvt;
+struct ImeiEvt
+{
+    ModMgrResp e;
+    char buf[IMEI_BUF_SIZE];
 };
 
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
 ReceivedEvt * ConMgr_ReceiveDataGetRef(void);
+char * ConMgr_Imei(void);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus
