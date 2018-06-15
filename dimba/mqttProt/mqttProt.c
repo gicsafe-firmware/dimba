@@ -66,6 +66,7 @@ static void nextSend(SyncRegion *const me, RKH_EVT_T *pe);
 static void handleRecvMsg(SyncRegion *const me, RKH_EVT_T *pe);
 static void activateSync(MQTTProt *const me, RKH_EVT_T *pe);
 static void releaseUse(SyncRegion *const me, RKH_EVT_T *pe);
+static void deactivateSync(MQTTProt *const me, RKH_EVT_T *pe);
 
 /* ......................... Declares entry actions ........................ */
 static void enWaitToConnect(MQTTProt *const me, RKH_EVT_T *pe);
@@ -137,7 +138,7 @@ RKH_CREATE_COMP_REGION_STATE(Client_Connected, NULL, NULL, RKH_ROOT,
                              RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
 RKH_CREATE_TRANS_TABLE(Client_Connected)
     RKH_TRREG(evConnRefused, NULL, NULL, &Client_ConnRefused),
-    RKH_TRREG(evNetDisconnected, NULL, NULL, &Client_Idle),
+    RKH_TRREG(evNetDisconnected, NULL, deactivateSync, &Client_Idle),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(Client_TryConnect, brokerConnect, NULL, 
@@ -285,6 +286,7 @@ static RKH_ROM_STATIC_EVENT(evWaitPublishToutObj, evWaitPublishTout);
 static RKH_ROM_STATIC_EVENT(evWaitSyncToutObj, evWaitSyncTout);
 static RKH_ROM_STATIC_EVENT(evRecvObj, evRecv);
 static RKH_ROM_STATIC_EVENT(evActivateObj, evActivate);
+static RKH_ROM_STATIC_EVENT(evDeactivateObj, evDeactivate);
 static RKH_ROM_STATIC_EVENT(evConnAcceptedObj, evConnAccepted);
 static RKH_ROM_STATIC_EVENT(evUnlockedObj, evUnlocked);
 static SendEvt evSendObj;
@@ -374,6 +376,7 @@ init(MQTTProt *const me, RKH_EVT_T *pe)
     me->client.connack_response_callback = connack_response_callback;
     mqtt_init(&me->client, 0, me->sendbuf, sizeof(me->sendbuf), 
               me->recvbuf, sizeof(me->recvbuf), 0);
+    rkh_sm_init(RKH_UPCAST(RKH_SM_T, &me->itsSyncRegion));
 }
 
 /* ............................ Effect actions ............................. */
@@ -396,7 +399,7 @@ publish(MQTTProt *const me, RKH_EVT_T *pe)
     snprintf(application_message, sizeof(application_message), 
              "The time is %s", timebuf);
 
-    topic = "datetime";
+    topic = "date_time";
     me->operRes = mqtt_publish(&me->client, 
                                topic, 
                                application_message, 
@@ -552,6 +555,14 @@ releaseUse(SyncRegion *const me, RKH_EVT_T *pe)
     realMe = me->itsMQTTProt;
     RKH_SMA_POST_FIFO(RKH_UPCAST(RKH_SMA_T, realMe), 
                       RKH_UPCAST(RKH_EVT_T, &evUnlockedObj), 
+                      me);
+}
+
+static void 
+deactivateSync(MQTTProt *const me, RKH_EVT_T *pe)
+{
+    RKH_SMA_POST_FIFO(RKH_UPCAST(RKH_SMA_T, me), 
+                      RKH_UPCAST(RKH_EVT_T, &evDeactivateObj), 
                       me);
 }
 
