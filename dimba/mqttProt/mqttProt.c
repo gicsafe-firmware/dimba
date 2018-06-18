@@ -387,7 +387,7 @@ init(MQTTProt *const me, RKH_EVT_T *pe)
 #define NUM_AN_SAMPLES_GET  10
 #define NUM_DI_SAMPLES_GET  8
 
-char application_message[512];
+char application_message[1024];
 
 static
 int
