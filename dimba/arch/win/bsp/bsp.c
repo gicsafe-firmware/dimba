@@ -267,9 +267,9 @@ ser_tx_isr( void )
 void
 bsp_serial_open(int ch)
 {
+    cmdParser = ModCmd_init();
     init_serial_hard(ch, &ser_cback );
     connect_serial(ch);
-    cmdParser = ModCmd_init();
     RKH_TR_FWK_ACTOR(&bsp, "bsp");
 }
 
