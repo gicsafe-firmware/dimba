@@ -46,6 +46,14 @@ enum
     MODCMD_USR_TRACE = RKH_TE_USER,
 };
 
+/*
+ * Status Led´s 
+ */
+typedef enum
+{
+    DisconnectedSt, ConnectedSt,
+} Status_t;
+
 /* ------------------------------- Data types ------------------------------ */
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
@@ -58,6 +66,9 @@ void bsp_serial_open(int ch);
 void bsp_serial_close(int ch);
 void bsp_serial_puts(int ch, char *p);
 void bsp_serial_putnchar(int ch, unsigned char *p, ruint ndata);
+
+void bsp_netStatus(Status_t status);
+void bsp_mqttStatus(Status_t status);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus

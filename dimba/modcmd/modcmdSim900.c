@@ -39,6 +39,7 @@ struct CmdTbl
     ModCmd setPin;
     ModCmd getRegStatus;
     ModCmd enableNetTime;
+    ModCmd getImei;
     ModCmd cipShutdown;
     ModCmd setManualGet;
     ModCmd getLocalTime;
@@ -62,7 +63,7 @@ static const CmdTbl cmdTbl =
     {RKH_INIT_STATIC_EVT(evCmd), 
      "AT\r\n", 
      &conMgr, 
-     RKH_TIME_MS(1000), RKH_TIME_MS(100)},
+     RKH_TIME_MS(2000), RKH_TIME_MS(100)},
 
     {RKH_INIT_STATIC_EVT(evCmd), 
      "ATE1+CREG=1\r\n",
@@ -77,7 +78,7 @@ static const CmdTbl cmdTbl =
     {RKH_INIT_STATIC_EVT(evCmd), 
      "AT+CPIN=%d\r\n", 
      &conMgr, 
-     RKH_TIME_MS(300), RKH_TIME_MS(100)},
+     RKH_TIME_MS(500), RKH_TIME_MS(100)},
 
     {RKH_INIT_STATIC_EVT(evCmd), 
      "AT+CREG?\r\n", 
@@ -88,6 +89,11 @@ static const CmdTbl cmdTbl =
      "AT+CLTS=1\r\n",
      &conMgr, 
      RKH_TIME_MS(300), RKH_TIME_MS(100)},
+
+    {RKH_INIT_STATIC_EVT(evCmd), 
+     "AT+GSN\r\n",
+     &conMgr, 
+     RKH_TIME_MS(500), RKH_TIME_MS(100)},
 
     {RKH_INIT_STATIC_EVT(evCmd), 
      "AT+CIPSHUT\r\n",
@@ -254,6 +260,12 @@ void
 ModCmd_enableNetTime(void)
 {
     sendModCmd_noArgs(&cmdTbl.enableNetTime);
+}
+
+void 
+ModCmd_getImei(void)
+{
+    sendModCmd_noArgs(&cmdTbl.getImei);
 }
 
 void 

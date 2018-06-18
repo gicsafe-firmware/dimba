@@ -32,8 +32,8 @@
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
 static rui8_t sim900parser;
-SSP_DCLR_NORMAL_NODE at, waitOK, at_plus_c, at_plus_ci, at_plus_cip,
-                     at_plus_cips, 
+SSP_DCLR_NORMAL_NODE at, waitOK, at_plus, at_plus_c, at_plus_ci, 
+                     at_plus_cip, at_plus_cips, 
                      at_plus_cipsta, at_plus_ciprxget,
                      at_plus_ciprxget_2, at_plus_ciprxget_2_wdata,
                      at_plus_cipstatus, at_plus_cipstatus_ip,
@@ -48,7 +48,7 @@ SSP_DCLR_NORMAL_NODE at, waitOK, at_plus_c, at_plus_ci, at_plus_cip,
                      at_plus_cclk, cclk_end;
 
 SSP_DCLR_TRN_NODE at_plus_ciprxget_data, cclk_year, cclk_month, cclk_day,
-                  cclk_hour, cclk_min;
+                  cclk_hour, cclk_min, at_plus_gsn;
 
 static rui8_t isURC;
 
@@ -59,6 +59,9 @@ static LocalTimeEvt localTimeEvt;
 static Time *lTime;
 static char ltbuf[LTBUFF_SIZE];
 static char *plt;
+
+static ImeiEvt imeiEvt;
+static char *pImei;
 
 /* ----------------------- Local function prototypes ----------------------- */
 static void cmd_ok(unsigned char pos);
@@ -97,6 +100,9 @@ static void dayGet(unsigned char pos);
 static void hourGet(unsigned char pos);
 static void minGet(unsigned char pos);
 static void lTimeGet(unsigned char pos);
+static void imeiInit(unsigned char pos);
+static void imeiCollect(unsigned char c);
+static void imeiSet(unsigned char pos);
 
 /* ---------------------------- Local functions ---------------------------- */
 
@@ -112,8 +118,15 @@ SSP_END_BR_TABLE
 SSP_CREATE_NORMAL_NODE(at);
 SSP_CREATE_BR_TABLE(at)
 	SSPBR("E",  NULL,       &waitOK),
-	SSPBR("+C", NULL,       &at_plus_c),
+	SSPBR("+", NULL,       &at_plus),
 	SSPBR("OK\r\n", cmd_ok, &rootCmdParser),
+SSP_END_BR_TABLE
+
+SSP_CREATE_NORMAL_NODE(at_plus);
+SSP_CREATE_BR_TABLE(at_plus)
+	SSPBR("GSN\r\n\r\n", imeiInit,  &at_plus_gsn),
+	SSPBR("C",           NULL,      &at_plus_c),
+	SSPBR("OK\r\n",     cmd_ok,    &rootCmdParser),
 SSP_END_BR_TABLE
 
 SSP_CREATE_NORMAL_NODE(at_plus_c);
@@ -371,7 +384,14 @@ SSP_CREATE_BR_TABLE(netClockSync)
 	SSPBR("\r\n",   netClock_rcv, &rootCmdParser),
 SSP_END_BR_TABLE
 
+/* ---------------------------- AT+GSN --------------------------- */
+SSP_CREATE_TRN_NODE(at_plus_gsn, imeiCollect);
+SSP_CREATE_BR_TABLE(at_plus_gsn)
+	SSPBR("OK\r\n", imeiSet, &rootCmdParser),
+SSP_END_BR_TABLE
+
 /* --------------------------------------------------------------- */
+
 static void
 sendModResp_noArgs(RKH_SIG_T sig)
 {
@@ -570,7 +590,6 @@ lTimeInit(unsigned char pos)
     plt = ltbuf;
     *plt = '\0';
 
-    RKH_SET_STATIC_EVENT(RKH_UPCAST(RKH_EVT_T, &localTimeEvt), evLocalTime);
     lTime = &localTimeEvt.time;
 }
 
@@ -649,11 +668,45 @@ lTimeGet(unsigned char pos)
 {
 	(void)pos;
 
-    lTime->tm_sec = 0;
-    RKH_SMA_POST_FIFO(conMgr, RKH_UPCAST(RKH_EVT_T, &localTimeEvt),
-						      &sim900parser);
+    lTime->tm_sec = 30;
 
-    sendModResp_noArgs(evReg);
+    RKH_SET_STATIC_EVENT(RKH_UPCAST(RKH_EVT_T, &localTimeEvt), evResponse);
+
+    localTimeEvt.e.fwdEvt = evLocalTime;
+        
+    RKH_SMA_POST_FIFO(modMgr, RKH_UPCAST(RKH_EVT_T, &localTimeEvt),
+						      &sim900parser);
+}
+
+static void
+imeiInit(unsigned char pos)
+{
+    (void)pos;
+
+    pImei = imeiEvt.buf;
+}
+
+static void
+imeiCollect(unsigned char c)
+{
+    if(pImei >= (imeiEvt.buf + sizeof(imeiEvt.buf) - 1))
+        return;
+    
+    *pImei = c;
+    ++pImei;
+}
+
+static void
+imeiSet(unsigned char pos)
+{
+    imeiEvt.buf[IMEI_LENGTH] = '\0';    
+
+    RKH_SET_STATIC_EVENT(RKH_UPCAST(RKH_EVT_T, &imeiEvt), evResponse);
+
+    imeiEvt.e.fwdEvt = evImei;
+        
+    RKH_SMA_POST_FIFO(modMgr, RKH_UPCAST(RKH_EVT_T, &imeiEvt),
+						      &sim900parser);
 }
 
 /* ---------------------------- Global functions --------------------------- */

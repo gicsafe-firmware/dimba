@@ -16,9 +16,12 @@
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
 #include "rtime.h"
-#include "sapi_rtc.h"
+#include "sapi.h"
 
 /* ----------------------------- Local macros ------------------------------ */
+#define RunLed_init()      gpioConfig(DO4, GPIO_OUTPUT)
+#define RunLed_toggle()    gpioToggle(DO4)
+
 /* ------------------------------- Constants ------------------------------- */
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
@@ -29,9 +32,19 @@ static rtc_t rtc;
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
 /* ---------------------------- Global functions --------------------------- */
+void
+rtime_init(void)
+{
+    Chip_RTC_Init(LPC_RTC);
+    Chip_RTC_Enable(LPC_RTC, ENABLE);
+
+    RunLed_init();
+}
+
 Time *
 rtime_get(void)
 {
+    RunLed_toggle();
     rtcRead(&rtc);
 
     t.tm_sec = rtc.sec;
@@ -57,7 +70,7 @@ rtime_set(Time *pt)
    rtc.month = pt->tm_mon;
    rtc.year = pt->tm_year;
 
-   rtcConfig(&rtc);
+   rtcWrite(&rtc);
 }
 
 /* ------------------------------ End of file ------------------------------ */
