@@ -407,7 +407,7 @@ prepareMessage(void)
     {
         for(i=0; i < NUM_AN_SIGNALS; ++i)
         {
-            l += sprintf(p + l, "ts:%08d, tsm=%d, AN[%1d]", 
+            l += sprintf(p + l, "ts:%08u, tsm=%d, AN[%1d]",
                     anSet.timeStamp, AN_SAMPLING_RATE_SEC, i);
 
             for(j=0; j<n; ++j)
