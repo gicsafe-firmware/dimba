@@ -12,7 +12,7 @@
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci lf@vortexmakes.com
- *  DaBa  Dario Baliï¿½a db@vortexmakes.com
+ *  DaBa  Dario Baliña db@vortexmakes.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
@@ -380,77 +380,30 @@ init(MQTTProt *const me, RKH_EVT_T *pe)
 }
 
 /* ............................ Effect actions ............................. */
-
-#include "ioChgDet.h"
-#include "anSampler.h"
-
-#define NUM_AN_SAMPLES_GET  10
-#define NUM_DI_SAMPLES_GET  8
-
-char application_message[512];
-
-static
-int
-prepareMessage(void)
-{
-    AnSampleSet anSet;
-    IOChg ioChg[NUM_DI_SAMPLES_GET];
-    int n, l, i, j;
-    char *p;
-
-    n = anSampler_getSet(&anSet, NUM_AN_SAMPLES_GET);
-   
-    p = application_message;
-    l = 0;
-
-    if(n > 0)
-    {
-        for(i=0; i < NUM_AN_SIGNALS; ++i)
-        {
-            l += sprintf(p + l, "ts:%08d, tsm=%d, AN[%1d]", 
-                    anSet.timeStamp, AN_SAMPLING_RATE_SEC, i);
-
-            for(j=0; j<n; ++j)
-            {
-                l += sprintf(p + l,", %02d.%02d",
-                               (char)((anSet.anSignal[i][j] & 0xFF00) >> 8),
-                               (char)(anSet.anSignal[i][j] & 0x00FF));
-            }
-
-            l += sprintf(p + l, "\r\n");
-        }
-    }
-
-    n = IOChgDet_get(ioChg, NUM_DI_SAMPLES_GET);
-    
-    for(i=0; i < n; ++i)
-    {
-        l += sprintf(p + l, "ts:%u, DI[%d]:%d\r\n", ioChg[i].timeStamp,
-                                                    ioChg[i].signalId,
-                                                    ioChg[i].signalValue );
-    }
-
-    return l;
-}
-
 static void 
 publish(MQTTProt *const me, RKH_EVT_T *pe)
 {
     const char *topic;
-    int size;
+    char application_message[128];
+    Epoch timer;
+    char timebuf[26];
+    Time tm_info;
 
     /* Get digital input changes and analog input samples */
     /* Format a payload to send */
     /* mqtt_publish(...); */
 
-    topic = "/dimba/test";
+    timer = epoch_get();
+    mk_date(timer, &tm_info);
+    str_time(timebuf, &tm_info);
+    snprintf(application_message, sizeof(application_message), 
+             "The time is %s", timebuf);
 
-    size = prepareMessage();
-    
+    topic = "date_time";
     me->operRes = mqtt_publish(&me->client, 
                                topic, 
                                application_message, 
-                               size,
+                               strlen(application_message) + 1, 
                                MQTT_PUBLISH_QOS_1);
 }
 
@@ -627,7 +580,7 @@ brokerConnect(MQTTProt *const me, RKH_EVT_T *pe)
 {
     me->operRes = mqtt_connect(&me->client, 
                                "publishing_client", 
-                               NULL, NULL, 0, "gicsafe", "gicsafe", 0, 400);
+                               NULL, NULL, 0, NULL, NULL, 0, 400);
 }
 
 static void 
