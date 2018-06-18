@@ -103,13 +103,13 @@ RKH_CREATE_COMP_REGION_STATE(Sync_Active, NULL, NULL, RKH_ROOT,
                              &Sync_WaitSync, NULL,
                              RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
 RKH_CREATE_TRANS_TABLE(Sync_Active)
+    RKH_TRREG(evDeactivate, NULL, releaseUse, &Sync_Idle),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(Sync_WaitSync, enWaitSync, exWaitSync, &Sync_Active, 
                        NULL);
 RKH_CREATE_TRANS_TABLE(Sync_WaitSync)
     RKH_TRREG(evWaitSyncTout, NULL, initRecvAll, &Sync_Receiving),
-    RKH_TRREG(evDeactivate, NULL, releaseUse, &Sync_Idle),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(Sync_Receiving, recvAll, NULL, &Sync_Active, NULL);
@@ -138,7 +138,7 @@ RKH_CREATE_COMP_REGION_STATE(Client_Connected, NULL, NULL, RKH_ROOT,
                              RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
 RKH_CREATE_TRANS_TABLE(Client_Connected)
     RKH_TRREG(evConnRefused, NULL, NULL, &Client_ConnRefused),
-    RKH_TRREG(evNetDisconnected, NULL, deactivateSync, &Client_Idle),
+    RKH_TRREG(evNetDisconnected, NULL, NULL, &Client_Idle),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(Client_TryConnect, brokerConnect, NULL, 
@@ -410,6 +410,10 @@ publish(MQTTProt *const me, RKH_EVT_T *pe)
 static void 
 initRecvAll(SyncRegion *const me, RKH_EVT_T *pe)
 {
+    MQTTProt *realMe;
+
+    realMe = me->itsMQTTProt;
+    mqtt_recovery(&realMe->client);
     mqtt_initRecvAll();
 }
 
@@ -580,6 +584,7 @@ enWaitToConnect(MQTTProt *const me, RKH_EVT_T *pe)
 static void 
 brokerConnect(MQTTProt *const me, RKH_EVT_T *pe)
 {
+    mqtt_reinit(&me->client);
     me->operRes = mqtt_connect(&me->client, 
                                "publishing_client", 
                                NULL, NULL, 0, NULL, NULL, 0, 400);
