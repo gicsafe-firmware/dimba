@@ -367,6 +367,7 @@ init(MQTTProt *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_SIG(evWaitPublishTout);
     RKH_TR_FWK_SIG(evWaitSyncTout);
     RKH_TR_FWK_SIG(evUnlocked);
+    RKH_TR_FWK_SIG(RKH_COMPLETION_EVENT);
     RKH_FILTER_OFF_SMA(MQTTProt_syncRegion);
 
     RKH_SET_STATIC_EVENT(RKH_UPCAST(RKH_EVT_T, &evSendObj), evSend);
