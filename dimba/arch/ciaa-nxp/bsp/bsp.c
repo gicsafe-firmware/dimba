@@ -41,15 +41,17 @@
 RKH_THIS_MODULE
 
 /* ----------------------------- Local macros ------------------------------ */
+#define NetStatus_init()    gpioConfig(DO5, GPIO_OUTPUT)
+#define NetStatus(b)        gpioWrite(DO5, b)
+#define MqttStatus_init()   gpioConfig(DO6, GPIO_OUTPUT)
+#define MqttStatus(b)       gpioWrite(DO6, b)
+
 /* ------------------------------- Constants ------------------------------- */
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
 static RKH_TS_T tstamp;
 static ModCmdRcvHandler cmdParser;
-static RKH_ROM_STATIC_EVENT(e_Term, evTerminate);
-static RKH_ROM_STATIC_EVENT(e_Close, evClose);
-static RKH_ROM_STATIC_EVENT(e_Ok, evOk);
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
@@ -61,6 +63,10 @@ bsp_init(int argc, char *argv[])
     (void)argv;
 
     boardConfig();
+    NetStatus_init();
+    NetStatus(DisconnectedSt);
+    MqttStatus_init();
+    MqttStatus(DisconnectedSt);
 
     modPwr_init();
     dIn_init();
@@ -126,6 +132,18 @@ bsp_serial_putnchar(int ch, unsigned char *p, ruint ndata)
         uartWriteByte(UART_232, *p);
         ++p;
     }
+}
+
+void 
+bsp_netStatus(Status_t status)
+{
+    NetStatus(status);
+}
+
+void
+bsp_mqttStatus(Status_t status)
+{
+    MqttStatus(status);
 }
 
 /* ------------------------------ File footer ------------------------------ */

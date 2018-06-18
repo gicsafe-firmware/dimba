@@ -18,6 +18,7 @@
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
 #include "rkh.h"
+#include <string.h>
 #include "conmgr.h"
 #include "modpwr.h"
 #include "modmgr.h"
@@ -779,6 +780,7 @@ socketConnected(ConMgr *const me)
     (void)me;
 
     RKH_SMA_POST_FIFO(mqttProt, &e_NetConnected, conMgr);
+    bsp_netStatus(ConnectedSt);
 }
 
 static void
@@ -846,6 +848,7 @@ socketDisconnected(ConMgr *const me)
     (void)me;
 
     RKH_SMA_POST_FIFO(mqttProt, &e_NetDisconnected, conMgr);
+    bsp_netStatus(DisconnectedSt);
 }
 
 static void

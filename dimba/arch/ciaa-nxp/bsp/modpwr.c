@@ -22,10 +22,10 @@
 #include "mTimeCfg.h"
 
 /* ----------------------------- Local macros ------------------------------ */
-#define CFG_PWR_KEY_GPIO()  gpioConfig(GPIO0, GPIO_OUTPUT)
-#define PWR_KEY(b)          gpioWrite(GPIO0, !b)
-#define CFG_POWER_GPIO()    gpioConfig(DO0, GPIO_OUTPUT)
-#define POWER(b)            gpioWrite(DO0, b)
+#define PwrKey_init()       gpioConfig(GPIO0, GPIO_OUTPUT)
+#define PwrKey(b)           gpioWrite(GPIO0, !b)
+#define Power_init()        gpioConfig(DO0, GPIO_OUTPUT)
+#define Power(b)            gpioWrite(DO0, b)
 
 #define modPwr_toggle() \
         { \
@@ -34,6 +34,7 @@
             state = Toggling; \
             RKH_EXIT_CRITICAL(); \
         }
+
 /* ------------------------------- Constants ------------------------------- */
 #define SIM900_PWR_TIME     (1000/MTIME_MODPWR_BASE)
 
@@ -54,10 +55,10 @@ static ruint state, counter;
 void
 modPwr_init(void)
 {
-    CFG_PWR_KEY_GPIO();
-    PWR_KEY(1);
-    CFG_POWER_GPIO();
-    POWER(0);
+    PwrKey_init();
+    PwrKey(1);
+    Power_init();
+    Power(0);
     state = OnOff;
 }
 
@@ -67,11 +68,11 @@ modPwr_ctrl(void)
     switch(state)
     {
         case OnOff:
-            PWR_KEY(1);
+            PwrKey(1);
             break;
 
         case Toggling:
-            PWR_KEY(0);
+            PwrKey(0);
             if(counter && (--counter == 0))
             {
                 state = OnOff;
@@ -85,14 +86,14 @@ modPwr_ctrl(void)
 void
 modPwr_off(void)
 {
-    POWER(0);
+    Power(0);
     modPwr_toggle();
 }
 
 void
 modPwr_on(void)
 {
-    POWER(1);
+    Power(1);
     modPwr_toggle();
 }
 
