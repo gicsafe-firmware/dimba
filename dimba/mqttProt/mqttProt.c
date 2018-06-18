@@ -103,13 +103,13 @@ RKH_CREATE_COMP_REGION_STATE(Sync_Active, NULL, NULL, RKH_ROOT,
                              &Sync_WaitSync, NULL,
                              RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
 RKH_CREATE_TRANS_TABLE(Sync_Active)
-    RKH_TRREG(evDeactivate, NULL, releaseUse, &Sync_Idle),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(Sync_WaitSync, enWaitSync, exWaitSync, &Sync_Active, 
                        NULL);
 RKH_CREATE_TRANS_TABLE(Sync_WaitSync)
     RKH_TRREG(evWaitSyncTout, NULL, initRecvAll, &Sync_Receiving),
+    RKH_TRREG(evDeactivate, NULL, releaseUse, &Sync_Idle),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(Sync_Receiving, recvAll, NULL, &Sync_Active, NULL);
@@ -419,6 +419,7 @@ recvFail(SyncRegion *const me, RKH_EVT_T *pe)
     MQTTProt *realMe;
 
     realMe = me->itsMQTTProt;
+    localRecv.rv = MQTT_ERROR_SOCKET_ERROR;
     mqtt_recvFail(&realMe->client, &localRecv); /* an error occurred */
 }
 
@@ -442,6 +443,7 @@ sendMsgFail(SyncRegion *const me, RKH_EVT_T *pe)
     MQTTProt *realMe;
 
     realMe = me->itsMQTTProt;
+    localSend.tmp = MQTT_ERROR_SOCKET_ERROR;
     mqtt_sendMsgFail(&realMe->client, &localSend);
 }
 
