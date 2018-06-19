@@ -31,7 +31,7 @@ extern "C" {
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
 #define WAIT_CONNECT_TIME       RKH_TIME_MIN(1)
-#define PUBLISH_TIME            /*RKH_TIME_SEC(30)*/ RKH_TIME_MIN(3)
+#define PUBLISH_TIME            /*RKH_TIME_SEC(30)*/ RKH_TIME_MIN(1)
 #define SYNC_TIME               RKH_TIME_SEC(5)
 
 /* ................................ Signals ................................ */
