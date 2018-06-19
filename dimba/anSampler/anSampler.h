@@ -22,6 +22,7 @@
 #include "CirBuffer.h"
 #include "epoch.h"
 #include "anin.h"
+#include "mTimeCfg.h"
 
 /* ---------------------- External C language linkage ---------------------- */
 #ifdef __cplusplus
