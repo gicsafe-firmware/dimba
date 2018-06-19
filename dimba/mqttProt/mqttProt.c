@@ -402,7 +402,7 @@ publish(MQTTProt *const me, RKH_EVT_T *pe)
                                topic, 
                                application_message, 
                                strlen(application_message) + 1, 
-                               MQTT_PUBLISH_QOS_0);
+                               MQTT_PUBLISH_QOS_1);
 }
 
 static void 
@@ -587,7 +587,7 @@ brokerConnect(MQTTProt *const me, RKH_EVT_T *pe)
               me->recvbuf, sizeof(me->recvbuf), 0);
     me->operRes = mqtt_connect(&me->client, 
                                "publishing_client", 
-                               NULL, NULL, 0, NULL, NULL, 0, 100);
+                               NULL, NULL, 0, NULL, NULL, 0, 400);
 }
 
 static void 
