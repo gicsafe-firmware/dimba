@@ -374,9 +374,6 @@ init(MQTTProt *const me, RKH_EVT_T *pe)
     RKH_SET_STATIC_EVENT(RKH_UPCAST(RKH_EVT_T, &evConnRefusedObj), 
                          evConnRefused);
 
-    me->client.connack_response_callback = connack_response_callback;
-    mqtt_init(&me->client, 0, me->sendbuf, sizeof(me->sendbuf), 
-              me->recvbuf, sizeof(me->recvbuf), 0);
     rkh_sm_init(RKH_UPCAST(RKH_SM_T, &me->itsSyncRegion));
 }
 
@@ -405,7 +402,7 @@ publish(MQTTProt *const me, RKH_EVT_T *pe)
                                topic, 
                                application_message, 
                                strlen(application_message) + 1, 
-                               MQTT_PUBLISH_QOS_1);
+                               MQTT_PUBLISH_QOS_0);
 }
 
 static void 
@@ -585,10 +582,12 @@ enWaitToConnect(MQTTProt *const me, RKH_EVT_T *pe)
 static void 
 brokerConnect(MQTTProt *const me, RKH_EVT_T *pe)
 {
-    mqtt_reinit(&me->client);
+    me->client.connack_response_callback = connack_response_callback;
+    mqtt_init(&me->client, 0, me->sendbuf, sizeof(me->sendbuf), 
+              me->recvbuf, sizeof(me->recvbuf), 0);
     me->operRes = mqtt_connect(&me->client, 
                                "publishing_client", 
-                               NULL, NULL, 0, NULL, NULL, 0, 400);
+                               NULL, NULL, 0, NULL, NULL, 0, 100);
 }
 
 static void 
