@@ -264,6 +264,7 @@ struct MQTTProt
                             /* mqtt message expected to be received */
     enum MQTTErrors operRes;
     MQTTProtCfg *config;
+    MQTTProtPublish publisher;
 };
 
 RKH_SMA_CREATE(MQTTProt, mqttProt, 2, HCAL, &Client_Idle, init, NULL);
@@ -303,6 +304,27 @@ static LocalRecvAll localRecv;
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
+static void
+pubDft(AppData *appMsg)
+{
+    static char application_message[128];
+    Epoch timer;
+    char timebuf[26];
+    Time tm_info;
+
+    if (appMsg != (AppData *)0)
+    {
+        timer = epoch_get();
+        mk_date(timer, &tm_info);
+        tm_info.tm_hour -= 3; /* GMT-3 (BsAs) */
+        str_time(timebuf, &tm_info);
+        snprintf(application_message, sizeof(application_message), 
+                "The time is %s", timebuf);
+        appMsg->data = application_message;
+        appMsg->size = strlen(application_message) + 1;
+    }
+}
+
 static int
 configClient(MQTTProt *const me, MQTTProtCfg *config)
 {
@@ -409,26 +431,13 @@ init(MQTTProt *const me, RKH_EVT_T *pe)
 static void 
 publish(MQTTProt *const me, RKH_EVT_T *pe)
 {
-    const char *topic;
-    char application_message[128];
-    Epoch timer;
-    char timebuf[26];
-    Time tm_info;
+    AppData appMsg;
 
-    /* Get digital input changes and analog input samples */
-    /* Format a payload to send */
-    /* mqtt_publish(...); */
-
-    timer = epoch_get();
-    mk_date(timer, &tm_info);
-    str_time(timebuf, &tm_info);
-    snprintf(application_message, sizeof(application_message), 
-             "The time is %s", timebuf);
-
+    (*me->publisher)(&appMsg);
     me->operRes = mqtt_publish(&me->client, 
                                me->config->topic, 
-                               application_message, 
-                               strlen(application_message) + 1, 
+                               appMsg.data, 
+                               appMsg.size, 
                                (me->config->qos << 1) & 0x06);
 }
 
@@ -747,7 +756,7 @@ isLocked(const RKH_SM_T *me, RKH_EVT_T *pe)
 
 /* ---------------------------- Global functions --------------------------- */
 void
-MQTTProt_ctor(MQTTProtCfg *config)
+MQTTProt_ctor(MQTTProtCfg *config, MQTTProtPublish publisher)
 {
     MQTTProt *me;
 
@@ -761,6 +770,7 @@ MQTTProt_ctor(MQTTProtCfg *config)
                 Sync_Idle, NULL, NULL);
     MQTTProt_syncRegion = (RKH_SM_T *)&(me->itsSyncRegion);
     configClient(me, config);
+    me->publisher = (publisher != (MQTTProtPublish)0) ? publisher : pubDft;
 }
 
 /* ------------------------------ End of file ------------------------------ */

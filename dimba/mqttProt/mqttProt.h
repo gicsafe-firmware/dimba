@@ -35,6 +35,15 @@ extern "C" {
 RKH_SMA_DCLR(mqttProt);
 
 /* ------------------------------- Data types ------------------------------ */
+typedef struct AppData AppData;
+struct AppData
+{
+    rui8_t *data;
+    rui16_t size;
+};
+
+typedef void (*MQTTProtPublish)(AppData *appMsg);
+
 typedef struct MQTTProtCfg MQTTProtCfg;
 struct MQTTProtCfg
 {
@@ -48,7 +57,7 @@ struct MQTTProtCfg
 
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
-void MQTTProt_ctor(MQTTProtCfg *config);
+void MQTTProt_ctor(MQTTProtCfg *config, MQTTProtPublish publisher);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus

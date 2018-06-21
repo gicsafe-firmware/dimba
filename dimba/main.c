@@ -103,7 +103,7 @@ main(int argc, char *argv[])
     mqttProtCfg.qos = 1;
     strcpy(mqttProtCfg.clientId, "dimba1");
     strcpy(mqttProtCfg.topic, "date_time");
-    MQTTProt_ctor(&mqttProtCfg);
+    MQTTProt_ctor(&mqttProtCfg, NULL);
 
     RKH_SMA_ACTIVATE(conMgr, ConMgr_qsto, CONMGR_QSTO_SIZE, 0, 0);
     RKH_SMA_ACTIVATE(modMgr, ModMgr_qsto, MODMGR_QSTO_SIZE, 0, 0);
