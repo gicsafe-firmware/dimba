@@ -35,10 +35,11 @@ static rtc_t rtc;
 void
 rtime_init(void)
 {
-    Chip_RTC_Init(LPC_RTC);
-    Chip_RTC_Enable(LPC_RTC, ENABLE);
-
     RunLed_init();
+    RunLed_toggle();
+
+	Chip_RTC_Init(LPC_RTC);
+    Chip_RTC_Enable(LPC_RTC, ENABLE);
 }
 
 Time *

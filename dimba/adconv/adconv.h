@@ -29,7 +29,7 @@ extern "C" {
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
 #define ADCONV_RESOLUTION       10  /* In bits */
-#define ADCONV_FULL_SCALE       15  /* In volts */
+#define ADCONV_FULL_SCALE       10  /* In volts */
 #define ADCONV_DIG_FRACTION     100 /* Number of digits in fractional part */
 
 /* ------------------------------- Data types ------------------------------ */

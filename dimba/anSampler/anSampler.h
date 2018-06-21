@@ -22,6 +22,7 @@
 #include "CirBuffer.h"
 #include "epoch.h"
 #include "anin.h"
+#include "mTimeCfg.h"
 
 /* ---------------------- External C language linkage ---------------------- */
 #ifdef __cplusplus
@@ -30,9 +31,9 @@ extern "C" {
 
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
-#define AN_SAMPLING_RATE_SEC        5           
-#define MAX_AN_NUM_SAMPLES          128
-#define NUM_AN_SIGNALS              NUM_ANIN_SIGNALS
+#define AN_SAMPLING_RATE_SEC (MTIME_ANSAMPLE_PUT_PERIOD * MTIME_TIME_TICK)/1000
+#define MAX_AN_NUM_SAMPLES   128
+#define NUM_AN_SIGNALS       NUM_ANIN_SIGNALS
 
 /* ................................ Signals ................................ */
 /* ........................ Declares active object ......................... */
