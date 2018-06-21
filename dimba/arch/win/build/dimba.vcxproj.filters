@@ -130,6 +130,9 @@
     <ClCompile Include="..\..\..\date\date.c">
       <Filter>date</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\third-party\jWrite\jWrite\jWrite.c">
+      <Filter>jWrite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rkh">
@@ -189,6 +192,9 @@
     <Filter Include="date">
       <UniqueIdentifier>{ecb85ffd-0c8c-4f42-bae5-2ddd9d91249c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="jWrite">
+      <UniqueIdentifier>{42f3281a-e58f-47d5-bfbe-8ead80daf14c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\rkhcfg.h">
@@ -205,6 +211,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\emaFilter\emaFilter.h">
       <Filter>emaFilter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\third-party\jWrite\jWrite\jWrite.h">
+      <Filter>jWrite</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
