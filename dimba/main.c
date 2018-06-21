@@ -52,6 +52,7 @@ static rui8_t evPool0Sto[SIZEOF_EP0STO],
               evPool2Sto[SIZEOF_EP2STO];
 
 static RKH_ROM_STATIC_EVENT(e_Open, evOpen);
+static MQTTProtCfg mqttProtCfg;
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
@@ -96,7 +97,14 @@ main(int argc, char *argv[])
     rkh_fwk_registerEvtPool(evPool1Sto, SIZEOF_EP1STO, SIZEOF_EP1_BLOCK);
     rkh_fwk_registerEvtPool(evPool2Sto, SIZEOF_EP2STO, SIZEOF_EP2_BLOCK);
 
-    MQTTProt_ctor();
+    mqttProtCfg.publishTime = 60;
+    mqttProtCfg.syncTime = 5;
+    mqttProtCfg.keepAlive = 400;
+    mqttProtCfg.qos = 1;
+    strcpy(mqttProtCfg.clientId, "dimba1");
+    strcpy(mqttProtCfg.topic, "date_time");
+    MQTTProt_ctor(&mqttProtCfg);
+
     RKH_SMA_ACTIVATE(conMgr, ConMgr_qsto, CONMGR_QSTO_SIZE, 0, 0);
     RKH_SMA_ACTIVATE(modMgr, ModMgr_qsto, MODMGR_QSTO_SIZE, 0, 0);
     RKH_SMA_ACTIVATE(mqttProt, MQTTProt_qsto, MQTTPROT_QSTO_SIZE, 0, 0);

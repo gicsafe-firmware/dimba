@@ -18,6 +18,7 @@
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
 #include <stdio.h>
+#include <string.h>
 #include "rkh.h"
 #include "rkhtmr.h"
 #include "signals.h"
@@ -262,6 +263,7 @@ struct MQTTProt
     uint8_t recvbuf[1024];  /* recvbuf should be large enough any whole */
                             /* mqtt message expected to be received */
     enum MQTTErrors operRes;
+    MQTTProtCfg *config;
 };
 
 RKH_SMA_CREATE(MQTTProt, mqttProt, 2, HCAL, &Client_Idle, init, NULL);
@@ -269,6 +271,11 @@ RKH_SMA_DEF_PTR(mqttProt);
 RKH_SM_CONST_CREATE(syncRegion, 3, HCAL, &Sync_Idle, NULL, NULL);
 
 /* ------------------------------- Constants ------------------------------- */
+static const MQTTProtCfg configDft =
+{
+    60, 5, "publishing_cLient", 400, "date_time", 0
+};
+
 /* ---------------------------- Local data types --------------------------- */
 typedef struct ConnRefusedEvt ConnRefusedEvt;
 struct ConnRefusedEvt
@@ -296,7 +303,28 @@ static LocalRecvAll localRecv;
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
-void 
+static int
+configClient(MQTTProt *const me, MQTTProtCfg *config)
+{
+    int result = 1;
+
+    if (config->publishTime != 0 ||
+        config->syncTime != 0 ||
+        config->keepAlive != 0 ||
+        config->topic != (const char *)0 ||
+        config->clientId != (const char *)0)
+    {
+        result = 0;
+        me->config = config;
+    }
+    else 
+    {
+        me->config = (MQTTProtCfg *)&configDft;
+    }
+    return result;
+}
+
+static void 
 dispatch(RKH_SMA_T *me, void *arg)
 {
     SyncRegion *region;
@@ -397,12 +425,11 @@ publish(MQTTProt *const me, RKH_EVT_T *pe)
     snprintf(application_message, sizeof(application_message), 
              "The time is %s", timebuf);
 
-    topic = "date_time";
     me->operRes = mqtt_publish(&me->client, 
-                               topic, 
+                               me->config->topic, 
                                application_message, 
                                strlen(application_message) + 1, 
-                               MQTT_PUBLISH_QOS_1);
+                               (me->config->qos << 1) & 0x06);
 }
 
 static void 
@@ -576,7 +603,7 @@ enWaitToConnect(MQTTProt *const me, RKH_EVT_T *pe)
 {
     RKH_TMR_INIT(&me->tryConnTmr, &evWaitConnectToutObj, NULL);
     RKH_TMR_ONESHOT(&me->tryConnTmr, RKH_UPCAST(RKH_SMA_T, me), 
-                    WAIT_CONNECT_TIME);
+                    RKH_TIME_SEC(60));
 }
 
 static void 
@@ -586,17 +613,21 @@ brokerConnect(MQTTProt *const me, RKH_EVT_T *pe)
     mqtt_init(&me->client, 0, me->sendbuf, sizeof(me->sendbuf), 
               me->recvbuf, sizeof(me->recvbuf), 0);
     me->operRes = mqtt_connect(&me->client, 
-                               "publishing_client", 
-                               NULL, NULL, 0, NULL, NULL, 0, 400);
+                               me->config->clientId, 
+                               NULL, NULL, 0, NULL, NULL, 0, 
+                               me->config->keepAlive);
 }
 
 static void 
 enWaitSync(SyncRegion *const me, RKH_EVT_T *pe)
 {
+    MQTTProt *realMe;
+
+    realMe = me->itsMQTTProt;
     RKH_TMR_INIT(&me->syncTmr, &evWaitSyncToutObj, NULL);
     RKH_TMR_ONESHOT(&me->syncTmr, 
-                    RKH_UPCAST(RKH_SMA_T, me->itsMQTTProt), 
-                    SYNC_TIME);
+                    RKH_UPCAST(RKH_SMA_T, realMe), 
+                    RKH_TIME_SEC(realMe->config->syncTime));
 }
 
 static void 
@@ -623,7 +654,8 @@ static void
 enWaitToPublish(MQTTProt *const me, RKH_EVT_T *pe)
 {
     RKH_TMR_INIT(&me->publishTmr, &evWaitPublishToutObj, NULL);
-    RKH_TMR_ONESHOT(&me->publishTmr, RKH_UPCAST(RKH_SMA_T, me), PUBLISH_TIME);
+    RKH_TMR_ONESHOT(&me->publishTmr, RKH_UPCAST(RKH_SMA_T, me), 
+                    RKH_TIME_SEC(me->config->publishTime));
 }
 
 /* ............................. Exit actions .............................. */
@@ -715,7 +747,7 @@ isLocked(const RKH_SM_T *me, RKH_EVT_T *pe)
 
 /* ---------------------------- Global functions --------------------------- */
 void
-MQTTProt_ctor(void)
+MQTTProt_ctor(MQTTProtCfg *config)
 {
     MQTTProt *me;
 
@@ -728,6 +760,7 @@ MQTTProt_ctor(void)
     RKH_SM_INIT((RKH_SM_T *)&(me->itsSyncRegion), syncRegion, 0, HCAL, 
                 Sync_Idle, NULL, NULL);
     MQTTProt_syncRegion = (RKH_SM_T *)&(me->itsSyncRegion);
+    configClient(me, config);
 }
 
 /* ------------------------------ End of file ------------------------------ */

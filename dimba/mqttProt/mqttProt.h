@@ -30,18 +30,25 @@ extern "C" {
 
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
-#define WAIT_CONNECT_TIME       RKH_TIME_MIN(1)
-#define PUBLISH_TIME            /*RKH_TIME_SEC(30)*/ RKH_TIME_MIN(1)
-#define SYNC_TIME               RKH_TIME_SEC(5)
-
 /* ................................ Signals ................................ */
 /* ........................ Declares active object ......................... */
 RKH_SMA_DCLR(mqttProt);
 
 /* ------------------------------- Data types ------------------------------ */
+typedef struct MQTTProtCfg MQTTProtCfg;
+struct MQTTProtCfg
+{
+    rui16_t publishTime;    /* in secs */
+    rui16_t syncTime;       /* in secs */
+    char clientId[23];
+    rui16_t keepAlive;      /* in secs */
+    char topic[16];
+    rui8_t qos;             /* 0, 1 or 2 */
+};
+
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
-void MQTTProt_ctor(void);
+void MQTTProt_ctor(MQTTProtCfg *config);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus
