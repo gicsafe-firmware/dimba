@@ -40,6 +40,11 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>src/jWrite</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
 			<name>src/rkh</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
@@ -223,6 +228,11 @@
 			<name>src/dimba/sspcfg.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/sspcfg.h</locationURI>
+		</link>
+		<link>
+			<name>src/jWrite/jWrite.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/jWrite/jWrite/jWrite.c</locationURI>
 		</link>
 		<link>
 			<name>src/rkh/rkhfwk_bittbl.c</name>
