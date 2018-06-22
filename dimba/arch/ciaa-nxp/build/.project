@@ -210,6 +210,11 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>src/dimba/publisher</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/publisher</locationURI>
+		</link>
+		<link>
 			<name>src/dimba/rkhcfg.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/rkhcfg.h</locationURI>

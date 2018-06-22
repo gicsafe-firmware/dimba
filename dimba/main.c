@@ -5,21 +5,25 @@
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2016.03.17  LeFr  v1.0.00  Initial version
+ *  2018.05.17  LeFr  v1.0.00  Initial version
+ *  2018.06.17  Daba  v1.0.00  Publisher
  */
 
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci  lf@vortexmakes.com
+ *  DaBa  Dario Baliña       db@vortexmakes.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
+#include <string.h>
 #include "rkh.h"
 #include "rkhfwk_dynevt.h"
 #include "bsp.h"
 #include "signals.h"
 #include "mqttProt.h"
+#include "mqttClientId.h"
 #include "conmgr.h"
 #include "modmgr.h"
 #include "mTime.h"
@@ -77,6 +81,12 @@ setupTraceFilters(void)
 }
 
 /* ---------------------------- Global functions --------------------------- */
+void
+mqttClientId_config(char *pid)
+{
+    strcpy(mqttProtCfg.clientId, pid);
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -102,7 +112,7 @@ main(int argc, char *argv[])
     mqttProtCfg.syncTime = 5;
     mqttProtCfg.keepAlive = 400;
     mqttProtCfg.qos = 1;
-    strcpy(mqttProtCfg.clientId, "dimba1");
+    strcpy(mqttProtCfg.clientId, "");
     strcpy(mqttProtCfg.topic, "/dimba/test");
     MQTTProt_ctor(&mqttProtCfg, publishDimba);
 
