@@ -74,6 +74,7 @@
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../modpwr&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../date&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/MQTT-C/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/jWrite/jWrite&quot;"/>
 								</option>
 								<inputType id="com.crt.advproject.compiler.input.1047996959" superClass="com.crt.advproject.compiler.input"/>
 							</tool>

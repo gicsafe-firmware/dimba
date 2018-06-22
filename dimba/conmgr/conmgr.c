@@ -358,6 +358,8 @@ RKH_SMA_CREATE(ConMgr, conMgr, 1, HCAL, &ConMgr_inactive, init, NULL);
 RKH_SMA_DEF_PTR(conMgr);
 
 /* ------------------------------- Constants ------------------------------- */
+#define IMEI_SNR_OFFSET  8
+
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
@@ -895,6 +897,12 @@ char *
 ConMgr_Imei(void)
 {
     return Imei;
+}
+
+char *
+ConMgr_ImeiSNR(void)
+{
+    return (Imei + IMEI_SNR_OFFSET);
 }
 
 /* ------------------------------ End of file ------------------------------ */

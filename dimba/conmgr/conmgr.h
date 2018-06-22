@@ -173,6 +173,7 @@ struct ImeiEvt
 /* -------------------------- Function prototypes -------------------------- */
 ReceivedEvt * ConMgr_ReceiveDataGetRef(void);
 char * ConMgr_Imei(void);
+char * ConMgr_ImeiSNR(void);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus
