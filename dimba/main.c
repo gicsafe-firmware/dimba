@@ -27,6 +27,7 @@
 #include "anSampler.h"
 #include "ioChgDet.h"
 #include "CirBuffer.h"
+#include "publisher.h"
 
 /* ----------------------------- Local macros ------------------------------ */
 #define MQTTPROT_QSTO_SIZE  16
@@ -102,8 +103,8 @@ main(int argc, char *argv[])
     mqttProtCfg.keepAlive = 400;
     mqttProtCfg.qos = 1;
     strcpy(mqttProtCfg.clientId, "dimba1");
-    strcpy(mqttProtCfg.topic, "date_time");
-    MQTTProt_ctor(&mqttProtCfg, NULL);
+    strcpy(mqttProtCfg.topic, "/dimba/test");
+    MQTTProt_ctor(&mqttProtCfg, publishDimba);
 
     RKH_SMA_ACTIVATE(conMgr, ConMgr_qsto, CONMGR_QSTO_SIZE, 0, 0);
     RKH_SMA_ACTIVATE(modMgr, ModMgr_qsto, MODMGR_QSTO_SIZE, 0, 0);

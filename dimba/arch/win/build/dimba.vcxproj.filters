@@ -133,6 +133,9 @@
     <ClCompile Include="..\..\..\..\third-party\jWrite\jWrite\jWrite.c">
       <Filter>jWrite</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\publisher\publisher.c">
+      <Filter>publisher</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rkh">
@@ -195,6 +198,9 @@
     <Filter Include="jWrite">
       <UniqueIdentifier>{42f3281a-e58f-47d5-bfbe-8ead80daf14c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="publisher">
+      <UniqueIdentifier>{dfd773b9-6e97-48f1-a9d9-c4f5fcaebfa5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\rkhcfg.h">
@@ -214,6 +220,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\third-party\jWrite\jWrite\jWrite.h">
       <Filter>jWrite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\publisher\publisher.h">
+      <Filter>publisher</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -112,7 +112,7 @@ extern "C" {
 #define CONNECTION_PASSWORD     CLARO_APN_PASS
 
 /* .................................. SIM PIN .............................. */
-#define SIM_PIN_NUMBER      9474
+#define SIM_PIN_NUMBER          9474
 
 /* ................................. Server ................................ */
     #define YIPIES_SERVER       "71.6.135.77"

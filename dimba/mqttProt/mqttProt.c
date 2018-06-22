@@ -320,8 +320,8 @@ pubDft(AppData *appMsg)
         str_time(timebuf, &tm_info);
         snprintf(application_message, sizeof(application_message), 
                 "The time is %s", timebuf);
-        appMsg->data = application_message;
-        appMsg->size = strlen(application_message) + 1;
+        appMsg->data = (rui8_t *)application_message;
+        appMsg->size = (rui16_t)strlen(application_message) + 1;
     }
 }
 
