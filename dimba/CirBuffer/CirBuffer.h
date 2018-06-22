@@ -47,6 +47,7 @@ int cirBuffer_put(CirBuffer *const me, unsigned char *elem);
 int cirBuffer_get(CirBuffer *const me, unsigned char *elem);
 int cirBuffer_getBlock(CirBuffer *const me, unsigned char *destBlock, 
                        int nElem);
+int cirBuffer_getNumElem(CirBuffer *const me);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus

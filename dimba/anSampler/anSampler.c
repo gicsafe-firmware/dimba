@@ -92,10 +92,11 @@ anSampler_getSet(AnSampleSet *set, int nSamples)
     int i, result = 0;
     AnSampleBuffer *pAnSig;
 
+    pAnSig = anSampler.anSignals;
     set->timeStamp = anSampler.timeStamp;
-    for (i = 0, pAnSig = anSampler.anSignals; 
-         i < NUM_AN_SIGNALS; 
-         ++i, ++pAnSig)
+    set->timeStamp -= (AN_SAMPLING_RATE_SEC  * 
+                       cirBuffer_getNumElem(&pAnSig->buffer));
+    for (i = 0; i < NUM_AN_SIGNALS; ++i, ++pAnSig)
     {
         result = cirBuffer_getBlock(&pAnSig->buffer,
                                     (unsigned char *)set->anSignal[i],

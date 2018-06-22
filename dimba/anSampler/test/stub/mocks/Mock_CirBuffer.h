@@ -69,6 +69,14 @@ void cirBuffer_getBlock_CMockIgnoreArg_me(UNITY_LINE_TYPE cmock_line);
 void cirBuffer_getBlock_CMockIgnoreArg_destBlock(UNITY_LINE_TYPE cmock_line);
 #define cirBuffer_getBlock_IgnoreArg_nElem() cirBuffer_getBlock_CMockIgnoreArg_nElem(__LINE__)
 void cirBuffer_getBlock_CMockIgnoreArg_nElem(UNITY_LINE_TYPE cmock_line);
+#define cirBuffer_getNumElem_IgnoreAndReturn(cmock_retval) cirBuffer_getNumElem_CMockIgnoreAndReturn(__LINE__, cmock_retval)
+void cirBuffer_getNumElem_CMockIgnoreAndReturn(UNITY_LINE_TYPE cmock_line, int cmock_to_return);
+#define cirBuffer_getNumElem_ExpectAndReturn(me, cmock_retval) cirBuffer_getNumElem_CMockExpectAndReturn(__LINE__, me, cmock_retval)
+void cirBuffer_getNumElem_CMockExpectAndReturn(UNITY_LINE_TYPE cmock_line, CirBuffer* const me, int cmock_to_return);
+typedef int (* CMOCK_cirBuffer_getNumElem_CALLBACK)(CirBuffer* const me, int cmock_num_calls);
+void cirBuffer_getNumElem_StubWithCallback(CMOCK_cirBuffer_getNumElem_CALLBACK Callback);
+#define cirBuffer_getNumElem_IgnoreArg_me() cirBuffer_getNumElem_CMockIgnoreArg_me(__LINE__)
+void cirBuffer_getNumElem_CMockIgnoreArg_me(UNITY_LINE_TYPE cmock_line);
 
 #if defined(__GNUC__) && !defined(__ICC) && !defined(__TMS470__)
 #if __GNUC__ > 4 || (__GNUC__ == 4 && (__GNUC_MINOR__ > 6 || (__GNUC_MINOR__ == 6 && __GNUC_PATCHLEVEL__ > 0)))

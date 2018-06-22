@@ -8,6 +8,7 @@
 
 static const char* CMockString_cirBuffer_get = "cirBuffer_get";
 static const char* CMockString_cirBuffer_getBlock = "cirBuffer_getBlock";
+static const char* CMockString_cirBuffer_getNumElem = "cirBuffer_getNumElem";
 static const char* CMockString_cirBuffer_init = "cirBuffer_init";
 static const char* CMockString_cirBuffer_put = "cirBuffer_put";
 static const char* CMockString_destBlock = "destBlock";
@@ -71,6 +72,16 @@ typedef struct _CMOCK_cirBuffer_getBlock_CALL_INSTANCE
 
 } CMOCK_cirBuffer_getBlock_CALL_INSTANCE;
 
+typedef struct _CMOCK_cirBuffer_getNumElem_CALL_INSTANCE
+{
+  UNITY_LINE_TYPE LineNumber;
+  int ReturnVal;
+  int CallOrder;
+  CirBuffer* Expected_me;
+  int IgnoreArg_me;
+
+} CMOCK_cirBuffer_getNumElem_CALL_INSTANCE;
+
 static struct Mock_CirBufferInstance
 {
   int cirBuffer_init_IgnoreBool;
@@ -93,6 +104,11 @@ static struct Mock_CirBufferInstance
   CMOCK_cirBuffer_getBlock_CALLBACK cirBuffer_getBlock_CallbackFunctionPointer;
   int cirBuffer_getBlock_CallbackCalls;
   CMOCK_MEM_INDEX_TYPE cirBuffer_getBlock_CallInstance;
+  int cirBuffer_getNumElem_IgnoreBool;
+  int cirBuffer_getNumElem_FinalReturn;
+  CMOCK_cirBuffer_getNumElem_CALLBACK cirBuffer_getNumElem_CallbackFunctionPointer;
+  int cirBuffer_getNumElem_CallbackCalls;
+  CMOCK_MEM_INDEX_TYPE cirBuffer_getNumElem_CallInstance;
 } Mock;
 
 extern jmp_buf AbortFrame;
@@ -126,6 +142,12 @@ void Mock_CirBuffer_Verify(void)
   UNITY_TEST_ASSERT(CMOCK_GUTS_NONE == Mock.cirBuffer_getBlock_CallInstance, cmock_line, CMockStringCalledLess);
   if (Mock.cirBuffer_getBlock_CallbackFunctionPointer != NULL)
     Mock.cirBuffer_getBlock_CallInstance = CMOCK_GUTS_NONE;
+  if (Mock.cirBuffer_getNumElem_IgnoreBool)
+    Mock.cirBuffer_getNumElem_CallInstance = CMOCK_GUTS_NONE;
+  UNITY_SET_DETAIL(CMockString_cirBuffer_getNumElem);
+  UNITY_TEST_ASSERT(CMOCK_GUTS_NONE == Mock.cirBuffer_getNumElem_CallInstance, cmock_line, CMockStringCalledLess);
+  if (Mock.cirBuffer_getNumElem_CallbackFunctionPointer != NULL)
+    Mock.cirBuffer_getNumElem_CallInstance = CMOCK_GUTS_NONE;
 }
 
 void Mock_CirBuffer_Init(void)
@@ -145,6 +167,8 @@ void Mock_CirBuffer_Destroy(void)
   Mock.cirBuffer_get_CallbackCalls = 0;
   Mock.cirBuffer_getBlock_CallbackFunctionPointer = NULL;
   Mock.cirBuffer_getBlock_CallbackCalls = 0;
+  Mock.cirBuffer_getNumElem_CallbackFunctionPointer = NULL;
+  Mock.cirBuffer_getNumElem_CallbackCalls = 0;
   GlobalExpectCount = 0;
   GlobalVerifyOrder = 0;
 }
@@ -581,5 +605,86 @@ void cirBuffer_getBlock_CMockIgnoreArg_nElem(UNITY_LINE_TYPE cmock_line)
   CMOCK_cirBuffer_getBlock_CALL_INSTANCE* cmock_call_instance = (CMOCK_cirBuffer_getBlock_CALL_INSTANCE*)CMock_Guts_GetAddressFor(CMock_Guts_MemEndOfChain(Mock.cirBuffer_getBlock_CallInstance));
   UNITY_TEST_ASSERT_NOT_NULL(cmock_call_instance, cmock_line, CMockStringIgnPreExp);
   cmock_call_instance->IgnoreArg_nElem = 1;
+}
+
+int cirBuffer_getNumElem(CirBuffer* const me)
+{
+  UNITY_LINE_TYPE cmock_line = TEST_LINE_NUM;
+  CMOCK_cirBuffer_getNumElem_CALL_INSTANCE* cmock_call_instance;
+  UNITY_SET_DETAIL(CMockString_cirBuffer_getNumElem);
+  cmock_call_instance = (CMOCK_cirBuffer_getNumElem_CALL_INSTANCE*)CMock_Guts_GetAddressFor(Mock.cirBuffer_getNumElem_CallInstance);
+  Mock.cirBuffer_getNumElem_CallInstance = CMock_Guts_MemNext(Mock.cirBuffer_getNumElem_CallInstance);
+  if (Mock.cirBuffer_getNumElem_IgnoreBool)
+  {
+    UNITY_CLR_DETAILS();
+    if (cmock_call_instance == NULL)
+      return Mock.cirBuffer_getNumElem_FinalReturn;
+    Mock.cirBuffer_getNumElem_FinalReturn = cmock_call_instance->ReturnVal;
+    return cmock_call_instance->ReturnVal;
+  }
+  UNITY_TEST_ASSERT_NOT_NULL(cmock_call_instance, cmock_line, CMockStringCalledMore);
+  cmock_line = cmock_call_instance->LineNumber;
+  if (cmock_call_instance->CallOrder > ++GlobalVerifyOrder)
+    UNITY_TEST_FAIL(cmock_line, CMockStringCalledEarly);
+  if (cmock_call_instance->CallOrder < GlobalVerifyOrder)
+    UNITY_TEST_FAIL(cmock_line, CMockStringCalledLate);
+  if (!cmock_call_instance->IgnoreArg_me)
+  {
+    UNITY_SET_DETAILS(CMockString_cirBuffer_getNumElem,CMockString_me);
+    UNITY_TEST_ASSERT_EQUAL_PTR(cmock_call_instance->Expected_me, me, cmock_line, CMockStringMismatch);
+  }
+  if (Mock.cirBuffer_getNumElem_CallbackFunctionPointer != NULL)
+  {
+    cmock_call_instance->ReturnVal = Mock.cirBuffer_getNumElem_CallbackFunctionPointer(me, Mock.cirBuffer_getNumElem_CallbackCalls++);
+  }
+  UNITY_CLR_DETAILS();
+  return cmock_call_instance->ReturnVal;
+}
+
+void CMockExpectParameters_cirBuffer_getNumElem(CMOCK_cirBuffer_getNumElem_CALL_INSTANCE* cmock_call_instance, CirBuffer* const me)
+{
+  cmock_call_instance->Expected_me = me;
+  cmock_call_instance->IgnoreArg_me = 0;
+}
+
+void cirBuffer_getNumElem_CMockIgnoreAndReturn(UNITY_LINE_TYPE cmock_line, int cmock_to_return)
+{
+  CMOCK_MEM_INDEX_TYPE cmock_guts_index = CMock_Guts_MemNew(sizeof(CMOCK_cirBuffer_getNumElem_CALL_INSTANCE));
+  CMOCK_cirBuffer_getNumElem_CALL_INSTANCE* cmock_call_instance = (CMOCK_cirBuffer_getNumElem_CALL_INSTANCE*)CMock_Guts_GetAddressFor(cmock_guts_index);
+  UNITY_TEST_ASSERT_NOT_NULL(cmock_call_instance, cmock_line, CMockStringOutOfMemory);
+  memset(cmock_call_instance, 0, sizeof(*cmock_call_instance));
+  Mock.cirBuffer_getNumElem_CallInstance = CMock_Guts_MemChain(Mock.cirBuffer_getNumElem_CallInstance, cmock_guts_index);
+  Mock.cirBuffer_getNumElem_IgnoreBool = (int)0;
+  cmock_call_instance->LineNumber = cmock_line;
+  cmock_call_instance->ReturnVal = cmock_to_return;
+  Mock.cirBuffer_getNumElem_IgnoreBool = (int)1;
+}
+
+void cirBuffer_getNumElem_CMockExpectAndReturn(UNITY_LINE_TYPE cmock_line, CirBuffer* const me, int cmock_to_return)
+{
+  CMOCK_MEM_INDEX_TYPE cmock_guts_index = CMock_Guts_MemNew(sizeof(CMOCK_cirBuffer_getNumElem_CALL_INSTANCE));
+  CMOCK_cirBuffer_getNumElem_CALL_INSTANCE* cmock_call_instance = (CMOCK_cirBuffer_getNumElem_CALL_INSTANCE*)CMock_Guts_GetAddressFor(cmock_guts_index);
+  UNITY_TEST_ASSERT_NOT_NULL(cmock_call_instance, cmock_line, CMockStringOutOfMemory);
+  memset(cmock_call_instance, 0, sizeof(*cmock_call_instance));
+  Mock.cirBuffer_getNumElem_CallInstance = CMock_Guts_MemChain(Mock.cirBuffer_getNumElem_CallInstance, cmock_guts_index);
+  Mock.cirBuffer_getNumElem_IgnoreBool = (int)0;
+  cmock_call_instance->LineNumber = cmock_line;
+  cmock_call_instance->CallOrder = ++GlobalExpectCount;
+  CMockExpectParameters_cirBuffer_getNumElem(cmock_call_instance, me);
+  cmock_call_instance->ReturnVal = cmock_to_return;
+  UNITY_CLR_DETAILS();
+}
+
+void cirBuffer_getNumElem_StubWithCallback(CMOCK_cirBuffer_getNumElem_CALLBACK Callback)
+{
+  Mock.cirBuffer_getNumElem_IgnoreBool = (int)0;
+  Mock.cirBuffer_getNumElem_CallbackFunctionPointer = Callback;
+}
+
+void cirBuffer_getNumElem_CMockIgnoreArg_me(UNITY_LINE_TYPE cmock_line)
+{
+  CMOCK_cirBuffer_getNumElem_CALL_INSTANCE* cmock_call_instance = (CMOCK_cirBuffer_getNumElem_CALL_INSTANCE*)CMock_Guts_GetAddressFor(CMock_Guts_MemEndOfChain(Mock.cirBuffer_getNumElem_CallInstance));
+  UNITY_TEST_ASSERT_NOT_NULL(cmock_call_instance, cmock_line, CMockStringIgnPreExp);
+  cmock_call_instance->IgnoreArg_me = 1;
 }
 

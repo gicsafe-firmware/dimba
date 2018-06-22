@@ -145,4 +145,16 @@ cirBuffer_getBlock(CirBuffer *const me, unsigned char *destBlock,
     return result;
 }
 
+int 
+cirBuffer_getNumElem(CirBuffer *const me)
+{
+    int n;
+    RKH_SR_ALLOC();
+
+    RKH_ENTER_CRITICAL_();
+    n = me->qty;
+    RKH_EXIT_CRITICAL_();
+    return n;
+}
+
 /* ------------------------------ End of file ------------------------------ */

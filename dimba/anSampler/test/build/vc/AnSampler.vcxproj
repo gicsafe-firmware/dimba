@@ -51,8 +51,8 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)../../../../../third-party/ceedling/vendor/cmock/src;$(ProjectDir)../../../../../third-party/ceedling/vendor/unity/extras/fixture/src/;$(ProjectDir)../../../../../third-party/ceedling/vendor/unity/src;$(ProjectDir)..\..\stub\mocks;$(ProjectDir)..\..\..\..\CirBuffer;$(ProjectDir)..\..\inc\;$(ProjectDir)..\..\..\..\adconv;$(ProjectDir)..\..\..\..\epoch;$(ProjectDir)..\..\..\</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);__TEST__</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)../../../../../third-party/ceedling/vendor/cmock/src;$(ProjectDir)../../../../../third-party/ceedling/vendor/unity/extras/fixture/src/;$(ProjectDir)../../../../../third-party/ceedling/vendor/unity/src;$(ProjectDir)..\..\src;$(ProjectDir)..\..\stub\mocks;$(ProjectDir)..\..\..\..\CirBuffer;$(ProjectDir)..\..\inc\;$(ProjectDir)..\..\..\..\adconv;$(ProjectDir)..\..\..\..\epoch;$(ProjectDir)..\..\..\;$(ProjectDir)..\..\..\..\anIn;$(ProjectDir)..\..\..\..\mTime;$(ProjectDir)../../../../../third-party/rkh/source/tmr/inc;$(ProjectDir)../../../../../third-party/rkh/source/mempool/inc;$(ProjectDir)../../../../../third-party/rkh/source/queue/inc;$(ProjectDir)../../../../../third-party/rkh/source/sm/inc;$(ProjectDir)../../../../../third-party/rkh/source/trc/inc;$(ProjectDir)../../../../../third-party/rkh/source/sma/inc;$(ProjectDir)../../../../../third-party/rkh/source/fwk/inc;$(ProjectDir)../../../../../third-party/rkh/source/portable/test</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -87,6 +87,7 @@
     <ClCompile Include="..\..\stub\mocks\Mock_adconv.c" />
     <ClCompile Include="..\..\stub\mocks\Mock_CirBuffer.c" />
     <ClCompile Include="..\..\stub\mocks\Mock_epoch.c" />
+    <ClCompile Include="..\..\stub\mocks\Mock_rkhport.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

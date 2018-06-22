@@ -107,14 +107,13 @@ TEST(AnSampler, StoreOneAnSample)
     TEST_ASSERT_EQUAL(0, result);
 
     epoch_get_ExpectAndReturn(123456);
-    ADConv_getSample_ExpectAndReturn(0, 707);
-    cirBuffer_put_ExpectAndReturn(0, 0, 0);
-    cirBuffer_put_IgnoreArg_me();
-    cirBuffer_put_IgnoreArg_elem();
-    ADConv_getSample_ExpectAndReturn(1, 707);
-    cirBuffer_put_ExpectAndReturn(0, 0, 0);
-    cirBuffer_put_IgnoreArg_me();
-    cirBuffer_put_IgnoreArg_elem();
+    for (i = 0; i < NUM_AN_SIGNALS; ++i)
+    {
+        ADConv_getSample_ExpectAndReturn(i, 707);
+        cirBuffer_put_ExpectAndReturn(0, 0, 0);
+        cirBuffer_put_IgnoreArg_me();
+        cirBuffer_put_IgnoreArg_elem();
+    }
 
     result = anSampler_put();
     TEST_ASSERT_EQUAL(0, result);
@@ -123,17 +122,34 @@ TEST(AnSampler, StoreOneAnSample)
 TEST(AnSampler, GetAnSampleSet)
 {
     AnSampleSet set;
-    int i, result;
+    int i, result, nReqSamples, nBufSamples;
 
+    epoch_get_ExpectAndReturn(123456);
     for (i = 0; i < NUM_AN_SIGNALS; ++i)
     {
-        cirBuffer_getBlock_ExpectAndReturn(0, 0, 32, 8);
+        ADConv_getSample_ExpectAndReturn(i, 707);
+        cirBuffer_put_ExpectAndReturn(0, 0, 0);
+        cirBuffer_put_IgnoreArg_me();
+        cirBuffer_put_IgnoreArg_elem();
+    }
+
+    anSampler_put();
+
+    nBufSamples = 16;
+    nReqSamples = 8;
+    cirBuffer_getNumElem_ExpectAndReturn(0, nBufSamples);
+    cirBuffer_getNumElem_IgnoreArg_me();
+    for (i = 0; i < NUM_AN_SIGNALS; ++i)
+    {
+        cirBuffer_getBlock_ExpectAndReturn(0, 0, nReqSamples, nReqSamples);
         cirBuffer_getBlock_IgnoreArg_me();
         cirBuffer_getBlock_IgnoreArg_destBlock();
     }
 
-    result = anSampler_getSet(&set, 32);
-    TEST_ASSERT_EQUAL(8, result);
+    result = anSampler_getSet(&set, nReqSamples);
+    TEST_ASSERT_EQUAL(nReqSamples, result);
+    TEST_ASSERT_EQUAL(123456 - (nBufSamples * AN_SAMPLING_RATE_SEC), 
+                      set.timeStamp);
 }
 
 /* ------------------------------ End of file ------------------------------ */
