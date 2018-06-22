@@ -12,7 +12,7 @@
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci lf@vortexmakes.com
- *  DaBa  Dario Baliï¿½a db@vortexmakes.com
+ *  DaBa  Dario Baliña db@vortexmakes.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
@@ -326,8 +326,6 @@ connack_response_callback(enum MQTTConnackReturnCode return_code)
 }
 
 /* ............................ Initial action ............................. */
-static int prepareMessage(void);
-
 static void
 init(MQTTProt *const me, RKH_EVT_T *pe)
 {
@@ -379,98 +377,33 @@ init(MQTTProt *const me, RKH_EVT_T *pe)
     mqtt_init(&me->client, 0, me->sendbuf, sizeof(me->sendbuf), 
               me->recvbuf, sizeof(me->recvbuf), 0);
     rkh_sm_init(RKH_UPCAST(RKH_SM_T, &me->itsSyncRegion));
-
-    prepareMessage();
 }
 
 /* ............................ Effect actions ............................. */
-
-#include "ioChgDet.h"
-#include "anSampler.h"
-#include "jWrite.h"
-
-#define NUM_AN_SAMPLES_GET  10
-#define NUM_DI_SAMPLES_GET  8
-
-char application_message[1024];
-
-static
-int
-prepareMessage(void)
-{
-    char *jBuff = application_message;
-    int jBuff_size = sizeof(application_message);
-    int err;
-
-    AnSampleSet anSet;
-    IOChg ioChg[NUM_DI_SAMPLES_GET];
-    int n, l, i, j;
-
-    jwOpen( jBuff, jBuff_size, JW_OBJECT, JW_COMPACT );
-
-    
-    jwObj_string( "imei", ConMgr_Imei());
-
-    n = anSampler_getSet(&anSet, NUM_AN_SAMPLES_GET);
-
-    if(n>0)
-    {
-        jwObj_object("anIn");
-            jwObj_double("ts", anSet.timeStamp);
-            jwObj_int("tsm", AN_SAMPLING_RATE_SEC);
-            jwObj_array("an");
-            for(i=0; i < NUM_AN_SIGNALS; ++i)
-            {
-                jwArr_array();
-                for(j=0; j<n; ++j)
-                {
-                    jwArr_int(anSet.anSignal[i][j]);
-                }
-                jwEnd();
-            }
-            jwEnd();
-        jwEnd();
-    }
-
-    n = IOChgDet_get(ioChg, NUM_DI_SAMPLES_GET);
-    if(n > 0)
-    {
-        jwObj_array("dInChg");
-        for(i=0; i < n; ++i)
-        {
-            jwArr_object();
-                jwObj_double("ts", ioChg[i].timeStamp);
-                jwObj_int("dIn", ioChg[i].signalId);
-                jwObj_int("val", ioChg[i].signalValue);
-            jwEnd();
-        }
-        jwEnd();
-    }
-    
-    err = jwClose();
-
-    return strlen(jBuff);
-}
-
-
 static void 
 publish(MQTTProt *const me, RKH_EVT_T *pe)
 {
     const char *topic;
-    int size;
+    char application_message[128];
+    Epoch timer;
+    char timebuf[26];
+    Time tm_info;
 
     /* Get digital input changes and analog input samples */
     /* Format a payload to send */
     /* mqtt_publish(...); */
 
-    topic = "/dimba/test";
+    timer = epoch_get();
+    mk_date(timer, &tm_info);
+    str_time(timebuf, &tm_info);
+    snprintf(application_message, sizeof(application_message), 
+             "The time is %s", timebuf);
 
-    size = prepareMessage();
-    
+    topic = "date_time";
     me->operRes = mqtt_publish(&me->client, 
                                topic, 
                                application_message, 
-                               size,
+                               strlen(application_message) + 1, 
                                MQTT_PUBLISH_QOS_1);
 }
 
@@ -647,7 +580,7 @@ brokerConnect(MQTTProt *const me, RKH_EVT_T *pe)
 {
     me->operRes = mqtt_connect(&me->client, 
                                "publishing_client", 
-                               NULL, NULL, 0, "gicsafe", "gicsafe", 0, 400);
+                               NULL, NULL, 0, NULL, NULL, 0, 400);
 }
 
 static void 
