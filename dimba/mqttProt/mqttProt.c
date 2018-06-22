@@ -326,8 +326,6 @@ connack_response_callback(enum MQTTConnackReturnCode return_code)
 }
 
 /* ............................ Initial action ............................. */
-static int prepareMessage(void);
-
 static void
 init(MQTTProt *const me, RKH_EVT_T *pe)
 {
@@ -379,8 +377,6 @@ init(MQTTProt *const me, RKH_EVT_T *pe)
     mqtt_init(&me->client, 0, me->sendbuf, sizeof(me->sendbuf), 
               me->recvbuf, sizeof(me->recvbuf), 0);
     rkh_sm_init(RKH_UPCAST(RKH_SM_T, &me->itsSyncRegion));
-
-    prepareMessage();
 }
 
 /* ............................ Effect actions ............................. */
@@ -409,7 +405,7 @@ prepareMessage(void)
     jwOpen( jBuff, jBuff_size, JW_OBJECT, JW_COMPACT );
 
     
-    jwObj_string( "imei", ConMgr_Imei());
+    jwObj_int( "id", atoi(ConMgr_ImeiSNR()));
 
     n = anSampler_getSet(&anSet, NUM_AN_SAMPLES_GET);
 
