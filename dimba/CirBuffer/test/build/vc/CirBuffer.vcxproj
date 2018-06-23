@@ -49,7 +49,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)../../../../../third-party/ceedling/vendor/cmock/src;$(ProjectDir)../../../../../third-party/ceedling/vendor/unity/extras/fixture/src/;$(ProjectDir)../../../../../third-party/ceedling/vendor/unity/src;$(ProjectDir)..\..\stub\mocks;$(ProjectDir)..\..\inc\;$(ProjectDir)..\..\..\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)../../../../../third-party/ceedling/vendor/cmock/src;$(ProjectDir)../../../../../third-party/ceedling/vendor/unity/extras/fixture/src/;$(ProjectDir)../../../../../third-party/ceedling/vendor/unity/src;$(ProjectDir)../../../../../third-party/rkh/source/portable/test;$(ProjectDir)../../../../../third-party/rkh/source/sma/inc;$(ProjectDir)../../../../../third-party/rkh/source/sm/inc;$(ProjectDir)../../../../../third-party/rkh/source/mempool/inc;$(ProjectDir)../../../../../third-party/rkh/source/trc/inc;$(ProjectDir)../../../../../third-party/rkh/source/queue/inc;$(ProjectDir)../../../../../third-party/rkh/source/tmr/inc;$(ProjectDir)../../../../../third-party/rkh/source/fwk/inc;$(ProjectDir)..\..\stub\mocks;$(ProjectDir)..\..\inc\;$(ProjectDir)..\..\src;$(ProjectDir)..\..\..\</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;__TEST__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -94,6 +94,7 @@
     <ClCompile Include="..\..\runner\all_tests.c" />
     <ClCompile Include="..\..\runner\test_CirBuffer_runner.c" />
     <ClCompile Include="..\..\src\test_CirBuffer.c" />
+    <ClCompile Include="..\..\stub\mocks\Mock_rkhport.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

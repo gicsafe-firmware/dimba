@@ -38,7 +38,8 @@ TEST_GROUP_RUNNER(cirBuffer)
 	RUN_TEST_CASE(cirBuffer, GetManyElemsEqualThanStored);
 	RUN_TEST_CASE(cirBuffer, GetManyElemsMoreThanStored);
 	RUN_TEST_CASE(cirBuffer, GetManyElemsEqualThanStoredWrapAround);
-	RUN_TEST_CASE(cirBuffer, GetManyElemsInOrderWrapAround);
+	RUN_TEST_CASE(cirBuffer, GetManyElemsLessThanStoredWrapAround);
+	RUN_TEST_CASE(cirBuffer, GetManyElemsMoreThanStoredWrapAround);
 	RUN_TEST_CASE(cirBuffer, GetManyFromEmpty);
 }
 
