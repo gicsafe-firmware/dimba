@@ -699,6 +699,8 @@ imeiCollect(unsigned char c)
 static void
 imeiSet(unsigned char pos)
 {
+	(void)pos;
+
     imeiEvt.buf[IMEI_LENGTH] = '\0';    
 
     RKH_SET_STATIC_EVENT(RKH_UPCAST(RKH_EVT_T, &imeiEvt), evResponse);
