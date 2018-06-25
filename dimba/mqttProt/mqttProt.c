@@ -36,10 +36,9 @@ typedef struct SyncRegion SyncRegion;
 /* ................... Declares states and pseudostates .................... */
 RKH_DCLR_BASIC_STATE Sync_Idle, Sync_WaitSync, Sync_Receiving, 
                      Sync_EndCycle, Sync_Sending,
-                     Client_Idle, Client_ConnRefused, Client_TryConnect,
-                     Client_WaitToConnect, Client_AwaitingAck,
-                     Client_WaitToPublish, Client_WaitToUse0,
-                     Client_WaitToUse1;
+                     Client_Idle, Client_TryConnect,
+                     Client_AwaitingAck, Client_WaitToPublish, 
+                     Client_WaitToUse0, Client_WaitToUse1;
 RKH_DCLR_COMP_STATE Sync_Active, Client_Connected;
 RKH_DCLR_CHOICE_STATE Sync_C10, Sync_C12, Sync_C14, Sync_C25, Sync_C31,
                       Sync_C32, Sync_C38,
@@ -68,9 +67,10 @@ static void handleRecvMsg(SyncRegion *const me, RKH_EVT_T *pe);
 static void activateSync(MQTTProt *const me, RKH_EVT_T *pe);
 static void releaseUse(SyncRegion *const me, RKH_EVT_T *pe);
 static void deactivateSync(MQTTProt *const me, RKH_EVT_T *pe);
+static void reconnect(MQTTProt *const me, RKH_EVT_T *pe);
 
 /* ......................... Declares entry actions ........................ */
-static void enWaitToConnect(MQTTProt *const me, RKH_EVT_T *pe);
+static void enAwaitingAck(MQTTProt *const me, RKH_EVT_T *pe);
 static void brokerConnect(MQTTProt *const me, RKH_EVT_T *pe);
 static void enWaitToPublish(MQTTProt *const me, RKH_EVT_T *pe);
 static void enWaitSync(SyncRegion *const me, RKH_EVT_T *pe);
@@ -78,7 +78,7 @@ static void recvAll(SyncRegion *const me, RKH_EVT_T *pe);
 static void sendAll(SyncRegion *const me, RKH_EVT_T *pe);
 
 /* ......................... Declares exit actions ......................... */
-static void exWaitToConnect(MQTTProt *const me, RKH_EVT_T *pe);
+static void exAwaitingAck(MQTTProt *const me, RKH_EVT_T *pe);
 static void exWaitToPublish(MQTTProt *const me, RKH_EVT_T *pe);
 static void exWaitSync(SyncRegion *const me, RKH_EVT_T *pe);
 
@@ -104,12 +104,12 @@ RKH_CREATE_COMP_REGION_STATE(Sync_Active, NULL, NULL, RKH_ROOT,
                              &Sync_WaitSync, NULL,
                              RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
 RKH_CREATE_TRANS_TABLE(Sync_Active)
-    RKH_TRREG(evDeactivate, NULL, releaseUse, &Sync_Idle),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(Sync_WaitSync, enWaitSync, exWaitSync, &Sync_Active, 
                        NULL);
 RKH_CREATE_TRANS_TABLE(Sync_WaitSync)
+    RKH_TRREG(evDeactivate, NULL, reconnect, &Sync_Idle),
     RKH_TRREG(evWaitSyncTout, NULL, initRecvAll, &Sync_Receiving),
 RKH_END_TRANS_TABLE
 
@@ -129,17 +129,12 @@ RKH_CREATE_TRANS_TABLE(Client_Idle)
     RKH_TRREG(evNetConnected, NULL, activateSync, &Client_Connected),
 RKH_END_TRANS_TABLE
 
-RKH_CREATE_BASIC_STATE(Client_ConnRefused, NULL, NULL, RKH_ROOT, NULL);
-RKH_CREATE_TRANS_TABLE(Client_ConnRefused)
-    RKH_TRREG(evNetDisconnected, NULL, NULL, &Client_Idle),
-RKH_END_TRANS_TABLE
-
 RKH_CREATE_COMP_REGION_STATE(Client_Connected, NULL, NULL, RKH_ROOT, 
                              &Client_C15, NULL,
                              RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
 RKH_CREATE_TRANS_TABLE(Client_Connected)
-    RKH_TRREG(evConnRefused, NULL, NULL, &Client_ConnRefused),
     RKH_TRREG(evNetDisconnected, NULL, NULL, &Client_Idle),
+    RKH_TRCOMPLETION(NULL, deactivateSync, &Client_Idle),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(Client_TryConnect, brokerConnect, NULL, 
@@ -148,15 +143,11 @@ RKH_CREATE_TRANS_TABLE(Client_TryConnect)
     RKH_TRCOMPLETION(NULL, NULL, &Client_C7),
 RKH_END_TRANS_TABLE
 
-RKH_CREATE_BASIC_STATE(Client_WaitToConnect, enWaitToConnect, exWaitToConnect, 
-                       &Client_Connected, NULL);
-RKH_CREATE_TRANS_TABLE(Client_WaitToConnect)
-    RKH_TRREG(evWaitConnectTout, NULL, NULL, &Client_Connected),
-RKH_END_TRANS_TABLE
-
 RKH_CREATE_BASIC_STATE(Client_AwaitingAck, NULL, NULL, &Client_Connected, NULL);
 RKH_CREATE_TRANS_TABLE(Client_AwaitingAck)
     RKH_TRREG(evConnAccepted, NULL, NULL, &Client_WaitToPublish),
+    RKH_TRREG(evWaitConnectTout, NULL, NULL, &Client_ConnectedFinal),
+    RKH_TRREG(evConnRefused, NULL, NULL, &Client_ConnectedFinal),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(Client_WaitToPublish, enWaitToPublish, exWaitToPublish, 
@@ -178,7 +169,7 @@ RKH_END_TRANS_TABLE
 RKH_CREATE_CHOICE_STATE(Client_C7);
 RKH_CREATE_BRANCH_TABLE(Client_C7)
 	RKH_BRANCH(isConnectOk, NULL, &Client_AwaitingAck),
-	RKH_BRANCH(ELSE,        NULL, &Client_WaitToConnect),
+	RKH_BRANCH(ELSE,        NULL, &Client_ConnectedFinal),
 RKH_END_BRANCH_TABLE
 
 RKH_CREATE_CHOICE_STATE(Client_C15);
@@ -297,6 +288,8 @@ static RKH_ROM_STATIC_EVENT(evActivateObj, evActivate);
 static RKH_ROM_STATIC_EVENT(evDeactivateObj, evDeactivate);
 static RKH_ROM_STATIC_EVENT(evConnAcceptedObj, evConnAccepted);
 static RKH_ROM_STATIC_EVENT(evUnlockedObj, evUnlocked);
+static RKH_ROM_STATIC_EVENT(evOpenObj, evOpen);
+static RKH_ROM_STATIC_EVENT(evCloseObj, evClose);
 static SendEvt evSendObj;
 static ConnRefusedEvt evConnRefusedObj;
 static LocalSendAll localSend;
@@ -391,9 +384,7 @@ init(MQTTProt *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_STATE(me, &Sync_EndCycle);
     RKH_TR_FWK_STATE(me, &Sync_Sending);
     RKH_TR_FWK_STATE(me, &Client_Idle);
-    RKH_TR_FWK_STATE(me, &Client_ConnRefused);
     RKH_TR_FWK_STATE(me, &Client_TryConnect);
-    RKH_TR_FWK_STATE(me, &Client_WaitToConnect);
     RKH_TR_FWK_STATE(me, &Client_AwaitingAck);
     RKH_TR_FWK_STATE(me, &Client_WaitToPublish);
     RKH_TR_FWK_STATE(me, &Sync_Active);
@@ -606,13 +597,23 @@ deactivateSync(MQTTProt *const me, RKH_EVT_T *pe)
                       me);
 }
 
+static void 
+reconnect(SyncRegion *const me, RKH_EVT_T *pe)
+{
+    MQTTProt *realMe;
+
+    realMe = me->itsMQTTProt;
+    RKH_SMA_POST_FIFO(conMgr, &evCloseObj, realMe);
+    RKH_SMA_POST_FIFO(conMgr, &evOpenObj, realMe);
+}
+
 /* ............................. Entry actions ............................. */
 static void 
-enWaitToConnect(MQTTProt *const me, RKH_EVT_T *pe)
+enAwaitingAck(MQTTProt *const me, RKH_EVT_T *pe)
 {
     RKH_TMR_INIT(&me->tryConnTmr, &evWaitConnectToutObj, NULL);
     RKH_TMR_ONESHOT(&me->tryConnTmr, RKH_UPCAST(RKH_SMA_T, me), 
-                    RKH_TIME_SEC(60));
+                    RKH_TIME_SEC(120));
 }
 
 static void 
@@ -669,7 +670,7 @@ enWaitToPublish(MQTTProt *const me, RKH_EVT_T *pe)
 
 /* ............................. Exit actions .............................. */
 static void 
-exWaitToConnect(MQTTProt *const me, RKH_EVT_T *pe)
+exAwaitingAck(MQTTProt *const me, RKH_EVT_T *pe)
 {
     rkh_tmr_stop(&me->tryConnTmr);
 }
