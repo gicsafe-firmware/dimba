@@ -12,7 +12,7 @@
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci  lf@vortexmakes.com
- *  DaBa  Dario BaliÃ±a       db@vortexmakes.com
+ *  DaBa  Dario Baliña       db@vortexmakes.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
@@ -23,7 +23,7 @@
 #include "bsp.h"
 #include "signals.h"
 #include "mqttProt.h"
-#include "mqttClientId.h"
+#include "dimbaCfg.h"
 #include "conmgr.h"
 #include "modmgr.h"
 #include "mTime.h"
@@ -82,9 +82,15 @@ setupTraceFilters(void)
 
 /* ---------------------------- Global functions --------------------------- */
 void
-mqttClientId_config(char *pid)
+dimbaCfg_clientId(char *pid)
 {
     strcpy(mqttProtCfg.clientId, pid);
+}
+
+void
+dimbaCfg_topic(char *t)
+{
+    sprintf(mqttProtCfg.topic, "/dimba/%s", t);
 }
 
 int
@@ -113,7 +119,7 @@ main(int argc, char *argv[])
     mqttProtCfg.keepAlive = 400;
     mqttProtCfg.qos = 1;
     strcpy(mqttProtCfg.clientId, "");
-    strcpy(mqttProtCfg.topic, "/dimba/test");
+    strcpy(mqttProtCfg.topic, "");
     MQTTProt_ctor(&mqttProtCfg, publishDimba);
 
     RKH_SMA_ACTIVATE(conMgr, ConMgr_qsto, CONMGR_QSTO_SIZE, 0, 0);

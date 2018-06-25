@@ -1,6 +1,6 @@
 /**
- *  \file       mqttClientId.h
- *  \brief      Specification for configure MQTT Client ID.
+ *  \file       dimbaCfg.h
+ *  \brief      Specification for configure Dimba.
  */
 
 /* -------------------------- Development history -------------------------- */
@@ -15,8 +15,8 @@
 
 /* --------------------------------- Notes --------------------------------- */
 /* --------------------------------- Module -------------------------------- */
-#ifndef __MQTTCLIENTID_H__
-#define __MQTTCLIENTID_H__
+#ifndef __DIMBACFG_H__
+#define __DIMBACFG_H__
 
 /* ----------------------------- Include files ----------------------------- */
 /* ---------------------- External C language linkage ---------------------- */
@@ -29,7 +29,8 @@ extern "C" {
 /* ------------------------------- Data types ------------------------------ */
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
-void mqttClientId_config(char *pid);
+void dimbaCfg_clientId(char *pid);
+void dimbaCfg_topic(char *topic);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus
