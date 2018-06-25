@@ -18,6 +18,7 @@
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
 #include <string.h>
+#include <stdio.h>
 #include "rkh.h"
 #include "rkhfwk_dynevt.h"
 #include "bsp.h"

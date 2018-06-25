@@ -12,7 +12,7 @@
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci lf@vortexmakes.com
- *  DaBa  Dario Baliña db@vortexmakes.com
+ *  DaBa  Dario Baliï¿½a db@vortexmakes.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
@@ -67,7 +67,7 @@ static void handleRecvMsg(SyncRegion *const me, RKH_EVT_T *pe);
 static void activateSync(MQTTProt *const me, RKH_EVT_T *pe);
 static void releaseUse(SyncRegion *const me, RKH_EVT_T *pe);
 static void deactivateSync(MQTTProt *const me, RKH_EVT_T *pe);
-static void reconnect(MQTTProt *const me, RKH_EVT_T *pe);
+static void reconnect(SyncRegion *const me, RKH_EVT_T *pe);
 
 /* ......................... Declares entry actions ........................ */
 static void enAwaitingAck(MQTTProt *const me, RKH_EVT_T *pe);
