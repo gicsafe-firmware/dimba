@@ -5,21 +5,25 @@
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2016.03.17  LeFr  v1.0.00  Initial version
+ *  2018.05.17  LeFr  v1.0.00  Initial version
+ *  2018.06.17  Daba  v1.0.00  Publisher
  */
 
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci  lf@vortexmakes.com
+ *  DaBa  Dario Baliña       db@vortexmakes.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
+#include <string.h>
 #include "rkh.h"
 #include "rkhfwk_dynevt.h"
 #include "bsp.h"
 #include "signals.h"
 #include "mqttProt.h"
+#include "dimbaCfg.h"
 #include "conmgr.h"
 #include "modmgr.h"
 #include "mTime.h"
@@ -77,6 +81,18 @@ setupTraceFilters(void)
 }
 
 /* ---------------------------- Global functions --------------------------- */
+void
+dimbaCfg_clientId(char *pid)
+{
+    strcpy(mqttProtCfg.clientId, pid);
+}
+
+void
+dimbaCfg_topic(char *t)
+{
+    sprintf(mqttProtCfg.topic, "/dimba/%s", t);
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -102,8 +118,8 @@ main(int argc, char *argv[])
     mqttProtCfg.syncTime = 5;
     mqttProtCfg.keepAlive = 400;
     mqttProtCfg.qos = 1;
-    strcpy(mqttProtCfg.clientId, "dimba1");
-    strcpy(mqttProtCfg.topic, "/dimba/test");
+    strcpy(mqttProtCfg.clientId, "");
+    strcpy(mqttProtCfg.topic, "");
     MQTTProt_ctor(&mqttProtCfg, publishDimba);
 
     RKH_SMA_ACTIVATE(conMgr, ConMgr_qsto, CONMGR_QSTO_SIZE, 0, 0);

@@ -73,6 +73,7 @@
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../rtime&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../modpwr&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../date&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../publisher&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/MQTT-C/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/jWrite/jWrite&quot;"/>
 								</option>

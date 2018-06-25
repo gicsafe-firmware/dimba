@@ -24,6 +24,7 @@
 #include "modmgr.h"
 #include "modcmd.h"
 #include "mqttProt.h"
+#include "dimbaCfg.h"
 #include "signals.h"
 #include "rtime.h"
 #include "bsp.h"
@@ -505,6 +506,9 @@ storeImei(ConMgr *const me, RKH_EVT_T *pe)
 
     p = RKH_UPCAST(ImeiEvt, pe);
     strcpy(Imei, p->buf);
+
+    dimbaCfg_clientId(Imei + IMEI_SNR_OFFSET);
+    dimbaCfg_topic(Imei + IMEI_SNR_OFFSET);
 }
 
 static void

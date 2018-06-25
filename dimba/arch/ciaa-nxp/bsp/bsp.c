@@ -103,9 +103,9 @@ bsp_serial_open(int ch)
 {
     (void)ch;
 
+    cmdParser = ModCmd_init();
     uartConfig(UART_232, 19200);
     uartIsr_rxEnable(UART_232, gsm_rx_isr);
-    cmdParser = ModCmd_init();
 }
 
 void

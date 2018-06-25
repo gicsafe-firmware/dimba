@@ -30,7 +30,7 @@
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
 static adc_t anIns[NUM_ANIN_SIGNALS];
-static adc_t anIns_simu[NUM_ANIN_SIGNALS] = {614, 819, 1024, 0};
+static adc_t anIns_simu[NUM_ANIN_SIGNALS] = {300, 400, 500, 0};
 static rui32_t l_rnd;  /* random seed */
 
 /* ----------------------- Local function prototypes ----------------------- */

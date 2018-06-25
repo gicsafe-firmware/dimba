@@ -80,6 +80,8 @@ DWORD WINAPI
 isr_tmrThread(LPVOID par)      /* Win32 thread to emulate timer ISR */
 {
     (void)par;
+
+	Sleep(tickMsec);
     while (rkhport_fwk_is_running())
     {
         RKH_TIM_TICK(&rkhtick);
