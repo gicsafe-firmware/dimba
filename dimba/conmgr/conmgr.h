@@ -11,7 +11,7 @@
 
 /* -------------------------------- Authors -------------------------------- */
 /*
- *  DaBa  Darío Baliña      db@vortexmakes.com
+ *  DaBa  Dario Bali�a      db@vortexmakes.com
  *  LeFr  Leandro Francucci lf@vortexmakes.com
  */
 
@@ -77,6 +77,11 @@ extern "C" {
  * Specifies a time delay between server connection attemps.
  */
 #define CONNECT_TRY_DELAY   RKH_TIME_MS(5000)
+
+/**
+ * Specifies a time delay between server close and reopen.
+ */
+#define REOPEN_DELAY        RKH_TIME_MS(5000)
 
 /**
  * Specifies connections status´s polling period.

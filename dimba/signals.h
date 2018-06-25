@@ -11,7 +11,7 @@
 
 /* -------------------------------- Authors -------------------------------- */
 /*
- *  DaBa  Dario Baliña db@vortexmakes.com
+ *  DaBa  Dario Baliï¿½a db@vortexmakes.com
  *  LeFr  Leandro Francucci lf@vortexmakes.com
  */
 
@@ -79,7 +79,8 @@ enum Signals
     evNetClockSync,
     evLocalTime,
     evUnlocked,
-    evImei
+    evImei,
+	evRestart
 };
 
 /* ------------------------------- Data types ------------------------------ */
