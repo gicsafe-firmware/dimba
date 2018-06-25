@@ -109,6 +109,7 @@ RKH_END_TRANS_TABLE
 RKH_CREATE_BASIC_STATE(Sync_WaitSync, enWaitSync, exWaitSync, &Sync_Active, 
                        NULL);
 RKH_CREATE_TRANS_TABLE(Sync_WaitSync)
+    RKH_TRREG(evNetDisconnected, NULL, NULL, &Sync_Idle),
     RKH_TRREG(evDeactivate, NULL, reconnect, &Sync_Idle),
     RKH_TRREG(evWaitSyncTout, NULL, initRecvAll, &Sync_Receiving),
 RKH_END_TRANS_TABLE
@@ -288,8 +289,7 @@ static RKH_ROM_STATIC_EVENT(evActivateObj, evActivate);
 static RKH_ROM_STATIC_EVENT(evDeactivateObj, evDeactivate);
 static RKH_ROM_STATIC_EVENT(evConnAcceptedObj, evConnAccepted);
 static RKH_ROM_STATIC_EVENT(evUnlockedObj, evUnlocked);
-static RKH_ROM_STATIC_EVENT(evOpenObj, evOpen);
-static RKH_ROM_STATIC_EVENT(evCloseObj, evClose);
+static RKH_ROM_STATIC_EVENT(evRestartObj, evRestart);
 static SendEvt evSendObj;
 static ConnRefusedEvt evConnRefusedObj;
 static LocalSendAll localSend;
@@ -603,8 +603,7 @@ reconnect(SyncRegion *const me, RKH_EVT_T *pe)
     MQTTProt *realMe;
 
     realMe = me->itsMQTTProt;
-    RKH_SMA_POST_FIFO(conMgr, &evCloseObj, realMe);
-    RKH_SMA_POST_FIFO(conMgr, &evOpenObj, realMe);
+    RKH_SMA_POST_FIFO(conMgr, &evRestartObj, realMe);
 }
 
 /* ............................. Entry actions ............................. */
