@@ -115,18 +115,18 @@ cirBuffer_getBlock(CirBuffer *const me, unsigned char *destBlock,
         if (me->qty != 0)
         {
             nConsumed = (nElem >= me->qty) ? me->qty : nElem;
+            n = (me->end - me->out) / me->elemSize; 
+            if (n > me->qty)
+            {
+                n = me->qty;
+            }
+            if (n > nElem)
+            {
+                n = nElem;
+            }
+
             do
             {
-                n = (me->end - me->out) / me->elemSize; 
-                if (n > me->qty)
-                {
-                    n = me->qty;
-                }
-                if (n > nElem)
-                {
-                    n = nElem;
-                }
-
                 memcpy(destBlock + offset, me->out, me->elemSize * n);
                 me->out += offset = (n * me->elemSize);
                 me->qty -= n;
@@ -137,6 +137,7 @@ cirBuffer_getBlock(CirBuffer *const me, unsigned char *destBlock,
                     me->out = me->sto;
                 }
                 nConsumed -= n;
+                n = nConsumed;
             } while (nConsumed);
         }
     }

@@ -22,6 +22,9 @@
     <ClCompile Include="..\..\runner\test_CirBuffer_runner.c">
       <Filter>test\src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\stub\mocks\Mock_rkhport.c">
+      <Filter>test\stub</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="test">
