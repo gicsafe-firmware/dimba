@@ -270,12 +270,15 @@ bsp_serial_open(int ch)
     cmdParser = ModCmd_init();
     init_serial_hard(ch, &ser_cback );
     connect_serial(ch);
+	set_dtr(ch);
+	Sleep(500);
     RKH_TR_FWK_ACTOR(&bsp, "bsp");
 }
 
 void
 bsp_serial_close(int ch)
 {
+	set_dtr(ch);
 	disconnect_serial(ch);
 	deinit_serial_hard(ch);
 }

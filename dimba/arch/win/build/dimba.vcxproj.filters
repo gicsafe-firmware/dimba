@@ -136,6 +136,9 @@
     <ClCompile Include="..\..\..\publisher\publisher.c">
       <Filter>publisher</Filter>
     </ClCompile>
+    <ClCompile Include="..\bsp\modpwr.c">
+      <Filter>bsp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rkh">
