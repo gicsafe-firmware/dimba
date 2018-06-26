@@ -77,6 +77,7 @@ static void sendOk(ConMgr *const me, RKH_EVT_T *pe);
 static void recvOk(ConMgr *const me, RKH_EVT_T *pe);
 static void sendFail(ConMgr *const me, RKH_EVT_T *pe);
 static void recvFail(ConMgr *const me, RKH_EVT_T *pe);
+static void resetParser(ConMgr *const me, RKH_EVT_T *pe);
 
 /* ......................... Declares entry actions ........................ */
 static void sendSync(ConMgr *const me);
@@ -298,6 +299,7 @@ RKH_END_TRANS_TABLE
 RKH_CREATE_BASIC_STATE(ConMgr_idle, idleEntry, idleExit,
                                                 &ConMgr_connected, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_idle)
+    RKH_TRINT(evNoResponse, NULL, resetParser),
     RKH_TRREG(evTimeout, NULL,  getConnStatus,  &ConMgr_idle),
     RKH_TRREG(evSend,    NULL,  sendRequest,    &ConMgr_sending),
     RKH_TRREG(evRecv,    NULL,  readData,       &ConMgr_receiving),
@@ -657,6 +659,7 @@ sendFail(ConMgr *const me, RKH_EVT_T *pe)
     (void)me;
 
     RKH_SMA_POST_FIFO(mqttProt, &e_SendFail, conMgr);
+	ModCmd_init();
 }
 
 static void
@@ -666,6 +669,16 @@ recvFail(ConMgr *const me, RKH_EVT_T *pe)
     (void)me;
 
     RKH_SMA_POST_FIFO(mqttProt, &e_RecvFail, conMgr);
+	ModCmd_init();
+}
+
+static void
+resetParser(ConMgr *const me, RKH_EVT_T *pe)
+{
+    (void)pe;
+    (void)me;
+
+	ModCmd_init();
 }
 
 /* ............................. Entry actions ............................. */
