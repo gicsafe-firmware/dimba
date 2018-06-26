@@ -11,7 +11,7 @@
 
 /* -------------------------------- Authors -------------------------------- */
 /*
- *  DaBa  Darío Baliña      db@vortexmakes.com
+ *  DaBa  Dario Bali�a      db@vortexmakes.com
  *  LeFr  Leandro Francucci lf@vortexmakes.com
  */
 
@@ -42,8 +42,8 @@ RKH_DCLR_BASIC_STATE ConMgr_inactive, ConMgr_sync,
                 ConMgr_setAPN, ConMgr_enableGPRS,
                 ConMgr_checkIP, ConMgr_waitRetryConfig, ConMgr_waitingServer,
                 ConMgr_idle, ConMgr_waitPrompt, ConMgr_waitOk,
-                ConMgr_receiving, ConMgr_waitRetryConnect,
-                ConMgr_disconnecting;
+                ConMgr_receiving, ConMgr_restarting, ConMgr_wReopen,
+                ConMgr_waitRetryConnect, ConMgr_disconnecting;
 
 RKH_DCLR_COMP_STATE ConMgr_active, ConMgr_initialize, ConMgr_registered,
                     ConMgr_configure, ConMgr_connecting, ConMgr_connected,
@@ -93,6 +93,7 @@ static void waitNetClockSyncEntry(ConMgr *const me);
 static void waitRetryConfigEntry(ConMgr *const me);
 static void setupAPN(ConMgr *const me);
 static void startGPRS(ConMgr *const me);
+static void wReopenEntry(ConMgr *const me);
 static void waitRetryConnEntry(ConMgr *const me);
 static void getConnStatus(ConMgr *const me);
 static void connectingEntry(ConMgr *const me);
@@ -102,6 +103,7 @@ static void idleEntry(ConMgr *const me);
 /* ......................... Declares exit actions ......................... */
 static void unregExit(ConMgr *const me);
 static void waitNetClockSyncExit(ConMgr *const me);
+static void wReopenExit(ConMgr *const me);
 static void waitRetryConnExit(ConMgr *const me);
 static void failureExit(ConMgr *const me);
 static void connectingExit(ConMgr *const me);
@@ -289,7 +291,8 @@ RKH_CREATE_COMP_REGION_STATE(ConMgr_connected,
                              &ConMgr_connecting, &ConMgr_idle, NULL,
                              RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_connected)
-    RKH_TRREG(evClosed,       NULL,  NULL, &ConMgr_connecting),
+    RKH_TRREG(evClosed,       NULL,  NULL,        &ConMgr_connecting),
+    RKH_TRREG(evRestart,      NULL,  socketClose, &ConMgr_restarting),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_idle, idleEntry, idleExit,
@@ -322,6 +325,18 @@ RKH_CREATE_BASIC_STATE(ConMgr_receiving, NULL, NULL, &ConMgr_connected, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_receiving)
     RKH_TRREG(evOk, NULL,  recvOk, &ConMgr_idle),
 	RKH_TRREG(evNoResponse, NULL, recvFail, &ConMgr_idle),
+RKH_END_TRANS_TABLE
+
+RKH_CREATE_BASIC_STATE(ConMgr_restarting, NULL, NULL, &ConMgr_connecting, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_restarting)
+    RKH_TRREG(evDisconnected, NULL,  NULL, &ConMgr_wReopen),
+	RKH_TRREG(evNoResponse, NULL, NULL, &ConMgr_wReopen),
+RKH_END_TRANS_TABLE
+
+RKH_CREATE_BASIC_STATE(ConMgr_wReopen, wReopenEntry, wReopenExit, 
+                                                        &ConMgr_connecting, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_wReopen)
+    RKH_TRREG(evTimeout, NULL,  NULL, &ConMgr_connecting),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_COND_STATE(ConMgr_checkConnectTry);
@@ -428,6 +443,8 @@ init(ConMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_STATE(me, &ConMgr_waitOk);
     RKH_TR_FWK_STATE(me, &ConMgr_sendingFinal);
     RKH_TR_FWK_STATE(me, &ConMgr_receiving);
+    RKH_TR_FWK_STATE(me, &ConMgr_restarting);
+    RKH_TR_FWK_STATE(me, &ConMgr_wReopen);
     RKH_TR_FWK_STATE(me, &ConMgr_waitRetryConnect);
     RKH_TR_FWK_STATE(me, &ConMgr_checkConnectTry);
     RKH_TR_FWK_STATE(me, &ConMgr_disconnecting);
@@ -790,6 +807,15 @@ socketConnected(ConMgr *const me)
 }
 
 static void
+wReopenEntry(ConMgr *const me)
+{
+    (void)me;
+
+    RKH_SET_STATIC_EVENT(&e_tout, evTimeout);
+    RKH_TMR_ONESHOT(&me->timer, RKH_UPCAST(RKH_SMA_T, me), REOPEN_DELAY);
+}
+
+static void
 waitRetryConnEntry(ConMgr *const me)
 {
     (void)me;
@@ -828,6 +854,14 @@ failureExit(ConMgr *const me)
 
     modPwr_on();
     ModCmd_init();
+    rkh_tmr_stop(&me->timer);
+}
+
+static void
+wReopenExit(ConMgr *const me)
+{
+    (void)me;
+
     rkh_tmr_stop(&me->timer);
 }
 

@@ -10,11 +10,13 @@
 
 /* -------------------------------- Authors -------------------------------- */
 /*
- *  DaBa Darío Baliña  db@vortexmakes.com
+ *  DaBa Darï¿½o Baliï¿½a  db@vortexmakes.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
+#include <string.h>
+#include <stdlib.h>
 #include "publisher.h"
 #include "ioChgDet.h"
 #include "anSampler.h"
@@ -36,7 +38,7 @@ publishDimba(AppData *appMsg)
 {
     AnSampleSet anSet;
     IOChg ioChg[NUM_DI_SAMPLES_GET];
-    int err, n, i, j;
+    int n, i, j;
 
     jwOpen( dataBuf, sizeof(dataBuf), JW_OBJECT, JW_COMPACT );
 
@@ -79,7 +81,7 @@ publishDimba(AppData *appMsg)
         jwEnd();
     }
     
-    err = jwClose();
+    jwClose();
 
     appMsg->data = (rui8_t *)dataBuf;
     appMsg->size = (rui16_t)strlen(dataBuf);

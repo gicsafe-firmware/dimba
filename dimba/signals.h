@@ -11,7 +11,7 @@
 
 /* -------------------------------- Authors -------------------------------- */
 /*
- *  DaBa  Dario Baliña db@vortexmakes.com
+ *  DaBa  Dario Baliï¿½a db@vortexmakes.com
  *  LeFr  Leandro Francucci lf@vortexmakes.com
  */
 
@@ -80,7 +80,7 @@ enum Signals
     evLocalTime,
     evUnlocked,
     evImei,
-    evRestart
+	evRestart
 };
 
 /* ------------------------------- Data types ------------------------------ */
