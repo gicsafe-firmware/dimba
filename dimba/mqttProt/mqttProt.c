@@ -41,7 +41,7 @@ RKH_DCLR_BASIC_STATE Sync_Idle, Sync_WaitSync, Sync_Receiving,
                      Client_WaitToUse0, Client_WaitToUse1;
 RKH_DCLR_COMP_STATE Sync_Active, Client_Connected;
 RKH_DCLR_CHOICE_STATE Sync_C10, Sync_C12, Sync_C14, Sync_C25, Sync_C31,
-                      Sync_C32, Sync_C38,
+                      Sync_C32, Sync_C36, Sync_C38,
                       Client_C7, Client_C15, Client_C20;
 
 /* ........................ Declares initial action ........................ */
@@ -68,6 +68,7 @@ static void activateSync(MQTTProt *const me, RKH_EVT_T *pe);
 static void releaseUse(SyncRegion *const me, RKH_EVT_T *pe);
 static void deactivateSync(MQTTProt *const me, RKH_EVT_T *pe);
 static void reconnect(SyncRegion *const me, RKH_EVT_T *pe);
+static void reconnectSync(SyncRegion *const me, RKH_EVT_T *pe);
 
 /* ......................... Declares entry actions ........................ */
 static void enAwaitingAck(MQTTProt *const me, RKH_EVT_T *pe);
@@ -93,6 +94,7 @@ static rbool_t isThereMsg(const RKH_SM_T *me, RKH_EVT_T *pe);
 static rbool_t isNotResend(const RKH_SM_T *me, RKH_EVT_T *pe);
 static rbool_t isSetMsgStateOk(const RKH_SM_T *me, RKH_EVT_T *pe);
 static rbool_t isLocked(const RKH_SM_T *me, RKH_EVT_T *pe);
+static rbool_t isReconnect(const RKH_SM_T *me, RKH_EVT_T *pe);
 
 /* ........................ States and pseudostates ........................ */
 RKH_CREATE_BASIC_STATE(Sync_Idle, NULL, NULL, RKH_ROOT, NULL);
@@ -111,8 +113,14 @@ RKH_CREATE_BASIC_STATE(Sync_WaitSync, enWaitSync, exWaitSync, &Sync_Active,
 RKH_CREATE_TRANS_TABLE(Sync_WaitSync)
     RKH_TRREG(evNetDisconnected, NULL, NULL, &Sync_Idle),
     RKH_TRREG(evDeactivate, NULL, reconnect, &Sync_Idle),
-    RKH_TRREG(evWaitSyncTout, NULL, initRecvAll, &Sync_Receiving),
+    RKH_TRREG(evWaitSyncTout, NULL, NULL, &Sync_C36),
 RKH_END_TRANS_TABLE
+
+RKH_CREATE_CHOICE_STATE(Sync_C36);
+RKH_CREATE_BRANCH_TABLE(Sync_C36)
+	RKH_BRANCH(isReconnect, reconnectSync, &Sync_WaitSync),
+	RKH_BRANCH(ELSE,        initRecvAll, &Sync_Receiving),
+RKH_END_BRANCH_TABLE
 
 RKH_CREATE_BASIC_STATE(Sync_Receiving, recvAll, NULL, &Sync_Active, NULL);
 RKH_CREATE_TRANS_TABLE(Sync_Receiving)
@@ -438,7 +446,6 @@ initRecvAll(SyncRegion *const me, RKH_EVT_T *pe)
     MQTTProt *realMe;
 
     realMe = me->itsMQTTProt;
-    mqtt_recovery(&realMe->client);
     mqtt_initRecvAll();
 }
 
@@ -606,6 +613,17 @@ reconnect(SyncRegion *const me, RKH_EVT_T *pe)
     RKH_SMA_POST_FIFO(conMgr, &evRestartObj, realMe);
 }
 
+static void 
+reconnectSync(SyncRegion *const me, RKH_EVT_T *pe)
+{
+    MQTTProt *realMe;
+
+    realMe = me->itsMQTTProt;
+    RKH_SMA_POST_LIFO(RKH_UPCAST(RKH_SMA_T, realMe), 
+                      RKH_UPCAST(RKH_EVT_T, &evDeactivateObj), 
+                      realMe);
+}
+
 /* ............................. Entry actions ............................. */
 static void 
 enAwaitingAck(MQTTProt *const me, RKH_EVT_T *pe)
@@ -752,6 +770,15 @@ isLocked(const RKH_SM_T *me, RKH_EVT_T *pe)
     return (rbool_t)(inState == (const RKH_ST_T *)&Sync_Receiving || 
                      inState == (const RKH_ST_T *)&Sync_Sending ||
                      inState == (const RKH_ST_T *)&Sync_EndCycle);
+}
+
+static rbool_t 
+isReconnect(const RKH_SM_T *me, RKH_EVT_T *pe)
+{
+    SyncRegion *realMe;
+
+    realMe = RKH_DOWNCAST(SyncRegion, me);
+    return mqtt_isReconnect(&realMe->itsMQTTProt->client);
 }
 
 /* ---------------------------- Global functions --------------------------- */
