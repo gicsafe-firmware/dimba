@@ -115,8 +115,8 @@ main(int argc, char *argv[])
     rkh_fwk_registerEvtPool(evPool1Sto, SIZEOF_EP1STO, SIZEOF_EP1_BLOCK);
     rkh_fwk_registerEvtPool(evPool2Sto, SIZEOF_EP2STO, SIZEOF_EP2_BLOCK);
 
-    mqttProtCfg.publishTime = 60;
-    mqttProtCfg.syncTime = 5;
+    mqttProtCfg.publishTime = MAX_PUBLISH_TIME;
+    mqttProtCfg.syncTime = 4;
     mqttProtCfg.keepAlive = 400;
     mqttProtCfg.qos = 1;
     strcpy(mqttProtCfg.clientId, "");

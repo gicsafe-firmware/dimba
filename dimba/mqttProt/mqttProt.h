@@ -42,7 +42,7 @@ struct AppData
     rui16_t size;
 };
 
-typedef void (*MQTTProtPublish)(AppData *appMsg);
+typedef rui16_t (*MQTTProtPublish)(AppData *appMsg);
 
 typedef struct MQTTProtCfg MQTTProtCfg;
 struct MQTTProtCfg

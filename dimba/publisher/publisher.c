@@ -32,8 +32,21 @@ char dataBuf[1024];
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
+static rui16_t
+getNextPublishTime(int nSamples)
+{
+    int x;
+
+    x = (nSamples / (MAX_AN_NUM_SAMPLES / NUM_PUBTIME_STEPS));
+    if (x >= NUM_PUBTIME_STEPS)
+    {
+        x = NUM_PUBTIME_STEPS - 1;  /* Set the minimal publish time to 8s */
+    }
+    return (rui16_t)(MAX_PUBLISH_TIME >> x);
+}
+
 /* ---------------------------- Global functions --------------------------- */
-void
+rui16_t
 publishDimba(AppData *appMsg)
 {
     AnSampleSet anSet;
@@ -85,6 +98,7 @@ publishDimba(AppData *appMsg)
 
     appMsg->data = (rui8_t *)dataBuf;
     appMsg->size = (rui16_t)strlen(dataBuf);
+    return getNextPublishTime(anSampler_getNumSamples());
 }
 
 /* ------------------------------ End of file ------------------------------ */

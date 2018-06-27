@@ -36,6 +36,7 @@
 #include "ioChgDet.h"
 #include "anSampler.h"
 #include "mTime.h"
+#include "publisher.h"
 
 
 RKH_THIS_MODULE
@@ -47,9 +48,6 @@ RKH_THIS_MODULE
 
 #define TEST_TX_PACKET      "----o Ping"
 #define TEST_RX_PACKET      "o---- Pong"
-
-#define NUM_AN_SAMPLES_GET  10
-#define NUM_DI_SAMPLES_GET  8
 
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */

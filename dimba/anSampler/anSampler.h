@@ -23,6 +23,7 @@
 #include "epoch.h"
 #include "anin.h"
 #include "mTimeCfg.h"
+#include "publisher.h"
 
 /* ---------------------- External C language linkage ---------------------- */
 #ifdef __cplusplus
@@ -32,7 +33,7 @@ extern "C" {
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
 #define AN_SAMPLING_RATE_SEC (MTIME_ANSAMPLE_PUT_PERIOD * MTIME_TIME_TICK)/1000
-#define MAX_AN_NUM_SAMPLES   128
+#define MAX_AN_NUM_SAMPLES   (NUM_PUBTIME_STEPS * 60)
 #define NUM_AN_SIGNALS       NUM_ANIN_SIGNALS
 
 /* ................................ Signals ................................ */
@@ -52,7 +53,7 @@ struct AnSampleSet
 int anSampler_init(void);
 int anSampler_put(void);
 int anSampler_getSet(AnSampleSet *set, int nSamples);
-int anSampler_getTotalNum(void);
+int anSampler_getNumSamples(void);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus

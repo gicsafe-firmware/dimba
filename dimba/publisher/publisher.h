@@ -28,13 +28,15 @@ extern "C" {
 
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
-#define NUM_AN_SAMPLES_GET  10
+#define MAX_PUBLISH_TIME    64
+#define NUM_AN_SAMPLES_GET  ((MAX_PUBLISH_TIME / 10) + 4)
 #define NUM_DI_SAMPLES_GET  8
+#define NUM_PUBTIME_STEPS   4
 
 /* ------------------------------- Data types ------------------------------ */
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
-void publishDimba(AppData *appMsg);
+rui16_t publishDimba(AppData *appMsg);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus

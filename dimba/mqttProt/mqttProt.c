@@ -106,12 +106,12 @@ RKH_CREATE_COMP_REGION_STATE(Sync_Active, NULL, NULL, RKH_ROOT,
                              &Sync_WaitSync, NULL,
                              RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
 RKH_CREATE_TRANS_TABLE(Sync_Active)
+    RKH_TRREG(evNetDisconnected, NULL, NULL, &Sync_Idle),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(Sync_WaitSync, enWaitSync, exWaitSync, &Sync_Active, 
                        NULL);
 RKH_CREATE_TRANS_TABLE(Sync_WaitSync)
-    RKH_TRREG(evNetDisconnected, NULL, NULL, &Sync_Idle),
     RKH_TRREG(evDeactivate, NULL, reconnect, &Sync_Idle),
     RKH_TRREG(evWaitSyncTout, NULL, NULL, &Sync_C36),
 RKH_END_TRANS_TABLE
@@ -305,7 +305,7 @@ static LocalRecvAll localRecv;
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
-static void
+static rui16_t
 pubDft(AppData *appMsg)
 {
     static char application_message[128];
@@ -324,6 +324,7 @@ pubDft(AppData *appMsg)
         appMsg->data = (rui8_t *)application_message;
         appMsg->size = (rui16_t)strlen(application_message) + 1;
     }
+    return 0;
 }
 
 static int
@@ -431,8 +432,13 @@ static void
 publish(MQTTProt *const me, RKH_EVT_T *pe)
 {
     AppData appMsg;
+    rui16_t pubTime;
 
-    (*me->publisher)(&appMsg);
+    pubTime = (*me->publisher)(&appMsg);
+    if (pubTime != 0)
+    {
+        me->config->publishTime = pubTime;
+    }
     me->operRes = mqtt_publish(&me->client, 
                                me->config->topic, 
                                appMsg.data, 
