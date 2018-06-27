@@ -92,6 +92,7 @@ anSampler_getSet(AnSampleSet *set, int nSamples)
     int i, result = 0;
     AnSampleBuffer *pAnSig;
 
+    /* enter_critical_section() */
     pAnSig = anSampler.anSignals;
     set->timeStamp = anSampler.timeStamp;
     set->timeStamp -= (AN_SAMPLING_RATE_SEC  * 
@@ -102,7 +103,19 @@ anSampler_getSet(AnSampleSet *set, int nSamples)
                                     (unsigned char *)set->anSignal[i],
                                     nSamples);
     }
+    /* exit_critical_section() */
     return result;
+}
+
+int 
+anSampler_getNumSamples(void)
+{
+    int nSamples;
+
+    /* enter_critical_section() */
+    nSamples = cirBuffer_getNumElem(&anSampler.anSignals[0].buffer);
+    /* exit_critical_section() */
+    return nSamples;
 }
 
 /* ------------------------------ End of file ------------------------------ */

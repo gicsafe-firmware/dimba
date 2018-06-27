@@ -152,4 +152,33 @@ TEST(AnSampler, GetAnSampleSet)
                       set.timeStamp);
 }
 
+TEST(AnSampler, GetTotalNumOfStoredSamples)
+{
+    AnSampleSet set;
+    int nSamples, i, j, result, nReqSamples, nBufSamples;
+
+    for (j = 0; j < 4; ++j)
+    {
+        epoch_get_ExpectAndReturn(123456);
+        for (i = 0; i < NUM_AN_SIGNALS; ++i)
+        {
+            ADConv_getSample_ExpectAndReturn(i, 707);
+            cirBuffer_put_ExpectAndReturn(0, 0, 0);
+            cirBuffer_put_IgnoreArg_me();
+            cirBuffer_put_IgnoreArg_elem();
+        }
+    }
+
+    for (j = 0; j < 4; ++j)
+    {
+        anSampler_put();
+    }
+
+    cirBuffer_getNumElem_ExpectAndReturn(0, 4);
+    cirBuffer_getNumElem_IgnoreArg_me();
+
+    nSamples = anSampler_getNumSamples();
+    TEST_ASSERT_EQUAL(4, nSamples);
+}
+
 /* ------------------------------ End of file ------------------------------ */

@@ -52,6 +52,7 @@ struct AnSampleSet
 int anSampler_init(void);
 int anSampler_put(void);
 int anSampler_getSet(AnSampleSet *set, int nSamples);
+int anSampler_getTotalNum(void);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus
