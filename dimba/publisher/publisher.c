@@ -63,7 +63,7 @@ publishDimba(AppData *appMsg)
     if(n>0)
     {
         jwObj_object("anIn");
-            jwObj_double("ts", anSet.timeStamp);
+            jwObj_int("ts", anSet.timeStamp);
             jwObj_int("tsm", AN_SAMPLING_RATE_SEC);
             jwObj_array("an");
             for(i=0; i < NUM_AN_SIGNALS; ++i)

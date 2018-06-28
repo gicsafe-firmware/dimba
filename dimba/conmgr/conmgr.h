@@ -11,7 +11,7 @@
 
 /* -------------------------------- Authors -------------------------------- */
 /*
- *  DaBa  Dario Baliña      db@vortexmakes.com
+ *  DaBa  Dario Baliï¿½a      db@vortexmakes.com
  *  LeFr  Leandro Francucci lf@vortexmakes.com
  */
 
@@ -89,6 +89,11 @@ extern "C" {
 #define CONNSTATUS_PERIOD   RKH_TIME_MS(2000)
 
 /**
+ * Specifies connections statusÂ´s polling period.
+ */
+#define MAX_CONSTATUS_NORESP 2
+
+/**
  * Specifies sizeof send / receive buffers.
  */
 #define SEND_BUFF_SIZE      1024
@@ -136,7 +141,7 @@ extern "C" {
     #define DOCKLIGHT_BIS_PORT   "33498"
 
 #define CONNECTION_PROT         "TCP"
-#define CONNECTION_DOMAIN       LINSSE_SERVER 
+#define CONNECTION_DOMAIN       LINSSE_SERVER
 #define CONNECTION_PORT         LINSSE_PORT
 
 /* ................................ Signals ................................ */

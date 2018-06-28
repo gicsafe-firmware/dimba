@@ -11,7 +11,7 @@
 
 /* -------------------------------- Authors -------------------------------- */
 /*
- *  DaBa  Dario Baliña      db@vortexmakes.com
+ *  DaBa  Dario Baliï¿½a      db@vortexmakes.com
  *  LeFr  Leandro Francucci lf@vortexmakes.com
  */
 
@@ -30,6 +30,8 @@
 #include "bsp.h"
 
 /* ----------------------------- Local macros ------------------------------ */
+#define SIZEOF_QDEFER   1
+
 /* ......................... Declares active object ........................ */
 typedef struct ConMgr ConMgr;
 
@@ -41,7 +43,7 @@ RKH_DCLR_BASIC_STATE ConMgr_inactive, ConMgr_sync,
                 ConMgr_waitNetClockSync, ConMgr_localTime,
                 ConMgr_setAPN, ConMgr_enableGPRS,
                 ConMgr_checkIP, ConMgr_waitRetryConfig, ConMgr_waitingServer,
-                ConMgr_idle, ConMgr_waitPrompt, ConMgr_waitOk,
+                ConMgr_idle, ConMgr_getStatus, ConMgr_waitPrompt, ConMgr_waitOk,
                 ConMgr_receiving, ConMgr_restarting, ConMgr_wReopen,
                 ConMgr_waitRetryConnect, ConMgr_disconnecting;
 
@@ -59,6 +61,7 @@ static void init(ConMgr *const me, RKH_EVT_T *pe);
 /* ........................ Declares effect actions ........................ */
 static void open(ConMgr *const me, RKH_EVT_T *pe);
 static void close(ConMgr *const me, RKH_EVT_T *pe);
+static void defer(ConMgr *const me, RKH_EVT_T *pe);
 static void initializeInit(ConMgr *const me, RKH_EVT_T *pe);
 static void storeImei(ConMgr *const me, RKH_EVT_T *pe);
 static void localTimeGet(ConMgr *const me, RKH_EVT_T *pe);
@@ -77,7 +80,7 @@ static void sendOk(ConMgr *const me, RKH_EVT_T *pe);
 static void recvOk(ConMgr *const me, RKH_EVT_T *pe);
 static void sendFail(ConMgr *const me, RKH_EVT_T *pe);
 static void recvFail(ConMgr *const me, RKH_EVT_T *pe);
-static void resetParser(ConMgr *const me, RKH_EVT_T *pe);
+static void tryGetStatus(ConMgr *const me, RKH_EVT_T *pe);
 
 /* ......................... Declares entry actions ........................ */
 static void sendSync(ConMgr *const me);
@@ -97,6 +100,7 @@ static void startGPRS(ConMgr *const me);
 static void wReopenEntry(ConMgr *const me);
 static void waitRetryConnEntry(ConMgr *const me);
 static void getConnStatus(ConMgr *const me);
+static void isConnected(ConMgr *const me);
 static void connectingEntry(ConMgr *const me);
 static void socketConnected(ConMgr *const me);
 static void idleEntry(ConMgr *const me);
@@ -110,11 +114,14 @@ static void failureExit(ConMgr *const me);
 static void connectingExit(ConMgr *const me);
 static void socketDisconnected(ConMgr *const me);
 static void idleExit(ConMgr *const me);
+static void getStatusExit(ConMgr *const me);
 
 /* ............................ Declares guards ............................ */
 rbool_t checkSyncTry(ConMgr *const me, RKH_EVT_T *pe);
 rbool_t checkConfigTry(ConMgr *const me, RKH_EVT_T *pe);
 rbool_t checkConnectTry(ConMgr *const me, RKH_EVT_T *pe);
+rbool_t checkStatusNoRespCounter(ConMgr *const me, RKH_EVT_T *pe);
+
 
 /* ........................ States and pseudostates ........................ */
 RKH_CREATE_BASIC_STATE(ConMgr_inactive, NULL, NULL, RKH_ROOT, NULL);
@@ -216,7 +223,7 @@ RKH_CREATE_BASIC_STATE(ConMgr_waitNetClockSync,
                             waitNetClockSyncEntry, waitNetClockSyncExit,
                             &ConMgr_registered, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_waitNetClockSync)
-    RKH_TRREG(evTimeout,       NULL, localTimeGet, &ConMgr_localTime),
+    RKH_TRREG(evTimeout,       NULL, NULL, &ConMgr_configure),
     RKH_TRREG(evNetClockSync,  NULL, localTimeGet, &ConMgr_localTime),
 RKH_END_TRANS_TABLE
 
@@ -299,10 +306,18 @@ RKH_END_TRANS_TABLE
 RKH_CREATE_BASIC_STATE(ConMgr_idle, idleEntry, idleExit,
                                                 &ConMgr_connected, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_idle)
-    RKH_TRINT(evNoResponse, NULL, resetParser),
-    RKH_TRREG(evTimeout, NULL,  getConnStatus,  &ConMgr_idle),
+    RKH_TRREG(evTimeout, NULL,  getConnStatus,  &ConMgr_getStatus),
     RKH_TRREG(evSend,    NULL,  sendRequest,    &ConMgr_sending),
     RKH_TRREG(evRecv,    NULL,  readData,       &ConMgr_receiving),
+RKH_END_TRANS_TABLE
+
+RKH_CREATE_BASIC_STATE(ConMgr_getStatus, NULL, getStatusExit,
+                                                &ConMgr_connected, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_getStatus)
+    RKH_TRINT(evSend,    NULL,  defer),
+    RKH_TRINT(evRecv,    NULL,  defer),
+    RKH_TRREG(evNoResponse, checkStatusNoRespCounter, tryGetStatus, &ConMgr_idle),
+    RKH_TRREG(evConnected, NULL, isConnected,   &ConMgr_idle),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_COMP_REGION_STATE(ConMgr_sending, NULL, NULL, 
@@ -394,8 +409,10 @@ static RKH_ROM_STATIC_EVENT(e_NetDisconnected, evNetDisconnected);
 static RKH_ROM_STATIC_EVENT(e_Sent,     evSent);
 static RKH_ROM_STATIC_EVENT(e_SendFail, evSendFail);
 static RKH_ROM_STATIC_EVENT(e_RecvFail, evRecvFail);
-
 ReceivedEvt e_Received;
+
+static RKH_QUEUE_T qDefer;
+static RKH_EVT_T *qDefer_sto[SIZEOF_QDEFER];
 
 static char Imei[IMEI_BUF_SIZE];
 
@@ -440,6 +457,7 @@ init(ConMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_STATE(me, &ConMgr_waitingServer);
     RKH_TR_FWK_STATE(me, &ConMgr_connected);
     RKH_TR_FWK_STATE(me, &ConMgr_idle);
+    RKH_TR_FWK_STATE(me, &ConMgr_getStatus);
     RKH_TR_FWK_STATE(me, &ConMgr_sending);
     RKH_TR_FWK_STATE(me, &ConMgr_waitPrompt);
     RKH_TR_FWK_STATE(me, &ConMgr_waitOk);
@@ -481,6 +499,9 @@ init(ConMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_SIG(evNetClockSync);
     RKH_TR_FWK_SIG(evLocalTime);
 
+    rkh_queue_init(&qDefer, (const void **)qDefer_sto, SIZEOF_QDEFER, 
+                CV(0));
+
     RKH_TMR_INIT(&me->timer, &e_tout, NULL);
     me->retryCount = 0;
 }
@@ -506,6 +527,15 @@ close(ConMgr *const me, RKH_EVT_T *pe)
     RKH_SMA_POST_FIFO(modMgr, &e_Close, conMgr);
 
     modPwr_off();
+}
+
+static void
+defer(ConMgr *const me, RKH_EVT_T *pe)
+{
+    (void)me;
+
+    if( rkh_queue_is_full(&qDefer) != RKH_TRUE )
+    	rkh_sma_defer(&qDefer, pe);
 }
 
 static void
@@ -673,11 +703,11 @@ recvFail(ConMgr *const me, RKH_EVT_T *pe)
 }
 
 static void
-resetParser(ConMgr *const me, RKH_EVT_T *pe)
+tryGetStatus(ConMgr *const me, RKH_EVT_T *pe)
 {
     (void)pe;
-    (void)me;
 
+    ++me->retryCount;
 	ModCmd_init();
 }
 
@@ -802,6 +832,12 @@ getConnStatus(ConMgr *const me)
 }
 
 static void
+isConnected(ConMgr *const me)
+{
+    me->retryCount = 0;
+}
+
+static void
 connectingEntry(ConMgr *const me)
 {
     (void)me;
@@ -815,6 +851,7 @@ socketConnected(ConMgr *const me)
 {
     (void)me;
 
+    me->retryCount = 0;
     RKH_SMA_POST_FIFO(mqttProt, &e_NetConnected, conMgr);
     bsp_netStatus(ConnectedSt);
 }
@@ -841,7 +878,7 @@ static void
 idleEntry(ConMgr *const me)
 {
     (void)me;
-
+    
     RKH_SET_STATIC_EVENT(&e_tout, evTimeout);
     RKH_TMR_ONESHOT(&me->timer, RKH_UPCAST(RKH_SMA_T, me), CONNSTATUS_PERIOD);
 }
@@ -912,6 +949,14 @@ idleExit(ConMgr *const me)
     rkh_tmr_stop(&me->timer);
 }
 
+static void
+getStatusExit(ConMgr *const me)
+{
+    (void)me;
+
+    rkh_sma_recall((RKH_SMA_T *)me, &qDefer);
+}
+
 /* ................................ Guards ................................. */
 rbool_t
 checkSyncTry(ConMgr *const me, RKH_EVT_T *pe)
@@ -935,6 +980,14 @@ checkConnectTry(ConMgr *const me, RKH_EVT_T *pe)
     (void)pe;
     
     return (me->retryCount < MAX_CONNECT_RETRY) ? RKH_TRUE : RKH_FALSE;
+}
+
+rbool_t
+checkStatusNoRespCounter(ConMgr *const me, RKH_EVT_T *pe)
+{
+    (void)pe;
+    
+    return (me->retryCount < MAX_CONSTATUS_NORESP) ? RKH_TRUE : RKH_FALSE;
 }
 
 /* ---------------------------- Global functions --------------------------- */
