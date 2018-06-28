@@ -125,9 +125,6 @@ extern "C" {
 #define SIM_PIN_NUMBER          9474
 
 /* ................................. Server ................................ */
-    #define YIPIES_SERVER       "71.6.135.77"
-    #define YIPIES_PORT         "33499"
-
     #define MOSQUITTO_SERVER    "test.mosquitto.org"
     #define MOSQUITTO_PORT      "1883"
 
@@ -136,9 +133,6 @@ extern "C" {
 
     #define DOCKLIGHT_SERVER    "181.230.72.86"
     #define DOCKLIGHT_PORT      "33498"
-
-    #define DOCKLIGHT_BIS_SERVER "200.127.3.140"
-    #define DOCKLIGHT_BIS_PORT   "33498"
 
 #define CONNECTION_PROT         "TCP"
 #define CONNECTION_DOMAIN       LINSSE_SERVER
