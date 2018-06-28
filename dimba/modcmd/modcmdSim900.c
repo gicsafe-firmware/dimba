@@ -101,7 +101,11 @@ static const CmdTbl cmdTbl =
      RKH_TIME_MS(3000), RKH_TIME_MS(200)},
 
     {RKH_INIT_STATIC_EVT(evCmd), 
+#ifdef GPRS_QUICK_SEND
+     "AT+CIPRXGET=1;+CIPQSEND=1\r\n",
+#else
      "AT+CIPRXGET=1\r\n",
+#endif
      &conMgr, 
      RKH_TIME_MS(300), RKH_TIME_MS(100)},
 
@@ -148,7 +152,11 @@ static const CmdTbl cmdTbl =
     {RKH_INIT_STATIC_EVT(evCmd), 
      "\x1A\r\n", 
      &conMgr, 
+#ifdef GPRS_QUICK_SEND
      RKH_TIME_MS(10000), RKH_TIME_MS(100)},
+#else
+     RKH_TIME_MS(1000), RKH_TIME_MS(100)},
+#endif
 
     {RKH_INIT_STATIC_EVT(evCmd), 
      "AT+CIPRXGET=2,1024\r\n", 

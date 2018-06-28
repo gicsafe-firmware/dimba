@@ -36,6 +36,7 @@
 									<listOptionValue builtIn="false" value="__CIAA_NXP__=1"/>
 									<listOptionValue builtIn="false" value="ARCH_LITTLE_ENDIAN"/>
 									<listOptionValue builtIn="false" value="DEBUG=1"/>
+									<listOptionValue builtIn="false" value="GPRS_QUICK_SEND=1"/>
 								</option>
 								<option id="gnu.c.compiler.option.misc.other.656698687" name="Other flags" superClass="gnu.c.compiler.option.misc.other" value="-c -fmessage-length=0 -fno-builtin -ffunction-sections -fdata-sections -fsingle-precision-constant" valueType="string"/>
 								<option id="gnu.c.compiler.option.optimization.flags.1201889724" name="Other optimization flags" superClass="gnu.c.compiler.option.optimization.flags" value="-fno-common" valueType="string"/>

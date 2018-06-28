@@ -331,7 +331,11 @@ SSP_END_BR_TABLE
 
 SSP_CREATE_NORMAL_NODE(at_plus_cipsent);
 SSP_CREATE_BR_TABLE(at_plus_cipsent)
+#ifdef GPRS_QUICK_SEND
+	SSPBR("DATA ACCEPT", cmd_ok,  &rootCmdParser),
+#else
 	SSPBR("SEND OK\r\n", cmd_ok,  &rootCmdParser),
+#endif
 SSP_END_BR_TABLE
 
 /* --------------------------------------------------------------- */

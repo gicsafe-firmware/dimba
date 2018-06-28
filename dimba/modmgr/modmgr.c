@@ -192,6 +192,9 @@ sendCmd(ModMgr *const me, RKH_EVT_T *pe)
 
     bsp_serial_puts(GSM_PORT, me->pCmd->cmd);
 
+    RKH_TRC_USR_BEGIN(MODCMD_USR_TRACE)
+        RKH_TUSR_STR(me->pCmd->cmd);
+    RKH_TRC_USR_END();
 }
 
 static void
@@ -204,6 +207,9 @@ sendData(ModMgr *const me, RKH_EVT_T *pe)
 #ifdef _SEND_WITH_TERMINATOR
     bsp_serial_puts(GSM_PORT, ModCmd_endOfXmitStr());
 #endif
+    RKH_TRC_USR_BEGIN(MODCMD_USR_TRACE)
+		RKH_TUSR_STR("sendData");
+    RKH_TRC_USR_END();
 }
 
 static void
@@ -250,10 +256,6 @@ setupResponse(ModMgr *const me)
     RKH_SET_STATIC_EVENT(&e_tout, evToutWaitResponse);
     RKH_TMR_ONESHOT(&me->timer, RKH_UPCAST(RKH_SMA_T, me), 
                     me->pCmd->args.waitResponseTime);
-    
-    RKH_TRC_USR_BEGIN(MODCMD_USR_TRACE)
-        RKH_TUSR_STR(me->pCmd->cmd);
-    RKH_TRC_USR_END();
 }
 
 /* ............................. Exit actions .............................. */
