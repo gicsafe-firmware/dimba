@@ -37,7 +37,7 @@ rtime_get(void)
     struct tm *local;
 
     time(&ltime);
-    local = gmtime(&ltime);
+    local = localtime(&ltime);
 
     t.tm_sec = (unsigned char)local->tm_sec;
     t.tm_min = (unsigned char)local->tm_min;
