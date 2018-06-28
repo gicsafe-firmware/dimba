@@ -236,6 +236,13 @@ bsp_keyParser(int c)
             send_signalsFrame();
             break;
 
+		case 'j':
+			set_dtr(0);
+			break;
+
+		case 'k':
+			reset_dtr(0);
+			break;
 
         default:
             break;
@@ -253,7 +260,7 @@ void
 ser_rx_isr( unsigned char byte )
 {
     cmdParser(byte);
-//	putchar(byte);
+	putchar(byte);
 }
 
 static
