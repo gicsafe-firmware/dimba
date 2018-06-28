@@ -62,6 +62,7 @@ static void init(ConMgr *const me, RKH_EVT_T *pe);
 static void open(ConMgr *const me, RKH_EVT_T *pe);
 static void close(ConMgr *const me, RKH_EVT_T *pe);
 static void defer(ConMgr *const me, RKH_EVT_T *pe);
+static void setSigLevel(ConMgr *const me, RKH_EVT_T *pe);
 static void initializeInit(ConMgr *const me, RKH_EVT_T *pe);
 static void storeImei(ConMgr *const me, RKH_EVT_T *pe);
 static void localTimeGet(ConMgr *const me, RKH_EVT_T *pe);
@@ -135,6 +136,7 @@ RKH_CREATE_COMP_REGION_STATE(ConMgr_active, NULL, NULL, RKH_ROOT,
                              &ConMgr_initialize, NULL,
                              RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_active)
+    RKH_TRINT(evSigLevel, NULL, setSigLevel),
     RKH_TRINT(evSend, NULL, sendFail),
     RKH_TRINT(evRecv, NULL, recvFail),
     RKH_TRCOMPLETION(NULL, NULL, &ConMgr_inactive),
@@ -385,6 +387,8 @@ struct ConMgr
                         /* 'conMgr' */
     rui8_t retryCount; 
     SendEvt *psend;
+    int sigLevel;
+    char Imei[IMEI_BUF_SIZE];
 };
 
 RKH_SMA_CREATE(ConMgr, conMgr, 1, HCAL, &ConMgr_inactive, init, NULL);
@@ -413,8 +417,6 @@ ReceivedEvt e_Received;
 
 static RKH_QUEUE_T qDefer;
 static RKH_EVT_T *qDefer_sto[SIZEOF_QDEFER];
-
-static char Imei[IMEI_BUF_SIZE];
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
@@ -498,6 +500,7 @@ init(ConMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_SIG(evTerminate);
     RKH_TR_FWK_SIG(evNetClockSync);
     RKH_TR_FWK_SIG(evLocalTime);
+    RKH_TR_FWK_SIG(evSigLevel);
 
     rkh_queue_init(&qDefer, (const void **)qDefer_sto, SIZEOF_QDEFER, 
                 CV(0));
@@ -539,6 +542,16 @@ defer(ConMgr *const me, RKH_EVT_T *pe)
 }
 
 static void
+setSigLevel(ConMgr *const me, RKH_EVT_T *pe)
+{
+    SigLevelEvt *p;
+    (void)me;
+    
+    p = RKH_UPCAST(SigLevelEvt, pe);
+    me->sigLevel = p->value;
+}
+
+static void
 initializeInit(ConMgr *const me, RKH_EVT_T *pe)
 {
     (void)pe;
@@ -554,10 +567,10 @@ storeImei(ConMgr *const me, RKH_EVT_T *pe)
 	(void)me;
 
     p = RKH_UPCAST(ImeiEvt, pe);
-    strcpy(Imei, p->buf);
+    strcpy(me->Imei, p->buf);
 
-    dimbaCfg_clientId(Imei + IMEI_SNR_OFFSET);
-    dimbaCfg_topic(Imei + IMEI_SNR_OFFSET);
+    dimbaCfg_clientId(me->Imei + IMEI_SNR_OFFSET);
+    dimbaCfg_topic(me->Imei + IMEI_SNR_OFFSET);
 }
 
 static void
@@ -998,15 +1011,30 @@ ConMgr_ReceiveDataGetRef(void)
 }
 
 char *
-ConMgr_Imei(void)
+ConMgr_imei(void)
 {
-    return Imei;
+    ConMgr *me;
+
+    me = RKH_UPCAST(ConMgr, conMgr); 
+    return me->Imei;
 }
 
 char *
-ConMgr_ImeiSNR(void)
+ConMgr_imeiSNR(void)
 {
-    return (Imei + IMEI_SNR_OFFSET);
+    ConMgr *me;
+
+    me = RKH_UPCAST(ConMgr, conMgr); 
+    return (me->Imei + IMEI_SNR_OFFSET);
+}
+
+int
+ConMgr_sigLevel(void)
+{
+    ConMgr *me;
+
+    me = RKH_UPCAST(ConMgr, conMgr); 
+    return me->sigLevel;
 }
 
 /* ------------------------------ End of file ------------------------------ */

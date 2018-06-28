@@ -179,11 +179,19 @@ struct ImeiEvt
     char buf[IMEI_BUF_SIZE];
 };
 
+typedef struct SigLevelEvt SigLevelEvt;
+struct SigLevelEvt
+{
+    ModMgrResp e;
+    int value;
+};
+
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
 ReceivedEvt * ConMgr_ReceiveDataGetRef(void);
-char * ConMgr_Imei(void);
-char * ConMgr_ImeiSNR(void);
+char * ConMgr_imei(void);
+char * ConMgr_imeiSNR(void);
+int ConMgr_sigLevel(void);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus

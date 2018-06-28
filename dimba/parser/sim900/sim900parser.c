@@ -27,6 +27,7 @@
 #define END_OF_RECV_STR     "\r\nOK\r\n"
 #define YEAR2K              2000
 #define LTBUFF_SIZE         5
+#define CSQ_LENGTH   4
 
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
@@ -43,12 +44,12 @@ SSP_DCLR_NORMAL_NODE at, waitOK, at_plus, at_plus_c, at_plus_ci,
                      at_plus_cipclose,
                      at_plus_cipsend, at_plus_cipsending, at_plus_cipsent,
                      at_plus_cpin, at_plus_creg, pinStatus, wpinSet, pinSet,
-                     plus_c, plus_creg, at_plus_cipstatus, at_plus_cifsr,
+                     plus_c, plus_creg, at_plus_cifsr,
                      netClockSync,
                      at_plus_cclk, cclk_end;
 
 SSP_DCLR_TRN_NODE at_plus_ciprxget_data, cclk_year, cclk_month, cclk_day,
-                  cclk_hour, cclk_min, at_plus_gsn;
+                  cclk_hour, cclk_min, plus_csq, at_plus_gsn;
 
 static rui8_t isURC;
 
@@ -62,6 +63,10 @@ static char *plt;
 
 static ImeiEvt imeiEvt;
 static char *pImei;
+
+char *pcsq;
+char csqBuf[CSQ_LENGTH];
+static SigLevelEvt sigLevelEvt;
 
 /* ----------------------- Local function prototypes ----------------------- */
 static void cmd_ok(unsigned char pos);
@@ -103,6 +108,9 @@ static void lTimeGet(unsigned char pos);
 static void imeiInit(unsigned char pos);
 static void imeiCollect(unsigned char c);
 static void imeiSet(unsigned char pos);
+static void csqInit(unsigned char pos);
+static void csqCollect(unsigned char c);
+static void csqSet(unsigned char pos);
 
 /* ---------------------------- Local functions ---------------------------- */
 
@@ -166,7 +174,7 @@ SSP_END_BR_TABLE
 
 SSP_CREATE_NORMAL_NODE(at_plus_cipsta);
 SSP_CREATE_BR_TABLE(at_plus_cipsta)
-	SSPBR("TUS\r\n",      NULL,  &at_plus_cipstatus),
+	SSPBR("TUS;+CSQ\r\n",      NULL,  &at_plus_cipstatus),
 	SSPBR("RT=",          NULL,  &at_plus_cipstart),
 	SSPBR("\r\n",         NULL,  &rootCmdParser),
 SSP_END_BR_TABLE
@@ -363,13 +371,14 @@ SSP_CREATE_BR_TABLE(waitOK)
 SSP_END_BR_TABLE
 
 /* --------------------------------------------------------------- */
-/* -------------------- Unsolicited +CREG ... -------------------- */
 SSP_CREATE_NORMAL_NODE(plus_c);
 SSP_CREATE_BR_TABLE(plus_c)
 	SSPBR("REG:",   isURC_set, &plus_creg),
+	SSPBR("SQ: ",  csqInit,   &plus_csq),
 	SSPBR("\r\n",   NULL,      &rootCmdParser),
 SSP_END_BR_TABLE
 
+/* -------------------- Unsolicited +CREG ... -------------------- */
 SSP_CREATE_NORMAL_NODE(plus_creg);
 SSP_CREATE_BR_TABLE(plus_creg)
 	SSPBR("0",     no_registered, &rootCmdParser),
@@ -379,6 +388,12 @@ SSP_CREATE_BR_TABLE(plus_creg)
 	SSPBR("4",     no_registered, &rootCmdParser),
 	SSPBR("5",     registered,    &rootCmdParser),
 	SSPBR("\r\n",  NULL,          &rootCmdParser),
+SSP_END_BR_TABLE
+
+/* -------------------- Unsolicited +CSQ  ... -------------------- */
+SSP_CREATE_TRN_NODE(plus_csq, csqCollect);
+SSP_CREATE_BR_TABLE(plus_csq)
+	SSPBR(",", csqSet, &rootCmdParser),
 SSP_END_BR_TABLE
 
 /* --------------------------------------------------------------- */
@@ -712,6 +727,40 @@ imeiSet(unsigned char pos)
     imeiEvt.e.fwdEvt = evImei;
         
     RKH_SMA_POST_FIFO(modMgr, RKH_UPCAST(RKH_EVT_T, &imeiEvt),
+						      &sim900parser);
+}
+
+static void
+csqInit(unsigned char pos)
+{
+    (void)pos;
+
+    pcsq = csqBuf;
+}
+
+static void
+csqCollect(unsigned char c)
+{
+    if(pcsq >= (csqBuf + sizeof(csqBuf) - 1))
+        return;
+
+    *pcsq = c;
+    ++pcsq;
+}
+
+static void
+csqSet(unsigned char pos)
+{
+    (void)pos;
+
+    *pcsq = '\0';
+    sigLevelEvt.value = atoi(csqBuf);
+
+    RKH_SET_STATIC_EVENT(RKH_UPCAST(RKH_EVT_T, &sigLevelEvt), evURC);
+
+    sigLevelEvt.e.fwdEvt = evSigLevel;
+        
+    RKH_SMA_POST_FIFO(modMgr, RKH_UPCAST(RKH_EVT_T, &sigLevelEvt),
 						      &sim900parser);
 }
 

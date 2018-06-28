@@ -56,7 +56,8 @@ publishDimba(AppData *appMsg)
     jwOpen( dataBuf, sizeof(dataBuf), JW_OBJECT, JW_COMPACT );
 
     
-    jwObj_int("id", atoi(ConMgr_ImeiSNR()));
+    jwObj_int("id", atoi(ConMgr_imeiSNR()));
+    jwObj_int("sl", ConMgr_sigLevel());
 
     n = anSampler_getSet(&anSet, NUM_AN_SAMPLES_GET);
 
