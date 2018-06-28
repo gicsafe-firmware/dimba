@@ -55,6 +55,7 @@ SERIAL_T serials[ NUM_CHANNELS ] =
 {
 	{	"COM8",	19200, 8, PAR_NONE, STOP_1, 0 },	// COM1
 };
+static FILE *fGsmLog = NULL;
 
 /* ---------------------------- Local variables ---------------------------- */
 static rui8_t bsp;
@@ -260,7 +261,11 @@ void
 ser_rx_isr( unsigned char byte )
 {
     cmdParser(byte);
-	putchar(byte);
+    if (fGsmLog != NULL)
+    {
+        fwrite(&byte, 1, 1, fGsmLog);
+		fflush(fGsmLog);
+    }
 }
 
 static
@@ -272,6 +277,9 @@ ser_tx_isr( void )
 void
 bsp_serial_open(int ch)
 {
+	if ((fGsmLog = fopen("UartGSM.log","w+b")) == NULL)
+		printf("Can't open uart log file for GSM\n");
+
     cmdParser = ModCmd_init();
     init_serial_hard(ch, &ser_cback );
     connect_serial(ch);
@@ -286,6 +294,7 @@ bsp_serial_close(int ch)
 	set_dtr(ch);
 	disconnect_serial(ch);
 	deinit_serial_hard(ch);
+	fclose(fGsmLog);
 }
 
 void
@@ -293,6 +302,11 @@ bsp_serial_puts(int ch, char *p)
 {
     while(*p!='\0')
     {
+		if (fGsmLog != NULL)
+		{
+			fwrite(p, 1, 1, fGsmLog);
+			fflush(fGsmLog);
+		}
         tx_data(ch, *p);
         ++p;
     }

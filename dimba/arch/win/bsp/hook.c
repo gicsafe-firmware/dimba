@@ -133,6 +133,7 @@ void
 rkh_hook_exit(void)
 {
     RKH_TRC_FLUSH();
+	bsp_serial_close(GSM_PORT);
 }
 
 void
