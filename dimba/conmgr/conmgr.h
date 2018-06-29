@@ -114,17 +114,27 @@ extern "C" {
  * GSM Network Provider and Connection specific configurations.
  */
 /* .................................. APN .................................. */
-    #define MOVISTAR_APN_ADDR   "INTERNER.GPRS.UNIFON.COM.AR"  
-    #define MOVISTAR_APN_USER   "WAP"
-    #define MOVISTAR_APN_PASS   "WAP"
+    #define MOVISTAR_APN_ADDR   "interner.gprs.unifon.com.ar"  
+    #define MOVISTAR_APN_USER   "wap"
+    #define MOVISTAR_APN_PASS   "wap"
 
-    #define CLARO_APN_ADDR      "INTERNET.CTIMOVIL.COM.AR"
-    #define CLARO_APN_USER      "CLAROGPRS"
-    #define CLARO_APN_PASS      "CLAROGPRS999"
+    #define CLARO_APN_ADDR      "internet.ctimovil.com.ar"
+    #define CLARO_APN_USER      "clarogprs"
+    #define CLARO_APN_PASS      "clarogprs999"
 
+    #define PERSONAL_APN_ADDR   "datos.personal.com"
+    #define PERSONAL_APN_USER   "datos"
+    #define PERSONAL_APN_PASS   "datos"
+
+#ifndef CONNECTION_APN
 #define CONNECTION_APN          CLARO_APN_ADDR
+#endif
+#ifndef CONNECTION_USER
 #define CONNECTION_USER         CLARO_APN_USER
+#endif
+#ifndef CONNECTION_PASSWORD
 #define CONNECTION_PASSWORD     CLARO_APN_PASS
+#endif
 
 /* .................................. SIM PIN .............................. */
 #define SIM_PIN_NUMBER          9474
