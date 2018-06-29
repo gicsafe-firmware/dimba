@@ -65,6 +65,8 @@ static void defer(ConMgr *const me, RKH_EVT_T *pe);
 static void setSigLevel(ConMgr *const me, RKH_EVT_T *pe);
 static void initializeInit(ConMgr *const me, RKH_EVT_T *pe);
 static void storeImei(ConMgr *const me, RKH_EVT_T *pe);
+static void checkRegStatus(ConMgr *const me, RKH_EVT_T *pe);
+static void startRegStatus(ConMgr *const me, RKH_EVT_T *pe);
 static void localTimeGet(ConMgr *const me, RKH_EVT_T *pe);
 static void rtimeSync(ConMgr *const me, RKH_EVT_T *pe);
 static void configureInit(ConMgr *const me, RKH_EVT_T *pe);
@@ -212,7 +214,9 @@ RKH_END_TRANS_TABLE
 RKH_CREATE_BASIC_STATE(ConMgr_unregistered, unregEntry, unregExit,
                             &ConMgr_active, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_unregistered)
-    RKH_TRREG(evTimeout,  NULL,    NULL, &ConMgr_failure),
+    RKH_TRINT(evTimeout,    NULL,    checkRegStatus),
+    RKH_TRINT(evNoReg,      NULL,    startRegStatus),
+    RKH_TRREG(evRegTimeout,  NULL,    NULL, &ConMgr_failure),
     RKH_TRREG(evReg, NULL, NULL,   &ConMgr_registered),
 RKH_END_TRANS_TABLE
 
@@ -382,9 +386,8 @@ RKH_END_TRANS_TABLE
 struct ConMgr
 {
     RKH_SMA_T ao;       /* base structure */
-    RKH_TMR_T timer;    /* which is responsible for toggling the LED */
-                        /* posting the TIMEOUT signal event to active object */
-                        /* 'conMgr' */
+    RKH_TMR_T timer;    
+    RKH_TMR_T timerReg;
     rui8_t retryCount; 
     SendEvt *psend;
     int sigLevel;
@@ -406,6 +409,7 @@ RKH_SMA_DEF_PTR(conMgr);
  *  statically allocated just once by means of RKH_ROM_STATIC_EVENT() macro.
  */
 static RKH_STATIC_EVENT(e_tout, evToutDelay);
+static RKH_STATIC_EVENT(e_regTout, evRegTimeout);
 static RKH_ROM_STATIC_EVENT(e_Open, evOpen);
 static RKH_ROM_STATIC_EVENT(e_Close, evClose);
 static RKH_ROM_STATIC_EVENT(e_NetConnected, evNetConnected);
@@ -429,6 +433,7 @@ init(ConMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_AO(me);
 
     RKH_TR_FWK_TIMER(&me->timer);
+    RKH_TR_FWK_TIMER(&me->timerReg);
     RKH_TR_FWK_STATE(me, &ConMgr_inactive);
     RKH_TR_FWK_STATE(me, &ConMgr_active);
     RKH_TR_FWK_STATE(me, &ConMgr_initialize);
@@ -471,6 +476,7 @@ init(ConMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_STATE(me, &ConMgr_checkConnectTry);
     RKH_TR_FWK_STATE(me, &ConMgr_disconnecting);
     RKH_TR_FWK_TIMER(&me->timer);
+    RKH_TR_FWK_TIMER(&me->timerReg);
     RKH_TR_FWK_SIG(evOpen);
     RKH_TR_FWK_SIG(evClose);
     RKH_TR_FWK_SIG(evCmd);
@@ -506,6 +512,7 @@ init(ConMgr *const me, RKH_EVT_T *pe)
                 CV(0));
 
     RKH_TMR_INIT(&me->timer, &e_tout, NULL);
+    RKH_TMR_INIT(&me->timerReg, &e_tout, NULL);
     me->retryCount = 0;
 }
 
@@ -571,6 +578,24 @@ storeImei(ConMgr *const me, RKH_EVT_T *pe)
 
     dimbaCfg_clientId(me->Imei + IMEI_SNR_OFFSET);
     dimbaCfg_topic(me->Imei + IMEI_SNR_OFFSET);
+}
+
+static void
+checkRegStatus(ConMgr *const me, RKH_EVT_T *pe)
+{
+    (void)me;
+    (void)pe;
+
+    ModCmd_getRegStatus();
+}
+
+static void
+startRegStatus(ConMgr *const me, RKH_EVT_T *pe)
+{
+    (void)me;
+    (void)pe;
+
+    RKH_TMR_ONESHOT(&me->timer, RKH_UPCAST(RKH_SMA_T, me), CHECK_REG_PERIOD);
 }
 
 static void
@@ -787,7 +812,10 @@ unregEntry(ConMgr *const me)
     ModCmd_getRegStatus();
 
     RKH_SET_STATIC_EVENT(&e_tout, evTimeout);
-    RKH_TMR_ONESHOT(&me->timer, RKH_UPCAST(RKH_SMA_T, me), REGISTRATION_TIME);
+    RKH_TMR_ONESHOT(&me->timer, RKH_UPCAST(RKH_SMA_T, me), CHECK_REG_PERIOD);
+
+    RKH_SET_STATIC_EVENT(&e_regTout, evRegTimeout);
+    RKH_TMR_ONESHOT(&me->timerReg, RKH_UPCAST(RKH_SMA_T, me), REGISTRATION_TIME);
 }
 
 static void 
@@ -902,6 +930,7 @@ static void
 unregExit(ConMgr *const me)
 {
     rkh_tmr_stop(&me->timer);
+    rkh_tmr_stop(&me->timerReg);
 }
 
 static void

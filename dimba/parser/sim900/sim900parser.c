@@ -139,8 +139,8 @@ SSP_END_BR_TABLE
 
 SSP_CREATE_NORMAL_NODE(at_plus_c);
 SSP_CREATE_BR_TABLE(at_plus_c)
-	SSPBR("PIN",            NULL,   &at_plus_cpin),
-	SSPBR("REG?\r\n\r\n",   NULL,   &at_plus_creg),
+	SSPBR("PIN",                NULL,   &at_plus_cpin),
+	SSPBR("REG?;+CSQ\r\n\r\n",  NULL,   &at_plus_creg),
 	SSPBR("STT=",           NULL,   &waitOK),
 	SSPBR("I",              NULL,   &at_plus_ci),
 	SSPBR("LTS=1",          NULL,   &waitOK),

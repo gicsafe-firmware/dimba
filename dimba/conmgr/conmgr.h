@@ -46,6 +46,11 @@ extern "C" {
 /**
  * Specifies time waiting for GSM modem network registration.
  */
+#define CHECK_REG_PERIOD   RKH_TIME_MS(2000)
+
+/**
+ * Specifies time waiting for GSM modem network registration.
+ */
 #define REGISTRATION_TIME   RKH_TIME_MS(60000)
 
 /**

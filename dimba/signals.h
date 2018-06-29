@@ -41,6 +41,7 @@ enum Signals
     evNoResponse,
     evURC,
 	evTimeout,
+	evRegTimeout,
     evToutWaitResponse,
     evOk,
     evError,
