@@ -94,6 +94,7 @@ static void netTimeEnable(ConMgr *const me);
 static void getImei(ConMgr *const me);
 static void cipShutdown(ConMgr *const me);
 static void unregEntry(ConMgr *const me);
+static void regEntry(ConMgr *const me);
 static void failureEntry(ConMgr *const me);
 static void setupManualGet(ConMgr *const me);
 static void waitNetClockSyncEntry(ConMgr *const me);
@@ -110,6 +111,7 @@ static void idleEntry(ConMgr *const me);
 
 /* ......................... Declares exit actions ......................... */
 static void unregExit(ConMgr *const me);
+static void regExit(ConMgr *const me);
 static void waitNetClockSyncExit(ConMgr *const me);
 static void wReopenExit(ConMgr *const me);
 static void waitRetryConnExit(ConMgr *const me);
@@ -204,7 +206,7 @@ RKH_CREATE_TRANS_TABLE(ConMgr_setManualGet)
     RKH_TRREG(evOk,         NULL, NULL, &ConMgr_initializeFinal),
 RKH_END_TRANS_TABLE
 
-RKH_CREATE_COMP_REGION_STATE(ConMgr_registered, NULL, NULL, &ConMgr_active, 
+RKH_CREATE_COMP_REGION_STATE(ConMgr_registered, regEntry, regExit, &ConMgr_active, 
                              &ConMgr_waitNetClockSync, NULL,
                              RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_registered)
@@ -819,6 +821,12 @@ unregEntry(ConMgr *const me)
 }
 
 static void 
+regEntry(ConMgr *const me)
+{
+    bsp_regStatus(RegisteredSt);
+}
+
+static void 
 failureEntry(ConMgr *const me)
 {
     RKH_SET_STATIC_EVENT(&e_tout, evTimeout);
@@ -931,6 +939,12 @@ unregExit(ConMgr *const me)
 {
     rkh_tmr_stop(&me->timer);
     rkh_tmr_stop(&me->timerReg);
+}
+
+static void 
+regExit(ConMgr *const me)
+{
+    bsp_regStatus(UnregisteredSt);
 }
 
 static void

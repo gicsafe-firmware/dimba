@@ -322,17 +322,17 @@ bsp_serial_putnchar(int ch, unsigned char *p, ruint ndata)
     }
 }
 
+void
+bsp_regStatus(Status_t status)
+{
+    printf("\r\nGSM Network %s\r\n", 
+            status == ConnectedSt ? "Registered" : "Unregistered");
+}
+
 void 
 bsp_netStatus(Status_t status)
 {
     printf("\r\nGprs Socket %s\r\n", 
-            status == ConnectedSt ? "Connected" : "Disconnected");
-}
-
-void
-bsp_mqttStatus(Status_t status)
-{
-    printf("\r\nMqtt Client %s\r\n", 
             status == ConnectedSt ? "Connected" : "Disconnected");
 }
 
