@@ -508,6 +508,7 @@ init(ConMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_SIG(evTerminate);
     RKH_TR_FWK_SIG(evNetClockSync);
     RKH_TR_FWK_SIG(evLocalTime);
+    RKH_TR_FWK_SIG(evRestart);
     RKH_TR_FWK_SIG(evSigLevel);
 
     rkh_queue_init(&qDefer, (const void **)qDefer_sto, SIZEOF_QDEFER, 
