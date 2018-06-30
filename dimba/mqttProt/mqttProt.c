@@ -265,6 +265,7 @@ struct MQTTProt
     enum MQTTErrors operRes;
     MQTTProtCfg *config;
     MQTTProtPublish publisher;
+    const char *errorStr;
 };
 
 RKH_SMA_CREATE(MQTTProt, mqttProt, 2, HCAL, &Client_Idle, init, NULL);
@@ -650,6 +651,7 @@ brokerConnect(MQTTProt *const me, RKH_EVT_T *pe)
                                me->config->clientId, 
                                NULL, NULL, 0, NULL, NULL, 0, 
                                me->config->keepAlive);
+    me->errorStr = mqtt_error_str(me->operRes);
 }
 
 static void 
