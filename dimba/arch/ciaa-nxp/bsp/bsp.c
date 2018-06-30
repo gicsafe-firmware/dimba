@@ -41,10 +41,10 @@
 RKH_THIS_MODULE
 
 /* ----------------------------- Local macros ------------------------------ */
-#define NetStatus_init()    gpioConfig(DO5, GPIO_OUTPUT)
-#define NetStatus(b)        gpioWrite(DO5, b)
-#define MqttStatus_init()   gpioConfig(DO6, GPIO_OUTPUT)
-#define MqttStatus(b)       gpioWrite(DO6, b)
+#define RegStatus_init()    gpioConfig(DO5, GPIO_OUTPUT)
+#define RegStatus(b)        gpioWrite(DO5, b)
+#define NetStatus_init()    gpioConfig(DO6, GPIO_OUTPUT)
+#define NetStatus(b)        gpioWrite(DO6, b)
 
 /* ------------------------------- Constants ------------------------------- */
 /* ---------------------------- Local data types --------------------------- */
@@ -63,10 +63,10 @@ bsp_init(int argc, char *argv[])
     (void)argv;
 
     boardConfig();
+    RegStatus_init();
+    RegStatus(UnregisteredSt);
     NetStatus_init();
     NetStatus(DisconnectedSt);
-    MqttStatus_init();
-    MqttStatus(DisconnectedSt);
 
     modPwr_init();
     dIn_init();
@@ -134,16 +134,16 @@ bsp_serial_putnchar(int ch, unsigned char *p, ruint ndata)
     }
 }
 
+void
+bsp_regStatus(Status_t status)
+{
+    RegStatus(status);
+}
+
 void 
 bsp_netStatus(Status_t status)
 {
     NetStatus(status);
-}
-
-void
-bsp_mqttStatus(Status_t status)
-{
-    MqttStatus(status);
 }
 
 /* ------------------------------ File footer ------------------------------ */

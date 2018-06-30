@@ -51,8 +51,16 @@ enum
  */
 typedef enum
 {
-    DisconnectedSt, ConnectedSt,
+    DisconnectedSt, 
+    UnregisteredSt = DisconnectedSt,
+
+    ConnectedSt,
+    RegisteredSt = ConnectedSt,
 } Status_t;
+
+/*
+ * Status Led´s 
+ */
 
 /* ------------------------------- Data types ------------------------------ */
 /* -------------------------- External variables --------------------------- */
@@ -67,8 +75,8 @@ void bsp_serial_close(int ch);
 void bsp_serial_puts(int ch, char *p);
 void bsp_serial_putnchar(int ch, unsigned char *p, ruint ndata);
 
+void bsp_regStatus(Status_t status);
 void bsp_netStatus(Status_t status);
-void bsp_mqttStatus(Status_t status);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus
