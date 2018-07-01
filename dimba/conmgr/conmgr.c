@@ -510,12 +510,13 @@ init(ConMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_SIG(evLocalTime);
     RKH_TR_FWK_SIG(evRestart);
     RKH_TR_FWK_SIG(evSigLevel);
+    RKH_TR_FWK_SIG(evRegTimeout);
 
     rkh_queue_init(&qDefer, (const void **)qDefer_sto, SIZEOF_QDEFER, 
                 CV(0));
 
     RKH_TMR_INIT(&me->timer, &e_tout, NULL);
-    RKH_TMR_INIT(&me->timerReg, &e_tout, NULL);
+    RKH_TMR_INIT(&me->timerReg, &e_regTout, NULL);
     me->retryCount = 0;
 }
 
