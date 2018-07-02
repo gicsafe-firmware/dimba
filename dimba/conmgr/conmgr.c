@@ -291,8 +291,12 @@ RKH_CREATE_COMP_REGION_STATE(ConMgr_connecting, NULL, NULL,
                              RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_connecting)
     RKH_TRREG(evClose,  NULL,  socketClose, &ConMgr_disconnecting),
-    RKH_TRREG(evNoResponse, NULL, NULL, &ConMgr_checkConnectTry),
+    RKH_TRREG(evNoResponse, NULL,  NULL, &ConMgr_checkConnectTry),
     RKH_TRREG(evClosed,     NULL,  NULL, &ConMgr_checkConnectTry),
+    RKH_TRREG(evIPStatus,   NULL,  NULL, &ConMgr_checkConnectTry),
+    RKH_TRREG(evIPInitial,  NULL,  NULL, &ConMgr_configure),
+    RKH_TRREG(evIPStart,    NULL,  NULL, &ConMgr_configure),
+    RKH_TRREG(evIPGprsAct,  NULL,  NULL, &ConMgr_configure),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_waitingServer, connectingEntry, connectingExit,
