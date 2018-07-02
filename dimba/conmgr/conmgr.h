@@ -41,7 +41,7 @@ extern "C" {
 /**
  * Specifies the maximum tries seeking for GSM modem response. 
  */
-#define MAX_SYNC_RETRY      5
+#define MAX_SYNC_RETRY      10
 
 /**
  * Specifies time waiting for GSM modem network registration.
