@@ -52,6 +52,7 @@ publishDimba(AppData *appMsg)
     AnSampleSet anSet;
     IOChg ioChg[NUM_DI_SAMPLES_GET];
     int n, i, j;
+    double value;
 
     jwOpen( dataBuf, sizeof(dataBuf), JW_OBJECT, JW_COMPACT );
 
@@ -72,7 +73,10 @@ publishDimba(AppData *appMsg)
                 jwArr_array();
                 for(j=0; j<n; ++j)
                 {
-                    jwArr_int(anSet.anSignal[i][j]);
+                	value = ((anSet.anSignal[i][j] & 0xFF00)>>8) * 100;
+                    value += (anSet.anSignal[i][j] & 0x00FF);
+                    value /= 100;
+                    jwArr_double(value);
                 }
                 jwEnd();
             }
