@@ -233,23 +233,20 @@ RKH_CREATE_BASIC_STATE(ConMgr_waitNetClockSync,
                             waitNetClockSyncEntry, waitNetClockSyncExit,
                             &ConMgr_registered, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_waitNetClockSync)
-//    RKH_TRREG(evTimeout,       NULL, NULL, &ConMgr_configure),
     RKH_TRREG(evTimeout,       NULL, NULL, &ConMgr_getOper),
     RKH_TRREG(evNetClockSync,  NULL, localTimeGet, &ConMgr_localTime),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_localTime, NULL, NULL, &ConMgr_registered, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_localTime)
-//    RKH_TRREG(evLocalTime,     NULL, rtimeSync,  &ConMgr_configure),
-//    RKH_TRREG(evNoResponse,    NULL, NULL,       &ConMgr_configure),
     RKH_TRREG(evLocalTime,     NULL, rtimeSync,  &ConMgr_getOper),
     RKH_TRREG(evNoResponse,    NULL, NULL,       &ConMgr_getOper),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_getOper, getOper, NULL, &ConMgr_registered, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_getOper)
-    RKH_TRREG(evOper,          NULL, storeOper, &ConMgr_configure),
-    RKH_TRREG(evNoResponse,    NULL, NULL,      &ConMgr_configure),
+    RKH_TRREG(evOper,          NULL, storeOper,     &ConMgr_configure),
+    RKH_TRREG(evNoResponse,    NULL, tryGetStatus,  &ConMgr_getOper),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_HISTORY_STORAGE(ConMgr_configure);

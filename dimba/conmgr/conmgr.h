@@ -51,7 +51,7 @@ extern "C" {
 /**
  * Specifies time waiting for GSM modem network registration.
  */
-#define REGISTRATION_TIME   RKH_TIME_MS(60000)
+#define REGISTRATION_TIME   RKH_TIME_MS(90000)
 
 /**
  * Specifies a time delay after general failure before to restart connection.
