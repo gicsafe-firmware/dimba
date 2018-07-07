@@ -111,17 +111,26 @@ extern "C" {
 #define IMEI_BUF_SIZE       IMEI_LENGTH + 1
 
 /**
+ *  ImeiEvt process definitions
+ */
+#define OPER_LENGTH         10
+#define OPER_BUF_SIZE       OPER_LENGTH + 1
+
+/**
  * GSM Network Provider and Connection specific configurations.
  */
 /* .................................. APN .................................. */
-    #define MOVISTAR_APN_ADDR   "interner.gprs.unifon.com.ar"  
+    #define MOVISTAR_OPERATOR   "72207"
+    #define MOVISTAR_APN_ADDR   "internet.gprs.unifon.com.ar"  
     #define MOVISTAR_APN_USER   "wap"
     #define MOVISTAR_APN_PASS   "wap"
 
+    #define CLARO_OPERATOR      "722310"
     #define CLARO_APN_ADDR      "internet.ctimovil.com.ar"
     #define CLARO_APN_USER      "clarogprs"
     #define CLARO_APN_PASS      "clarogprs999"
 
+    #define PERSONAL_OPERATOR   "72234"
     #define PERSONAL_APN_ADDR   "datos.personal.com"
     #define PERSONAL_APN_USER   "datos"
     #define PERSONAL_APN_PASS   "datos"
@@ -186,6 +195,13 @@ struct ImeiEvt
 {
     ModMgrResp e;
     char buf[IMEI_BUF_SIZE];
+};
+
+typedef struct OperEvt OperEvt;
+struct OperEvt
+{
+    ModMgrResp e;
+    char buf[OPER_BUF_SIZE];
 };
 
 typedef struct SigLevelEvt SigLevelEvt;

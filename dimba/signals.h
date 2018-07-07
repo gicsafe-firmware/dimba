@@ -81,6 +81,7 @@ enum Signals
     evLocalTime,
     evUnlocked,
     evImei,
+    evOper,
     evSigLevel,
 	evRestart
 };
