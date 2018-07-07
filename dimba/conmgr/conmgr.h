@@ -66,7 +66,7 @@ extern "C" {
 /**
  * Specifies the time waiting for Time Sync Message by Network.
  */
-#define WAIT_NETCLOCK_TIME  RKH_TIME_MS(10000)
+#define WAIT_NETCLOCK_TIME  RKH_TIME_MS(20000)
 
 /**
  * Specifies a time delay after config error before to restart connection.

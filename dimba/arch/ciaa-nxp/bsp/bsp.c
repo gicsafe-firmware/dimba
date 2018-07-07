@@ -72,8 +72,6 @@ bsp_init(int argc, char *argv[])
     dIn_init();
 	anIn_init();
 
-    dacConfig(DAC_ENABLE);
-    dacWrite(AO, 512);
     rtime_init();
 }
 
