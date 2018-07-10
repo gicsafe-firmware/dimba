@@ -28,6 +28,7 @@
 /* ---------------------------- Local variables ---------------------------- */
 static Time t;
 static rtc_t rtc;
+static rtc_t rtcDft = { 1970, 1, 1, 1, 0, 0, 0 };
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
@@ -40,6 +41,15 @@ rtime_init(void)
 
 	Chip_RTC_Init(LPC_RTC);
     Chip_RTC_Enable(LPC_RTC, ENABLE);
+    rtcRead(&rtc);
+
+    if( (rtc.year < 1970) ||
+    	(rtc.mday < 1) || (rtc.mday > 7) ||
+		(rtc.month < 1) || (rtc.month > 12)
+      )
+    {
+    	rtcWrite(&rtcDft);
+    }
 }
 
 Time *

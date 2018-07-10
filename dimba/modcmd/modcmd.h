@@ -57,6 +57,7 @@ void ModCmd_getImei(void);
 void ModCmd_cipShutdown(void);
 void ModCmd_setManualGet(void);
 void ModCmd_getLocalTime(void);
+void ModCmd_getOper(void);
 void ModCmd_setupAPN(char *apn, char *usr, char *nm);
 void ModCmd_startGPRS(void);
 void ModCmd_requestIP(void);

@@ -26,7 +26,8 @@
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
-static bool_t dIns[NUM_DIN_SIGNALS];
+static uint8_t dIns[NUM_DIN_SIGNALS];
+static uint8_t dInsSt[NUM_DIN_SIGNALS];
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
@@ -39,6 +40,7 @@ dIn_init(void)
     {
         gpioConfig(DI0+i, GPIO_INPUT);
         dIns[i] = 0;
+        dInsSt[i] = 0;
     }
 }
 
@@ -46,16 +48,24 @@ void
 dIn_scan(void)
 {
     int i;
-    bool_t din;
+    uint8_t din;
 
     for(i=0; i < NUM_DIN_SIGNALS; ++i)
     {
-        din = gpioRead(DI0+i);
-        if(dIns[i] != din)
+        din = (dIns[i] << 1) | gpioRead(DI0+i);
+        
+        if((dIns[i] == 0x7F) && (din == 0xFF) && (dInsSt[i] == 0))
         {
-            IOChgDet_put(i, din);
-            dIns[i] = din;
+            dInsSt[i] = 1;
+            IOChgDet_put(i, 1);
         }
+        else if((dIns[i] == 0x80) && (din == 0x00) && (dInsSt[i] == 1))
+        {
+            dInsSt[i] = 0;
+            IOChgDet_put(i, 0);
+        }
+
+        dIns[i] = din;
     }
 }
 

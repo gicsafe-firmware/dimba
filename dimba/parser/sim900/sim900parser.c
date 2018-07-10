@@ -46,10 +46,10 @@ SSP_DCLR_NORMAL_NODE at, waitOK, at_plus, at_plus_c, at_plus_ci,
                      at_plus_cpin, at_plus_creg, pinStatus, wpinSet, pinSet,
                      plus_c, plus_creg, at_plus_cifsr,
                      netClockSync,
-                     at_plus_cclk, cclk_end;
+                     at_plus_cclk, at_plus_cops, cclk_end;
 
 SSP_DCLR_TRN_NODE at_plus_ciprxget_data, cclk_year, cclk_month, cclk_day,
-                  cclk_hour, cclk_min, plus_csq, at_plus_gsn;
+                  cclk_hour, cclk_min, plus_csq, at_plus_gsn, cops_read;
 
 static rui8_t isURC;
 
@@ -63,6 +63,9 @@ static char *plt;
 
 static ImeiEvt imeiEvt;
 static char *pImei;
+
+static OperEvt copsEvt;
+static char *pCops;
 
 char *pcsq;
 char csqBuf[CSQ_LENGTH];
@@ -108,6 +111,9 @@ static void lTimeGet(unsigned char pos);
 static void imeiInit(unsigned char pos);
 static void imeiCollect(unsigned char c);
 static void imeiSet(unsigned char pos);
+static void copsInit(unsigned char pos);
+static void copsCollect(unsigned char c);
+static void copsSet(unsigned char pos);
 static void csqInit(unsigned char pos);
 static void csqCollect(unsigned char c);
 static void csqSet(unsigned char pos);
@@ -145,6 +151,7 @@ SSP_CREATE_BR_TABLE(at_plus_c)
 	SSPBR("I",              NULL,   &at_plus_ci),
 	SSPBR("LTS=1",          NULL,   &waitOK),
 	SSPBR("CLK?",           NULL,   &at_plus_cclk),
+	SSPBR("OPS?",           NULL,   &at_plus_cops),
 	SSPBR("\r\n",   NULL,  &rootCmdParser),
 SSP_END_BR_TABLE
 
@@ -251,6 +258,22 @@ SSP_CREATE_NORMAL_NODE(cclk_end);
 SSP_CREATE_BR_TABLE(cclk_end)
 	SSPBR("OK\r\n", lTimeGet,  &rootCmdParser),
 SSP_END_BR_TABLE
+
+/* --------------------------------------------------------------- */
+/* --------------------------- AT+COPS?--------------------------- */
+SSP_CREATE_NORMAL_NODE(at_plus_cops);
+SSP_CREATE_BR_TABLE(at_plus_cops)
+	SSPBR("\"",     copsInit,  &cops_read),
+	SSPBR("OK\r\n", NULL,    &rootCmdParser),
+SSP_END_BR_TABLE
+
+SSP_CREATE_TRN_NODE(cops_read, copsCollect);
+SSP_CREATE_BR_TABLE(cops_read)
+	SSPBR("\"",   copsSet,  &rootCmdParser),
+	SSPBR("\r\n", NULL,    &rootCmdParser),
+SSP_END_BR_TABLE
+
+/* --------------------------------------------------------------- */
 
 /* --------------------------------------------------------------- */
 /* ------------------------ AT+CIPRXGET -------------------------- */
@@ -727,6 +750,39 @@ imeiSet(unsigned char pos)
     imeiEvt.e.fwdEvt = evImei;
         
     RKH_SMA_POST_FIFO(modMgr, RKH_UPCAST(RKH_EVT_T, &imeiEvt),
+						      &sim900parser);
+}
+
+static void
+copsInit(unsigned char pos)
+{
+    (void)pos;
+
+    pCops = copsEvt.buf;
+}
+
+static void
+copsCollect(unsigned char c)
+{
+    if(pCops >= (copsEvt.buf + sizeof(copsEvt.buf) - 1))
+        return;
+    
+    *pCops = c;
+    ++pCops;
+}
+
+static void
+copsSet(unsigned char pos)
+{
+	(void)pos;
+
+    *(pCops - 1) = '\0';
+
+    RKH_SET_STATIC_EVENT(RKH_UPCAST(RKH_EVT_T, &copsEvt), evResponse);
+
+    copsEvt.e.fwdEvt = evOper;
+        
+    RKH_SMA_POST_FIFO(modMgr, RKH_UPCAST(RKH_EVT_T, &copsEvt),
 						      &sim900parser);
 }
 

@@ -43,6 +43,7 @@ struct CmdTbl
     ModCmd cipShutdown;
     ModCmd setManualGet;
     ModCmd getLocalTime;
+    ModCmd getOper;
     ModCmd setAPN;
     ModCmd startGPRS;
     ModCmd requestIP;
@@ -86,7 +87,7 @@ static const CmdTbl cmdTbl =
      RKH_TIME_MS(300), RKH_TIME_MS(500)},
 
     {RKH_INIT_STATIC_EVT(evCmd), 
-     "AT+CLTS=1\r\n",
+     "AT+CLTS=1;+COPS=3,2\r\n",
      &conMgr, 
      RKH_TIME_MS(300), RKH_TIME_MS(100)},
 
@@ -113,6 +114,11 @@ static const CmdTbl cmdTbl =
      "AT+CCLK?\r\n",
      &conMgr, 
      RKH_TIME_MS(300), RKH_TIME_MS(100)},
+
+    {RKH_INIT_STATIC_EVT(evCmd), 
+     "AT+COPS?\r\n",
+     &conMgr, 
+     RKH_TIME_MS(2000), RKH_TIME_MS(100)},
 
     {RKH_INIT_STATIC_EVT(evCmd), 
      "AT+CSTT=\"%s\",\"%s\",\"%s\"\r\n", 
@@ -292,6 +298,12 @@ void
 ModCmd_getLocalTime(void)
 {
     sendModCmd_noArgs(&cmdTbl.getLocalTime);
+}
+
+void 
+ModCmd_getOper(void)
+{
+    sendModCmd_noArgs(&cmdTbl.getOper);
 }
 
 void 

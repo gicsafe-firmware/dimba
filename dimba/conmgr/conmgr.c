@@ -40,7 +40,7 @@ RKH_DCLR_BASIC_STATE ConMgr_inactive, ConMgr_sync,
                 ConMgr_init, ConMgr_pin, ConMgr_setPin, ConMgr_enableNetTime,
                 ConMgr_getImei, ConMgr_cipShutdown, ConMgr_setManualGet,
                 ConMgr_waitReg, ConMgr_unregistered, ConMgr_failure,
-                ConMgr_waitNetClockSync, ConMgr_localTime,
+                ConMgr_waitNetClockSync, ConMgr_localTime, ConMgr_getOper,
                 ConMgr_setAPN, ConMgr_enableGPRS,
                 ConMgr_checkIP, ConMgr_waitRetryConfig, ConMgr_waitingServer,
                 ConMgr_idle, ConMgr_getStatus, ConMgr_waitPrompt, ConMgr_waitOk,
@@ -65,6 +65,7 @@ static void defer(ConMgr *const me, RKH_EVT_T *pe);
 static void setSigLevel(ConMgr *const me, RKH_EVT_T *pe);
 static void initializeInit(ConMgr *const me, RKH_EVT_T *pe);
 static void storeImei(ConMgr *const me, RKH_EVT_T *pe);
+static void storeOper(ConMgr *const me, RKH_EVT_T *pe);
 static void checkRegStatus(ConMgr *const me, RKH_EVT_T *pe);
 static void startRegStatus(ConMgr *const me, RKH_EVT_T *pe);
 static void localTimeGet(ConMgr *const me, RKH_EVT_T *pe);
@@ -99,6 +100,7 @@ static void failureEntry(ConMgr *const me);
 static void setupManualGet(ConMgr *const me);
 static void waitNetClockSyncEntry(ConMgr *const me);
 static void waitRetryConfigEntry(ConMgr *const me);
+static void getOper(ConMgr *const me);
 static void setupAPN(ConMgr *const me);
 static void startGPRS(ConMgr *const me);
 static void wReopenEntry(ConMgr *const me);
@@ -231,14 +233,20 @@ RKH_CREATE_BASIC_STATE(ConMgr_waitNetClockSync,
                             waitNetClockSyncEntry, waitNetClockSyncExit,
                             &ConMgr_registered, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_waitNetClockSync)
-    RKH_TRREG(evTimeout,       NULL, NULL, &ConMgr_configure),
+    RKH_TRREG(evTimeout,       NULL, NULL, &ConMgr_getOper),
     RKH_TRREG(evNetClockSync,  NULL, localTimeGet, &ConMgr_localTime),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_localTime, NULL, NULL, &ConMgr_registered, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_localTime)
-    RKH_TRREG(evLocalTime,     NULL, rtimeSync,  &ConMgr_configure),
-    RKH_TRREG(evNoResponse,    NULL, NULL,       &ConMgr_configure),
+    RKH_TRREG(evLocalTime,     NULL, rtimeSync,  &ConMgr_getOper),
+    RKH_TRREG(evNoResponse,    NULL, NULL,       &ConMgr_getOper),
+RKH_END_TRANS_TABLE
+
+RKH_CREATE_BASIC_STATE(ConMgr_getOper, getOper, NULL, &ConMgr_registered, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_getOper)
+    RKH_TRREG(evOper,          NULL, storeOper,     &ConMgr_configure),
+    RKH_TRREG(evNoResponse,    NULL, tryGetStatus,  &ConMgr_getOper),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_HISTORY_STORAGE(ConMgr_configure);
@@ -398,7 +406,21 @@ struct ConMgr
     SendEvt *psend;
     int sigLevel;
     char Imei[IMEI_BUF_SIZE];
+    char Oper[OPER_BUF_SIZE];
 };
+
+typedef struct Apn
+{
+    char *addr;
+    char *usr;
+    char *psw;
+}Apn;
+
+typedef struct Operator
+{
+    char *netCode;
+    Apn apn;
+}Operator;
 
 RKH_SMA_CREATE(ConMgr, conMgr, 1, HCAL, &ConMgr_inactive, init, NULL);
 RKH_SMA_DEF_PTR(conMgr);
@@ -428,8 +450,37 @@ ReceivedEvt e_Received;
 static RKH_QUEUE_T qDefer;
 static RKH_EVT_T *qDefer_sto[SIZEOF_QDEFER];
 
+static Operator operTable[] =
+{
+    { MOVISTAR_OPERATOR, 
+        { MOVISTAR_APN_ADDR, MOVISTAR_APN_USER, MOVISTAR_APN_PASS } 
+    },
+    { CLARO_OPERATOR, 
+        { CLARO_APN_ADDR, CLARO_APN_USER, CLARO_APN_PASS } 
+    },
+    { PERSONAL_OPERATOR, 
+        { PERSONAL_APN_ADDR, PERSONAL_APN_USER, PERSONAL_APN_PASS } 
+    },
+    { NULL }
+};
+
+static Apn *defaultAPN = &(operTable[0].apn);
+
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
+static Apn *
+getAPNbyOper(char *oper)
+{
+    Operator *pOper;
+    
+    for( pOper = &operTable[0]; pOper != NULL; ++pOper)
+    {
+        if(strcmp(oper, pOper->netCode) == 0)
+            return &(pOper->apn);
+    }
+    return defaultAPN;
+}
+
 /* ............................ Initial action ............................. */
 static void
 init(ConMgr *const me, RKH_EVT_T *pe)
@@ -457,6 +508,7 @@ init(ConMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_STATE(me, &ConMgr_failure);
     RKH_TR_FWK_STATE(me, &ConMgr_waitNetClockSync);
     RKH_TR_FWK_STATE(me, &ConMgr_localTime);
+    RKH_TR_FWK_STATE(me, &ConMgr_getOper);
     RKH_TR_FWK_STATE(me, &ConMgr_configure);
     RKH_TR_FWK_STATE(me, &ConMgr_configureHist);
     RKH_TR_FWK_STATE(me, &ConMgr_setManualGet);
@@ -586,6 +638,17 @@ storeImei(ConMgr *const me, RKH_EVT_T *pe)
 
     dimbaCfg_clientId(me->Imei + IMEI_SNR_OFFSET);
     dimbaCfg_topic(me->Imei + IMEI_SNR_OFFSET);
+}
+
+static void
+storeOper(ConMgr *const me, RKH_EVT_T *pe)
+{
+    OperEvt *p;
+
+	(void)me;
+
+    p = RKH_UPCAST(OperEvt, pe);
+    strcpy(me->Oper, p->buf);
 }
 
 static void
@@ -863,11 +926,21 @@ waitNetClockSyncEntry(ConMgr *const me)
 }
 
 static void
-setupAPN(ConMgr *const me)
+getOper(ConMgr *const me)
 {
     (void)me;
 
-    ModCmd_setupAPN(CONNECTION_APN, CONNECTION_USER, CONNECTION_PASSWORD);
+    ModCmd_getOper();
+}
+   
+static void
+setupAPN(ConMgr *const me)
+{
+    Apn *apn;
+    (void)me;
+
+    apn = getAPNbyOper(me->Oper);
+    ModCmd_setupAPN(apn->addr, apn->usr, apn->psw);
 }
    
 static void
