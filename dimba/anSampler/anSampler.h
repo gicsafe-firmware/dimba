@@ -33,7 +33,7 @@ extern "C" {
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
 #define AN_SAMPLING_RATE_SEC (MTIME_ANSAMPLE_PUT_PERIOD * MTIME_TIME_TICK)/1000
-#define MAX_AN_NUM_SAMPLES   (NUM_PUBTIME_STEPS * 60)
+#define MAX_AN_NUM_SAMPLES   (32 << NUM_PUBTIME_STEPS)
 #define NUM_AN_SIGNALS       NUM_ANIN_SIGNALS
 
 /* ................................ Signals ................................ */

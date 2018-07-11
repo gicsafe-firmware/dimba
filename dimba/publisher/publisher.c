@@ -35,14 +35,20 @@ char dataBuf[1024];
 static rui16_t
 getNextPublishTime(int nSamples)
 {
-    int x;
+    int x, th;
+    rui16_t pubTime;
 
-    x = (nSamples / (MAX_AN_NUM_SAMPLES / NUM_PUBTIME_STEPS));
-    if (x >= NUM_PUBTIME_STEPS)
+    for (th = (MAX_AN_NUM_SAMPLES >> 1), x = 0; 
+         x < NUM_PUBTIME_STEPS; 
+         ++x, th >>= 1)
     {
-        x = NUM_PUBTIME_STEPS - 1;  /* Set the minimal publish time to 8s */
+        if (nSamples > th)
+        {
+            break;
+        }
     }
-    return (rui16_t)(MAX_PUBLISH_TIME >> x);
+    pubTime = (rui16_t)(MAX_PUBLISH_TIME >> (NUM_PUBTIME_STEPS - x));
+    return (pubTime < 8) ? 8 : pubTime; /* Set minimal publish time to 8s */
 }
 
 /* ---------------------------- Global functions --------------------------- */
