@@ -30,6 +30,7 @@ TEST_GROUP_RUNNER(Epoch)
 	RUN_TEST_CASE(Epoch, ClearAfterInit);
 	RUN_TEST_CASE(Epoch, MakeTime);
 	RUN_TEST_CASE(Epoch, UpdateStepByStep);
+	RUN_TEST_CASE(Epoch, ReceiveTimeZero);
 }
 
 /* ------------------------------ End of file ------------------------------ */
