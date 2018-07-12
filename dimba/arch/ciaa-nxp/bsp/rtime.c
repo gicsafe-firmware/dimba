@@ -44,8 +44,12 @@ rtime_init(void)
     rtcRead(&rtc);
 
     if( (rtc.year < 1970) ||
-    	(rtc.mday < 1) || (rtc.mday > 7) ||
-		(rtc.month < 1) || (rtc.month > 12)
+		(rtc.month < 1) || (rtc.month > 12) ||
+    	(rtc.mday < 1) || (rtc.mday > 31) ||
+		(rtc.wday < 1) || (rtc.wday > 7) ||
+		(rtc.hour < 0) || (rtc.hour > 23) ||
+		(rtc.min < 0) || (rtc.min > 59) ||
+		(rtc.sec < 0) || (rtc.sec > 59)
       )
     {
     	rtcWrite(&rtcDft);
