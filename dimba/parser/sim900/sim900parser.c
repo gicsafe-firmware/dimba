@@ -821,10 +821,4 @@ csqSet(unsigned char pos)
 }
 
 /* ---------------------------- Global functions --------------------------- */
-void
-parser_init(void)
-{
-    RKH_TR_FWK_ACTOR(&sim900parser, "sim900parser");
-}
-
 /* ------------------------------ End of file ------------------------------ */
