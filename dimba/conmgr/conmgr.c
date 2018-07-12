@@ -243,20 +243,19 @@ RKH_CREATE_TRANS_TABLE(ConMgr_localTime)
     RKH_TRREG(evNoResponse,    NULL, NULL,       &ConMgr_getOper),
 RKH_END_TRANS_TABLE
 
-RKH_CREATE_BASIC_STATE(ConMgr_getOper, getOper, NULL, &ConMgr_registered, NULL);
-RKH_CREATE_TRANS_TABLE(ConMgr_getOper)
-    RKH_TRREG(evOper,          NULL, storeOper,     &ConMgr_configure),
-    RKH_TRREG(evNoResponse,    NULL, tryGetStatus,  &ConMgr_getOper),
-RKH_END_TRANS_TABLE
-
 RKH_CREATE_HISTORY_STORAGE(ConMgr_configure);
 RKH_CREATE_COMP_REGION_STATE(ConMgr_configure, NULL, NULL, &ConMgr_registered, 
-                             &ConMgr_setAPN, configureInit,
+                             &ConMgr_getOper, configureInit,
                              RKH_SHISTORY, NULL, NULL, NULL,
                              RKH_GET_HISTORY_STORAGE(ConMgr_configure));
 RKH_CREATE_TRANS_TABLE(ConMgr_configure)
     RKH_TRCOMPLETION(NULL, connectInit, &ConMgr_connecting),
     RKH_TRREG(evNoResponse, NULL, NULL, &ConMgr_checkConfigTry),
+RKH_END_TRANS_TABLE
+
+RKH_CREATE_BASIC_STATE(ConMgr_getOper, getOper, NULL, &ConMgr_configure, NULL);
+RKH_CREATE_TRANS_TABLE(ConMgr_getOper)
+    RKH_TRREG(evOper,          NULL, storeOper,     &ConMgr_setAPN),
 RKH_END_TRANS_TABLE
 
 RKH_CREATE_BASIC_STATE(ConMgr_setAPN, setupAPN, NULL, 
@@ -543,8 +542,10 @@ init(ConMgr *const me, RKH_EVT_T *pe)
     RKH_TR_FWK_SIG(evSimPin);
     RKH_TR_FWK_SIG(evSimError);
     RKH_TR_FWK_SIG(evSimReady);
+    RKH_TR_FWK_SIG(evImei);
     RKH_TR_FWK_SIG(evReg);
     RKH_TR_FWK_SIG(evNoReg);
+    RKH_TR_FWK_SIG(evOper);
     RKH_TR_FWK_SIG(evIPInitial);
     RKH_TR_FWK_SIG(evIPStart);
     RKH_TR_FWK_SIG(evIPStatus);
@@ -700,6 +701,7 @@ configTry(ConMgr *const me, RKH_EVT_T *pe)
     (void)pe;
 
     ++me->retryCount;
+	ModCmd_init();
 }
 
 static void 

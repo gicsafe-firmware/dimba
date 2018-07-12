@@ -120,43 +120,33 @@ extern "C" {
  * GSM Network Provider and Connection specific configurations.
  */
 /* .................................. APN .................................. */
-    #define MOVISTAR_OPERATOR   "72207"
-    #define MOVISTAR_APN_ADDR   "internet.gprs.unifon.com.ar"  
-    #define MOVISTAR_APN_USER   "wap"
-    #define MOVISTAR_APN_PASS   "wap"
+#define MOVISTAR_OPERATOR       "72207"
+#define MOVISTAR_APN_ADDR       "internet.gprs.unifon.com.ar"  
+#define MOVISTAR_APN_USER       "wap"
+#define MOVISTAR_APN_PASS       "wap"
 
-    #define CLARO_OPERATOR      "722310"
-    #define CLARO_APN_ADDR      "internet.ctimovil.com.ar"
-    #define CLARO_APN_USER      "clarogprs"
-    #define CLARO_APN_PASS      "clarogprs999"
+#define CLARO_OPERATOR          "722310"
+#define CLARO_APN_ADDR          "internet.ctimovil.com.ar"
+#define CLARO_APN_USER          "clarogprs"
+#define CLARO_APN_PASS          "clarogprs999"
 
-    #define PERSONAL_OPERATOR   "72234"
-    #define PERSONAL_APN_ADDR   "datos.personal.com"
-    #define PERSONAL_APN_USER   "datos"
-    #define PERSONAL_APN_PASS   "datos"
-
-#ifndef CONNECTION_APN
-#define CONNECTION_APN          CLARO_APN_ADDR
-#endif
-#ifndef CONNECTION_USER
-#define CONNECTION_USER         CLARO_APN_USER
-#endif
-#ifndef CONNECTION_PASSWORD
-#define CONNECTION_PASSWORD     CLARO_APN_PASS
-#endif
+#define PERSONAL_OPERATOR       "72234"
+#define PERSONAL_APN_ADDR       "datos.personal.com"
+#define PERSONAL_APN_USER       "datos"
+#define PERSONAL_APN_PASS       "datos"
 
 /* .................................. SIM PIN .............................. */
 #define SIM_PIN_NUMBER          9474
 
 /* ................................. Server ................................ */
-    #define MOSQUITTO_SERVER    "test.mosquitto.org"
-    #define MOSQUITTO_PORT      "1883"
+#define MOSQUITTO_SERVER        "test.mosquitto.org"
+#define MOSQUITTO_PORT          "1883"
 
-    #define LINSSE_SERVER       "linsse.com.ar"
-    #define LINSSE_PORT         "2000"
+#define LINSSE_SERVER           "linsse.com.ar"
+#define LINSSE_PORT             "2000"
 
-    #define DOCKLIGHT_SERVER    "181.230.72.86"
-    #define DOCKLIGHT_PORT      "33498"
+#define DOCKLIGHT_SERVER        "181.230.72.86"
+#define DOCKLIGHT_PORT          "33498"
 
 #define CONNECTION_PROT         "TCP"
 #define CONNECTION_DOMAIN       LINSSE_SERVER
