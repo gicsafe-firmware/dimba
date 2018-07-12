@@ -132,4 +132,22 @@ TEST(Epoch, UpdateStepByStep)
     TEST_ASSERT_EQUAL(updatingEpoch, epoch);
 }
 
+TEST(Epoch, ReceiveTimeZero)
+{
+    Epoch epoch;
+
+    time.tm_sec = 0;
+    time.tm_min = 0;
+    time.tm_hour = 0;
+    time.tm_mday = 0;
+    time.tm_mon = 0;
+    time.tm_year = 0;
+    time.tm_wday = 0;
+    time.tm_isdst = 0;
+    rtime_get_ExpectAndReturn(&time);
+
+    epoch = epoch_init();
+    TEST_ASSERT_EQUAL(0, epoch);
+}
+
 /* ------------------------------ End of file ------------------------------ */
