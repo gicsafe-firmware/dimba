@@ -127,7 +127,7 @@ static void getStatusExit(ConMgr *const me);
 rbool_t checkSyncTry(ConMgr *const me, RKH_EVT_T *pe);
 rbool_t checkConfigTry(ConMgr *const me, RKH_EVT_T *pe);
 rbool_t checkConnectTry(ConMgr *const me, RKH_EVT_T *pe);
-rbool_t checkStatusNoRespCounter(ConMgr *const me, RKH_EVT_T *pe);
+rbool_t checkConnectedFailCounter(ConMgr *const me, RKH_EVT_T *pe);
 
 
 /* ........................ States and pseudostates ........................ */
@@ -299,6 +299,7 @@ RKH_CREATE_COMP_REGION_STATE(ConMgr_connecting, NULL, NULL,
 RKH_CREATE_TRANS_TABLE(ConMgr_connecting)
     RKH_TRREG(evClose,  NULL,  socketClose, &ConMgr_disconnecting),
     RKH_TRREG(evNoResponse, NULL,  NULL, &ConMgr_checkConnectTry),
+    RKH_TRREG(evError,      NULL,  NULL, &ConMgr_checkConnectTry),
     RKH_TRREG(evClosed,     NULL,  NULL, &ConMgr_checkConnectTry),
     RKH_TRREG(evIPStatus,   NULL,  NULL, &ConMgr_checkConnectTry),
     RKH_TRREG(evIPInitial,  NULL,  NULL, &ConMgr_configure),
@@ -335,7 +336,7 @@ RKH_CREATE_BASIC_STATE(ConMgr_getStatus, NULL, getStatusExit,
 RKH_CREATE_TRANS_TABLE(ConMgr_getStatus)
     RKH_TRINT(evSend,    NULL,  defer),
     RKH_TRINT(evRecv,    NULL,  defer),
-    RKH_TRREG(evNoResponse, checkStatusNoRespCounter, tryGetStatus, &ConMgr_idle),
+    RKH_TRREG(evNoResponse, checkConnectedFailCounter, tryGetStatus, &ConMgr_idle),
     RKH_TRREG(evConnected, NULL, isConnected,   &ConMgr_idle),
 RKH_END_TRANS_TABLE
 
@@ -344,6 +345,7 @@ RKH_CREATE_COMP_REGION_STATE(ConMgr_sending, NULL, NULL,
                              RKH_NO_HISTORY, NULL, NULL, NULL, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_sending)
     RKH_TRCOMPLETION(NULL, NULL, &ConMgr_idle),
+	RKH_TRREG(evError, NULL, sendFail, &ConMgr_idle),
     RKH_TRREG(evNoResponse, NULL, sendFail, &ConMgr_idle),
 RKH_END_TRANS_TABLE
 
@@ -360,6 +362,7 @@ RKH_END_TRANS_TABLE
 RKH_CREATE_BASIC_STATE(ConMgr_receiving, NULL, NULL, &ConMgr_connected, NULL);
 RKH_CREATE_TRANS_TABLE(ConMgr_receiving)
     RKH_TRREG(evOk, NULL,  recvOk, &ConMgr_idle),
+	RKH_TRREG(evError, NULL, recvFail, &ConMgr_idle),
 	RKH_TRREG(evNoResponse, NULL, recvFail, &ConMgr_idle),
 RKH_END_TRANS_TABLE
 
@@ -781,6 +784,7 @@ sendOk(ConMgr *const me, RKH_EVT_T *pe)
     (void)pe;
     (void)me;
 
+    me->retryCount = 0;
     RKH_SMA_POST_FIFO(mqttProt, &e_Sent, conMgr);
 }
 
@@ -790,6 +794,7 @@ recvOk(ConMgr *const me, RKH_EVT_T *pe)
     (void)pe;
     (void)me;
 
+    me->retryCount = 0;
     RKH_SMA_POST_FIFO(mqttProt, RKH_UPCAST(RKH_EVT_T, &e_Received), conMgr);
 }
 
@@ -1120,7 +1125,7 @@ checkConnectTry(ConMgr *const me, RKH_EVT_T *pe)
 }
 
 rbool_t
-checkStatusNoRespCounter(ConMgr *const me, RKH_EVT_T *pe)
+checkConnectedFailCounter(ConMgr *const me, RKH_EVT_T *pe)
 {
     (void)pe;
     

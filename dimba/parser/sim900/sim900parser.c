@@ -288,6 +288,7 @@ SSP_END_BR_TABLE
 /* ------------------------ AT+CIPRXGET=2 ------------------------ */
 SSP_CREATE_NORMAL_NODE(at_plus_ciprxget_2);
 SSP_CREATE_BR_TABLE(at_plus_ciprxget_2)
+	SSPBR("ERROR",             cmd_error, &rootCmdParser),
 	SSPBR("+CIPRXGET: 2",      NULL,   &at_plus_ciprxget_2_wdata),
 SSP_END_BR_TABLE
 
@@ -346,6 +347,7 @@ SSP_END_BR_TABLE
 /* ------------------------- AT+CIPSEND -------------------------- */
 SSP_CREATE_NORMAL_NODE(at_plus_cipsend);
 SSP_CREATE_BR_TABLE(at_plus_cipsend)
+	SSPBR("ERROR",  cmd_error, &rootCmdParser),
 #ifdef _SEND_WITH_TERMINATOR
 	SSPBR(">", cmd_ok,  &at_plus_cipsending),
 #else
