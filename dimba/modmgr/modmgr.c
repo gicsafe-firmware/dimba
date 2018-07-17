@@ -216,6 +216,7 @@ static void
 sendResponse(ModMgr *const me, RKH_EVT_T *pe)
 {
     forwardModMgrEvt((RKH_SMA_T *)*(me->pCmd->args.aoDest), pe);
+    bsp_modStatusToggle();
 }
 
 static void

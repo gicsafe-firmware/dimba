@@ -336,4 +336,9 @@ bsp_netStatus(Status_t status)
             status == ConnectedSt ? "Connected" : "Disconnected");
 }
 
+void 
+bsp_modStatusToggle(void)
+{
+}
+
 /* ------------------------------ File footer ------------------------------ */

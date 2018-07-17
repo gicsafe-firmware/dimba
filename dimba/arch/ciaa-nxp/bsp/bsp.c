@@ -41,10 +41,13 @@
 RKH_THIS_MODULE
 
 /* ----------------------------- Local macros ------------------------------ */
-#define RegStatus_init()    gpioConfig(DO5, GPIO_OUTPUT)
-#define RegStatus(b)        gpioWrite(DO5, b)
-#define NetStatus_init()    gpioConfig(DO6, GPIO_OUTPUT)
-#define NetStatus(b)        gpioWrite(DO6, b)
+#define ModStatus_init()    gpioConfig(DO5, GPIO_OUTPUT)
+#define ModStatus(b)        gpioWrite(DO5, b)
+#define ModStatus_toggle()  gpioToggle(DO5)
+#define RegStatus_init()    gpioConfig(DO6, GPIO_OUTPUT)
+#define RegStatus(b)        gpioWrite(DO6, b)
+#define NetStatus_init()    gpioConfig(DO7, GPIO_OUTPUT)
+#define NetStatus(b)        gpioWrite(DO7, b)
 
 /* ------------------------------- Constants ------------------------------- */
 /* ---------------------------- Local data types --------------------------- */
@@ -63,7 +66,8 @@ bsp_init(int argc, char *argv[])
     (void)argv;
 
     boardConfig();
-    RegStatus_init();
+    ModStatus_init();
+    ModStatus(0);
     RegStatus(UnregisteredSt);
     NetStatus_init();
     NetStatus(DisconnectedSt);
@@ -143,5 +147,12 @@ bsp_netStatus(Status_t status)
 {
     NetStatus(status);
 }
+
+void 
+bsp_modStatusToggle(void)
+{
+    ModStatus_toggle();
+}
+
 
 /* ------------------------------ File footer ------------------------------ */

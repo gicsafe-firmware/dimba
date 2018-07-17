@@ -77,6 +77,7 @@ void bsp_serial_putnchar(int ch, unsigned char *p, ruint ndata);
 
 void bsp_regStatus(Status_t status);
 void bsp_netStatus(Status_t status);
+void bsp_modStatusToggle();
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus
