@@ -19,7 +19,6 @@
 #include "mTime.h"
 #include "mTimeCfg.h"
 
-#include "din.h"
 #include "anin.h"
 #include "epoch.h"
 #include "modpwr.h"
@@ -34,7 +33,7 @@ static void(* const actions_100[])( void ) =
 #ifdef MODPWR_CTRL_ENABLE
 	modPwr_ctrl, 
 #endif
-    dIn_scan, epoch_updateByStep,
+    epoch_updateByStep,
     NULL
 };
 
@@ -52,7 +51,7 @@ static void(* const actions_10000[])( void ) =
 
 const timerChain_t timerChain[] =
 {
-	{ MTIME_DIN_SCAN_PERIOD, actions_100 },
+	{ MTIME_EPOCH_UPD_PERIOD, actions_100 },
 	{ MTIME_ANIN_READANDFILTER_PERIOD, actions_1000 },
 	{ MTIME_ANSAMPLE_PUT_PERIOD, actions_10000 }
 };

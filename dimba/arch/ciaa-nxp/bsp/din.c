@@ -22,7 +22,7 @@
 #include "mTimeCfg.h"
 
 /* ----------------------------- Local macros ------------------------------ */
-#define DEBOUNCE_NSAMPLE    3
+#define DEBOUNCE_NSAMPLE    5
 #define DEBOUNCE_MASK       ((uint8_t)((1 << DEBOUNCE_NSAMPLE) - 1))
 #define DEBOUNCE_CHG        ((uint8_t)((1 << (DEBOUNCE_NSAMPLE - 1)) - 1))
 #define DEBOUNCE_NOT_MASK	((uint8_t)~DEBOUNCE_MASK)
