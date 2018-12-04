@@ -7,7 +7,7 @@
 	path = third-party/ssp
 	url = https://github.com/leanfrancucci/ssp.git
 [submodule "rkh"]
-	branch = master
+	branch = 1a377581ce572bc56dcf63c549c002246e494233
 [submodule "ssp"]
 	branch = master
 [submodule "third-party/ceedling"]
