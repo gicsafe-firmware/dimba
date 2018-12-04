@@ -15,3 +15,5 @@
 	path = third-party/MQTT-C
 	url = https://github.com/leanfrancucci/MQTT-C.git
 	branch = reactive
+[submodule "third-party/rkh/"]
+	branch = 52d3e4ed9a308380da57ef711856dbf059e6153e
