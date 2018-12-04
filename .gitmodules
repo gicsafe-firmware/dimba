@@ -1,15 +1,13 @@
 [submodule "third-party/rkh"]
 	path = third-party/rkh
-    url = https://github.com/vortexmakes/RKH.git
-	branch = master
+    	url = https://github.com/vortexmakes/RKH.git
+	branch = 52d3e4ed9a308380da57ef711856dbf059e6153e
 
 [submodule "third-party/ssp"]
 	path = third-party/ssp
 	url = https://github.com/leanfrancucci/ssp.git
-[submodule "rkh"]
-	branch = 1a377581ce572bc56dcf63c549c002246e494233
-[submodule "ssp"]
 	branch = master
+
 [submodule "third-party/ceedling"]
 	path = third-party/ceedling
 	url = https://github.com/ThrowTheSwitch/Ceedling.git
