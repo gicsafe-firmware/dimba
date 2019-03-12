@@ -54,122 +54,160 @@ extern "C" {
 
 /** Define DEBUG_ENABLE to enable IO via the DEBUGSTR, DEBUGOUT, and
     DEBUGIN macros. If not defined, DEBUG* functions will be optimized
-   out of the code at build time.
+	out of the code at build time.
  */
 #define DEBUG_ENABLE
 
 /** Define DEBUG_SEMIHOSTING along with DEBUG_ENABLE to enable IO support
     via semihosting. You may need to use a C library that supports
-   semihosting with this option.
+	semihosting with this option.
  */
 //#define DEBUG_SEMIHOSTING
 
 /** Board UART used for debug output and input using the DEBUG* macros. This
     is also the port used for Board_UARTPutChar, Board_UARTGetChar, and
-   Board_UARTPutSTR functions. */
-#define DEBUG_UART LPC_USART2
+	Board_UARTPutSTR functions. */
+#define DEBUG_UART LPC_USART3
 
 /**
  * @}
  */
 
 /* Board name */
-#define BOARD_CIAA_EDU_NXP_4337
+#define BOARD_NGX_XPLORER_4330
 
 /* Build for RMII interface */
 #define USE_RMII
-#define BOARD_ENET_PHY_ADDR    0x00
+#define BOARD_ENET_PHY_ADDR    0x01
 
-#define LED_3 2
-#define LED_2 1
-#define LED_1 0
-#define LED_RED 3
-#define LED_GREEN 4
-#define LED_BLUE 5
+/* For USBLIB examples */
+#define LEDS_LED1           0x01
+#define LEDS_LED2           0x02
+#define LEDS_LED3           0x04
+#define LEDS_LED4           0x08
+#define LEDS_NO_LEDS        0x00
+#define BUTTONS_BUTTON1     0x01
+#define JOY_UP              0x01
+#define JOY_DOWN            0x02
+#define JOY_LEFT            0x04
+#define JOY_RIGHT           0x08
+#define JOY_PRESS           0x10
+#define NO_BUTTON_PRESSED   0x00
+
+/* EDU-CIAA-NXP button defines */
+#define TEC1_PRESSED        0x01
+#define TEC2_PRESSED        0x02
+#define TEC3_PRESSED        0x04
+#define TEC4_PRESSED        0x08
+
+/*Define if use SDCARD for Mass Storage Example*/
+// #define CFG_SDCARD
+
+#define BUTTONS_BUTTON1_GPIO_PORT_NUM   0
+#define BUTTONS_BUTTON1_GPIO_BIT_NUM    4
+#define LED1_GPIO_PORT_NUM              1
+#define LED1_GPIO_BIT_NUM               11
+#define LED2_GPIO_PORT_NUM              1
+#define LED2_GPIO_BIT_NUM               12
 
 /**
- * @brief  Sets up board specific I2C interface
- * @param  id  : I2C Peripheral ID (I2C0, I2C1)
- * @return Nothing
+ * @brief	Sets up board specific I2C interface
+ * @param	id	: I2C Peripheral ID (I2C0, I2C1)
+ * @return	Nothing
  */
 void Board_I2C_Init(I2C_ID_T id);
 
 /**
- * @brief  Sets up I2C Fast Plus mode
- * @param  id  : Must always be I2C0
- * @return Nothing
- * @note   This function must be called before calling
+ * @brief	Sets up I2C Fast Plus mode
+ * @param	id	: Must always be I2C0
+ * @return	Nothing
+ * @note	This function must be called before calling
  *          Chip_I2C_SetClockRate() to set clock rates above
  *          normal range 100KHz to 400KHz. Only I2C0 supports
  *          this mode.
  */
 STATIC INLINE void Board_I2C_EnableFastPlus(I2C_ID_T id)
 {
-   Chip_SCU_I2C0PinConfig(I2C0_FAST_MODE_PLUS);
+	Chip_SCU_I2C0PinConfig(I2C0_FAST_MODE_PLUS);
 }
 
 /**
- * @brief  Disable I2C Fast Plus mode and enables default mode
- * @param  id  : Must always be I2C0
- * @return Nothing
- * @sa     Board_I2C_EnableFastPlus()
+ * @brief	Disable I2C Fast Plus mode and enables default mode
+ * @param	id	: Must always be I2C0
+ * @return	Nothing
+ * @sa		Board_I2C_EnableFastPlus()
  */
 STATIC INLINE void Board_I2C_DisableFastPlus(I2C_ID_T id)
 {
-   Chip_SCU_I2C0PinConfig(I2C0_STANDARD_FAST_MODE);
+	Chip_SCU_I2C0PinConfig(I2C0_STANDARD_FAST_MODE);
 }
 
 /**
- * @brief  Initializes board specific GPIO Interrupt
- * @return Nothing
+ * @brief	Initializes board specific GPIO Interrupt
+ * @return	Nothing
  */
 void Board_GPIO_Int_Init(void);
 
 /**
- * @brief  Initialize pin muxing for SSP interface
- * @param  pSSP    : Pointer to SSP interface to initialize
- * @return Nothing
+ * @brief	Initialize pin muxing for SSP interface
+ * @param	pSSP	: Pointer to SSP interface to initialize
+ * @return	Nothing
  */
 void Board_SSP_Init(LPC_SSP_T *pSSP);
 
 /**
- * @brief  Returns the MAC address assigned to this board
- * @param  mcaddr : Pointer to 6-byte character array to populate with MAC address
- * @return Nothing
+ * @brief	Returns the MAC address assigned to this board
+ * @param	mcaddr : Pointer to 6-byte character array to populate with MAC address
+ * @return	Nothing
  */
 void Board_ENET_GetMacADDR(uint8_t *mcaddr);
 
 /**
- * @brief  Initialize pin muxing for a UART
- * @param  pUART   : Pointer to UART register block for UART pins to init
- * @return Nothing
+ * @brief	Initialize pin muxing for a UART
+ * @param	pUART	: Pointer to UART register block for UART pins to init
+ * @return	Nothing
  */
 void Board_UART_Init(LPC_USART_T *pUART);
 
 /**
- * @brief  Initialize pin muxing for SDMMC interface
- * @return Nothing
+ * @brief	Initialize pin muxing for SDMMC interface
+ * @return	Nothing
  */
 void Board_SDMMC_Init(void);
 
 /**
- * @brief  Initialize DAC
- * @param  pDAC    : Pointer to DAC register interface used on this board
- * @return Nothing
+ * @brief	Initialize button(s) interface on board
+ * @return	Nothing
  */
-void Board_DAC_Init(LPC_DAC_T *pDAC);
+void Board_Buttons_Init(void);
 
 /**
- * @brief  Initialize ADC
- * @return Nothing
+ * @brief	Initialize joystick interface on board
+ * @return	Nothing
  */
-STATIC INLINE void Board_ADC_Init(void){}
+void Board_Joystick_Init(void);
+
+/**
+ * @brief	Returns joystick states on board
+ * @return	Returns a JOY_* value, ir JOY_PRESS or JOY_UP
+ */
+uint8_t Joystick_GetStatus(void);
+
+/**
+ * @brief	Return button(s) state on board
+ * @return	Returns NO_BUTTON_PRESSED or TEC*_PRESSED, where *={1,2,3,4}
+ * @note
+ * Return values are ORed, so you can check if two buttons are pressed
+ * at the same time.
+ */
+uint32_t Buttons_GetStatus(void);
 
 /**
  * @}
  */
 
 #include "board_api.h"
+#include "lpc_phy.h"
 
 #ifdef __cplusplus
 }
