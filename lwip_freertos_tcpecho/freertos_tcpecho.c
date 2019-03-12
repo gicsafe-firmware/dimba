@@ -43,7 +43,6 @@
 #include "lwip/dhcp.h"
 #endif
 
-#include "sapi.h"
 #include "board.h"
 #include "arch/lpc18xx_43xx_emac.h"
 #include "arch/lpc_arch.h"
