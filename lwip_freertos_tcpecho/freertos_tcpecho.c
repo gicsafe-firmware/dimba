@@ -76,8 +76,7 @@ static void prvSetupHardware(void)
 {
 	/* LED0 is used for the link status, on = PHY cable detected */
 	SystemCoreClockUpdate();
-	//Board_Init(); /* commented for sapi init call boardConfig */
-	boardConfig(); /* sapi init */
+	Board_Init();
 
 	/* Initial LED state is off to show an unconnected cable state */
 	Board_LED_Set(0, false);
@@ -216,6 +215,8 @@ void msDelay(uint32_t ms)
 int main(void)
 {
 	prvSetupHardware();
+
+	DEBUGSTR("LPCOpen FreeRTOS LWip Demo\r\n");
 
 	/* Add another thread for initializing physical interface. This
 	   is delayed from the main LWIP initialization. */
