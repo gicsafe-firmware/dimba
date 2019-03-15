@@ -33,6 +33,8 @@
 #include "task.h"
 #include "FreeRTOSCommonHooks.h"
 
+#include "rkh.h"
+
 #include "chip.h"
 
 /*****************************************************************************
@@ -77,6 +79,7 @@ __WEAK__ void vApplicationMallocFailedHook(void)
 __WEAK__ void vApplicationIdleHook(void)
 {
 	/* Best to sleep here until next systick */
+    rkh_trc_flush();
 	__WFI();
 }
 
