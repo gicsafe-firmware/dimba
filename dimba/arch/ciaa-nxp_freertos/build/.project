@@ -45,6 +45,11 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>src/lwip</name>
+			<type>2</type>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/lwip</locationURI>
+		</link>
+		<link>
 			<name>src/rkh</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
@@ -65,6 +70,16 @@
 			<locationURI>copy_PARENT/third-party/MQTT-C/src/mqtt_pal.c</locationURI>
 		</link>
 		<link>
+			<name>src/bsp/Endianness.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/bsp/Endianness.h</locationURI>
+		</link>
+		<link>
+			<name>src/bsp/FreeRTOSConfig.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/bsp/FreeRTOSConfig.h</locationURI>
+		</link>
+		<link>
 			<name>src/bsp/anin.c</name>
 			<type>1</type>
 			<locationURI>copy_PARENT1/bsp/anin.c</locationURI>
@@ -80,6 +95,11 @@
 			<locationURI>copy_PARENT1/bsp/bsp.c</locationURI>
 		</link>
 		<link>
+			<name>src/bsp/common</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/bsp/common</locationURI>
+		</link>
+		<link>
 			<name>src/bsp/din.c</name>
 			<type>1</type>
 			<locationURI>copy_PARENT1/bsp/din.c</locationURI>
@@ -90,6 +110,11 @@
 			<locationURI>copy_PARENT1/bsp/hook.c</locationURI>
 		</link>
 		<link>
+			<name>src/bsp/lpc_18xx43xx_emac_config.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/bsp/lpc_18xx43xx_emac_config.h</locationURI>
+		</link>
+		<link>
 			<name>src/bsp/lpc_board</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
@@ -98,6 +123,11 @@
 			<name>src/bsp/lpc_chip</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>src/bsp/lwipopts.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/bsp/lwipopts.h</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/modpwr.c</name>
@@ -123,6 +153,11 @@
 			<name>src/bsp/uartisr.c</name>
 			<type>1</type>
 			<locationURI>copy_PARENT1/bsp/uartisr.c</locationURI>
+		</link>
+		<link>
+			<name>src/bsp/uartisr.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/bsp/uartisr.h</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/CirBuffer</name>
@@ -173,6 +208,11 @@
 			<name>src/dimba/epoch</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>src/dimba/ethMgr</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/ethMgr</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/ioChgDet</name>
@@ -405,6 +445,11 @@
 			<locationURI>copy_PARENT/third-party/LPCOpen/lpc_board_ciaa_edu_4337/src/crp.c</locationURI>
 		</link>
 		<link>
+			<name>src/bsp/lpc_board/lpc_phy_smsc87x0.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/LPCOpen/lpc_board_ciaa_edu_4337/src/lpc_phy_smsc87x0.c</locationURI>
+		</link>
+		<link>
 			<name>src/bsp/lpc_board/sysinit.c</name>
 			<type>1</type>
 			<locationURI>copy_PARENT/third-party/LPCOpen/lpc_board_ciaa_edu_4337/src/sysinit.c</locationURI>
@@ -428,6 +473,16 @@
 			<name>src/bsp/lpc_chip/dac_18xx_43xx.c</name>
 			<type>1</type>
 			<locationURI>copy_PARENT/third-party/LPCOpen/lpc_chip_43xx/src/dac_18xx_43xx.c</locationURI>
+		</link>
+		<link>
+			<name>src/bsp/lpc_chip/enet_18xx_43xx.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/LPCOpen/lpc_chip_43xx/src/enet_18xx_43xx.c</locationURI>
+		</link>
+		<link>
+			<name>src/bsp/lpc_chip/fpu_init.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/LPCOpen/lpc_chip_43xx/src/fpu_init.c</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/lpc_chip/gpio_18xx_43xx.c</name>

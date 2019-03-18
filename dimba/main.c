@@ -5,14 +5,15 @@
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2018.05.17  LeFr  v1.0.00  Initial version
- *  2018.06.17  Daba  v1.0.00  Publisher
+ *  2018.05.17  LeFr  Initial version
+ *  2018.06.17  Daba  Publisher
+ *  2019.03.19  Daba  Ethernet Manager
  */
 
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci  lf@vortexmakes.com
- *  DaBa  Dario Bali�a       db@vortexmakes.com
+ *  DaBa  Dario Bali#a       db@vortexmakes.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
@@ -25,6 +26,7 @@
 #include "signals.h"
 #include "mqttProt.h"
 #include "dimbaCfg.h"
+#include "ethMgr.h"
 #include "conmgr.h"
 #include "modmgr.h"
 #include "mTime.h"
@@ -36,6 +38,7 @@
 
 /* ----------------------------- Local macros ------------------------------ */
 #define MQTTPROT_QSTO_SIZE  16
+#define ETHMGR_QSTO_SIZE    8
 #define CONMGR_QSTO_SIZE    8
 #define MODMGR_QSTO_SIZE    4
 
@@ -48,6 +51,7 @@
 
 /* ------------------------------- Constants ------------------------------- */
 #define MQTTPROT_STK_SIZE   (2048 / sizeof(RKH_THREAD_STK_TYPE))
+#define ETHMGR_STK_SIZE     (2048 / sizeof(RKH_THREAD_STK_TYPE))
 #define CONMGR_STK_SIZE     (2048 / sizeof(RKH_THREAD_STK_TYPE))
 #define MODMGR_STK_SIZE      (2048 / sizeof(RKH_THREAD_STK_TYPE))
 
@@ -55,6 +59,7 @@
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
 static RKH_EVT_T *MQTTProt_qsto[MQTTPROT_QSTO_SIZE];
+static RKH_EVT_T *EthMgr_qsto[CONMGR_QSTO_SIZE];
 static RKH_EVT_T *ConMgr_qsto[CONMGR_QSTO_SIZE];
 static RKH_EVT_T *ModMgr_qsto[MODMGR_QSTO_SIZE];
 static rui8_t evPool0Sto[SIZEOF_EP0STO], 
@@ -81,6 +86,7 @@ setupTraceFilters(void)
     RKH_FILTER_OFF_EVENT(RKH_TE_SM_DCH);
     RKH_FILTER_OFF_SMA(modMgr);
     RKH_FILTER_OFF_SMA(conMgr);
+    RKH_FILTER_OFF_SMA(ethMgr);
     RKH_FILTER_OFF_SMA(mqttProt);
     RKH_FILTER_OFF_ALL_SIGNALS();
 }
@@ -127,11 +133,13 @@ main(int argc, char *argv[])
     strcpy(mqttProtCfg.topic, "");
     MQTTProt_ctor(&mqttProtCfg, publishDimba);
 
-    RKH_SMA_ACTIVATE(conMgr, ConMgr_qsto, CONMGR_QSTO_SIZE, 0, CONMGR_STK_SIZE);
-    RKH_SMA_ACTIVATE(modMgr, ModMgr_qsto, MODMGR_QSTO_SIZE, 0, MODMGR_STK_SIZE);
-    RKH_SMA_ACTIVATE(mqttProt, MQTTProt_qsto, MQTTPROT_QSTO_SIZE, 0, MQTTPROT_STK_SIZE);
+    RKH_SMA_ACTIVATE(ethMgr, EthMgr_qsto, ETHMGR_QSTO_SIZE, 0, ETHMGR_STK_SIZE);
+//    RKH_SMA_ACTIVATE(conMgr, ConMgr_qsto, CONMGR_QSTO_SIZE, 0, CONMGR_STK_SIZE);
+    //RKH_SMA_ACTIVATE(modMgr, ModMgr_qsto, MODMGR_QSTO_SIZE, 0, MODMGR_STK_SIZE);
+//    RKH_SMA_ACTIVATE(mqttProt, MQTTProt_qsto, MQTTPROT_QSTO_SIZE, 0, MQTTPROT_STK_SIZE);
 
-    RKH_SMA_POST_FIFO(conMgr, &e_Open, 0);
+//    RKH_SMA_POST_FIFO(conMgr, &e_Open, 0);
+    RKH_SMA_POST_FIFO(ethMgr, &e_Open, 0);
 
     rkh_fwk_enter();
 
