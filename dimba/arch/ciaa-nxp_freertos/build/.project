@@ -62,12 +62,12 @@
 		<link>
 			<name>src/MQTT-C/mqtt.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/MQTT-C/src/mqtt.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/MQTT-C/src/mqtt.c</locationURI>
 		</link>
 		<link>
 			<name>src/MQTT-C/mqtt_pal.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/MQTT-C/src/mqtt_pal.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/MQTT-C/src/mqtt_pal.c</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/Endianness.h</name>
@@ -82,17 +82,17 @@
 		<link>
 			<name>src/bsp/anin.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT1/bsp/anin.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/bsp/anin.c</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/assert.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT1/bsp/assert.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/bsp/assert.c</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/bsp.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT1/bsp/bsp.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/bsp/bsp.c</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/common</name>
@@ -102,12 +102,12 @@
 		<link>
 			<name>src/bsp/din.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT1/bsp/din.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/bsp/din.c</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/hook.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT1/bsp/hook.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/bsp/hook.c</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/lpc_18xx43xx_emac_config.h</name>
@@ -132,12 +132,12 @@
 		<link>
 			<name>src/bsp/modpwr.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT1/bsp/modpwr.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/bsp/modpwr.c</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/rtime.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT1/bsp/rtime.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/bsp/rtime.c</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/sapi_rtos</name>
@@ -147,12 +147,12 @@
 		<link>
 			<name>src/bsp/trace_io.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT1/bsp/trace_io.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/bsp/trace_io.c</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/uartisr.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT1/bsp/uartisr.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/bsp/uartisr.c</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/uartisr.h</name>
@@ -167,12 +167,12 @@
 		<link>
 			<name>src/dimba/adconv</name>
 			<type>2</type>
-			<locationURI>copy_PARENT12/adconv</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/adconv</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/anIn</name>
 			<type>2</type>
-			<locationURI>copy_PARENT12/anIn</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/anIn</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/anSampler</name>
@@ -182,27 +182,27 @@
 		<link>
 			<name>src/dimba/bsp.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/bsp.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/bsp.h</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/conmgr</name>
 			<type>2</type>
-			<locationURI>copy_PARENT12/conmgr</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/conmgr</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/dIn</name>
 			<type>2</type>
-			<locationURI>copy_PARENT12/dIn</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/dIn</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/date</name>
 			<type>2</type>
-			<locationURI>copy_PARENT12/date</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/date</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/emaFilter</name>
 			<type>2</type>
-			<locationURI>copy_PARENT12/emaFilter</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/emaFilter</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/epoch</name>
@@ -222,27 +222,27 @@
 		<link>
 			<name>src/dimba/mTime</name>
 			<type>2</type>
-			<locationURI>copy_PARENT12/mTime</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/mTime</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/main.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/main.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/main.c</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/modcmd</name>
 			<type>2</type>
-			<locationURI>copy_PARENT12/modcmd</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/modcmd</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/modmgr</name>
 			<type>2</type>
-			<locationURI>copy_PARENT12/modmgr</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/modmgr</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/mqttProt</name>
 			<type>2</type>
-			<locationURI>copy_PARENT12/mqttProt</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/mqttProt</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/parser</name>
@@ -252,27 +252,27 @@
 		<link>
 			<name>src/dimba/publisher</name>
 			<type>2</type>
-			<locationURI>copy_PARENT12/publisher</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/publisher</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/rkhcfg.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/rkhcfg.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/rkhcfg.h</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/rtime</name>
 			<type>2</type>
-			<locationURI>copy_PARENT12/rtime</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/rtime</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/signals.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/signals.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/signals.h</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/sspcfg.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sspcfg.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/sspcfg.h</locationURI>
 		</link>
 		<link>
 			<name>src/freertos/FreeRTOSCommonHooks.c</name>
@@ -337,37 +337,37 @@
 		<link>
 			<name>src/jWrite/jWrite.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/jWrite/jWrite/jWrite.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/jWrite/jWrite/jWrite.c</locationURI>
 		</link>
 		<link>
 			<name>src/rkh/rkhfwk_bittbl.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/rkh/source/fwk/src/rkhfwk_bittbl.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/rkh/source/fwk/src/rkhfwk_bittbl.c</locationURI>
 		</link>
 		<link>
 			<name>src/rkh/rkhfwk_dynevt.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/rkh/source/fwk/src/rkhfwk_dynevt.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/rkh/source/fwk/src/rkhfwk_dynevt.c</locationURI>
 		</link>
 		<link>
 			<name>src/rkh/rkhfwk_evtpool.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/rkh/source/fwk/src/rkhfwk_evtpool.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/rkh/source/fwk/src/rkhfwk_evtpool.c</locationURI>
 		</link>
 		<link>
 			<name>src/rkh/rkhfwk_sched.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/rkh/source/fwk/src/rkhfwk_sched.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/rkh/source/fwk/src/rkhfwk_sched.c</locationURI>
 		</link>
 		<link>
 			<name>src/rkh/rkhfwk_version.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/rkh/source/fwk/src/rkhfwk_version.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/rkh/source/fwk/src/rkhfwk_version.c</locationURI>
 		</link>
 		<link>
 			<name>src/rkh/rkhmempool.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/rkh/source/mempool/src/rkhmempool.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/rkh/source/mempool/src/rkhmempool.c</locationURI>
 		</link>
 		<link>
 			<name>src/rkh/rkhport.c</name>
@@ -377,72 +377,72 @@
 		<link>
 			<name>src/rkh/rkhqueue.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/rkh/source/queue/src/rkhqueue.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/rkh/source/queue/src/rkhqueue.c</locationURI>
 		</link>
 		<link>
 			<name>src/rkh/rkhsm.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/rkh/source/sm/src/rkhsm.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/rkh/source/sm/src/rkhsm.c</locationURI>
 		</link>
 		<link>
 			<name>src/rkh/rkhsma.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/rkh/source/sma/src/rkhsma.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/rkh/source/sma/src/rkhsma.c</locationURI>
 		</link>
 		<link>
 			<name>src/rkh/rkhsma_prio.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/rkh/source/sma/src/rkhsma_prio.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/rkh/source/sma/src/rkhsma_prio.c</locationURI>
 		</link>
 		<link>
 			<name>src/rkh/rkhsma_sync.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/rkh/source/sma/src/rkhsma_sync.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/rkh/source/sma/src/rkhsma_sync.c</locationURI>
 		</link>
 		<link>
 			<name>src/rkh/rkhtmr.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/rkh/source/tmr/src/rkhtmr.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/rkh/source/tmr/src/rkhtmr.c</locationURI>
 		</link>
 		<link>
 			<name>src/rkh/rkhtrc_filter.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/rkh/source/trc/src/rkhtrc_filter.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/rkh/source/trc/src/rkhtrc_filter.c</locationURI>
 		</link>
 		<link>
 			<name>src/rkh/rkhtrc_record.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/rkh/source/trc/src/rkhtrc_record.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/rkh/source/trc/src/rkhtrc_record.c</locationURI>
 		</link>
 		<link>
 			<name>src/rkh/rkhtrc_stream.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/rkh/source/trc/src/rkhtrc_stream.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/rkh/source/trc/src/rkhtrc_stream.c</locationURI>
 		</link>
 		<link>
 			<name>src/ssp/ssp.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/ssp/src/ssp.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/ssp/src/ssp.c</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/lpc_board/board.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/LPCOpen/lpc_board_ciaa_edu_4337/src/board.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/LPCOpen/lpc_board_ciaa_edu_4337/src/board.c</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/lpc_board/board_sysinit.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/LPCOpen/lpc_board_ciaa_edu_4337/src/board_sysinit.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/LPCOpen/lpc_board_ciaa_edu_4337/src/board_sysinit.c</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/lpc_board/cr_startup_lpc43xx.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/LPCOpen/lpc_board_ciaa_edu_4337/src/cr_startup_lpc43xx.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/LPCOpen/lpc_board_ciaa_edu_4337/src/cr_startup_lpc43xx.c</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/lpc_board/crp.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/LPCOpen/lpc_board_ciaa_edu_4337/src/crp.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/LPCOpen/lpc_board_ciaa_edu_4337/src/crp.c</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/lpc_board/lpc_phy_smsc87x0.c</name>
@@ -452,27 +452,27 @@
 		<link>
 			<name>src/bsp/lpc_board/sysinit.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/LPCOpen/lpc_board_ciaa_edu_4337/src/sysinit.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/LPCOpen/lpc_board_ciaa_edu_4337/src/sysinit.c</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/lpc_chip/adc_18xx_43xx.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/LPCOpen/lpc_chip_43xx/src/adc_18xx_43xx.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/LPCOpen/lpc_chip_43xx/src/adc_18xx_43xx.c</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/lpc_chip/chip_18xx_43xx.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/LPCOpen/lpc_chip_43xx/src/chip_18xx_43xx.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/LPCOpen/lpc_chip_43xx/src/chip_18xx_43xx.c</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/lpc_chip/clock_18xx_43xx.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/LPCOpen/lpc_chip_43xx/src/clock_18xx_43xx.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/LPCOpen/lpc_chip_43xx/src/clock_18xx_43xx.c</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/lpc_chip/dac_18xx_43xx.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/LPCOpen/lpc_chip_43xx/src/dac_18xx_43xx.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/LPCOpen/lpc_chip_43xx/src/dac_18xx_43xx.c</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/lpc_chip/enet_18xx_43xx.c</name>
@@ -487,17 +487,17 @@
 		<link>
 			<name>src/bsp/lpc_chip/gpio_18xx_43xx.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/LPCOpen/lpc_chip_43xx/src/gpio_18xx_43xx.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/LPCOpen/lpc_chip_43xx/src/gpio_18xx_43xx.c</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/lpc_chip/rtc_18xx_43xx.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/LPCOpen/lpc_chip_43xx/src/rtc_18xx_43xx.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/LPCOpen/lpc_chip_43xx/src/rtc_18xx_43xx.c</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/lpc_chip/uart_18xx_43xx.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/third-party/LPCOpen/lpc_chip_43xx/src/uart_18xx_43xx.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/LPCOpen/lpc_chip_43xx/src/uart_18xx_43xx.c</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/sapi_rtos/sapi_adc.c</name>
@@ -547,52 +547,52 @@
 		<link>
 			<name>src/dimba/CirBuffer/CirBuffer.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/CirBuffer/CirBuffer.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/CirBuffer/CirBuffer.c</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/CirBuffer/CirBuffer.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/CirBuffer/CirBuffer.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/CirBuffer/CirBuffer.h</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/anSampler/anSampler.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/anSampler/anSampler.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/anSampler/anSampler.c</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/anSampler/anSampler.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/anSampler/anSampler.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/anSampler/anSampler.h</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/epoch/epoch.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/epoch/epoch.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/epoch/epoch.c</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/epoch/epoch.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/epoch/epoch.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/epoch/epoch.h</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/ioChgDet/ioChgDet.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/ioChgDet/ioChgDet.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/ioChgDet/ioChgDet.c</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/ioChgDet/ioChgDet.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/ioChgDet/ioChgDet.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/ioChgDet/ioChgDet.h</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/parser/sim900parser.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/parser/sim900/sim900parser.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/parser/sim900/sim900parser.c</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/parser/sim900parser.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/parser/sim900/sim900parser.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/parser/sim900/sim900parser.h</locationURI>
 		</link>
 	</linkedResources>
 	<variableList>
