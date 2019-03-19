@@ -50,10 +50,10 @@
 #define SIZEOF_EP2_BLOCK    sizeof(ModMgrEvt)
 
 /* ------------------------------- Constants ------------------------------- */
-#define MQTTPROT_STK_SIZE   (2048 / sizeof(RKH_THREAD_STK_TYPE))
-#define ETHMGR_STK_SIZE     (2048 / sizeof(RKH_THREAD_STK_TYPE))
-#define CONMGR_STK_SIZE     (2048 / sizeof(RKH_THREAD_STK_TYPE))
-#define MODMGR_STK_SIZE      (2048 / sizeof(RKH_THREAD_STK_TYPE))
+#define MQTTPROT_STK_SIZE   (4096 / sizeof(RKH_THREAD_STK_TYPE))
+#define ETHMGR_STK_SIZE     (4096 / sizeof(RKH_THREAD_STK_TYPE))
+#define CONMGR_STK_SIZE     (4096 / sizeof(RKH_THREAD_STK_TYPE))
+#define MODMGR_STK_SIZE      (4096 / sizeof(RKH_THREAD_STK_TYPE))
 
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
@@ -133,13 +133,13 @@ main(int argc, char *argv[])
     strcpy(mqttProtCfg.topic, "");
     MQTTProt_ctor(&mqttProtCfg, publishDimba);
 
-    RKH_SMA_ACTIVATE(ethMgr, EthMgr_qsto, ETHMGR_QSTO_SIZE, 0, ETHMGR_STK_SIZE);
-//    RKH_SMA_ACTIVATE(conMgr, ConMgr_qsto, CONMGR_QSTO_SIZE, 0, CONMGR_STK_SIZE);
-    //RKH_SMA_ACTIVATE(modMgr, ModMgr_qsto, MODMGR_QSTO_SIZE, 0, MODMGR_STK_SIZE);
-//    RKH_SMA_ACTIVATE(mqttProt, MQTTProt_qsto, MQTTPROT_QSTO_SIZE, 0, MQTTPROT_STK_SIZE);
+//    RKH_SMA_ACTIVATE(ethMgr, EthMgr_qsto, ETHMGR_QSTO_SIZE, 0, ETHMGR_STK_SIZE);
+    RKH_SMA_ACTIVATE(conMgr, ConMgr_qsto, CONMGR_QSTO_SIZE, 0, CONMGR_STK_SIZE);
+    RKH_SMA_ACTIVATE(modMgr, ModMgr_qsto, MODMGR_QSTO_SIZE, 0, MODMGR_STK_SIZE);
+    RKH_SMA_ACTIVATE(mqttProt, MQTTProt_qsto, MQTTPROT_QSTO_SIZE, 0, MQTTPROT_STK_SIZE);
 
-//    RKH_SMA_POST_FIFO(conMgr, &e_Open, 0);
-    RKH_SMA_POST_FIFO(ethMgr, &e_Open, 0);
+    RKH_SMA_POST_FIFO(conMgr, &e_Open, 0);
+//    RKH_SMA_POST_FIFO(ethMgr, &e_Open, 0);
 
     rkh_fwk_enter();
 
