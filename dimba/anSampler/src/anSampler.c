@@ -1,16 +1,27 @@
+/*
+ *  --------------------------------------------------------------------------
+ *
+ *                               GICSAFe-Firmware
+ *                               ----------------
+ *
+ *                      Copyright (C) 2019 CONICET-GICSAFe
+ *          All rights reserved. Protected by international copyright laws.
+ *
+ *  Contact information:
+ *  site: https://github.com/gicsafe-firmware
+ *  e-mail: <someone>@<somewhere>
+ *  ---------------------------------------------------------------------------
+ */
+
 /**
  *  \file       AnSampler.c
  *  \brief      Implementation of analog signal sampler.
  */
 
-/* -------------------------- Development history -------------------------- */
-/*
- *  2018.05.17  LeFr  v1.0.00  Initial version
- */
-
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci lf@vortexmakes.com
+ *  CIM   Carlos Mancón manconci@gmail.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
@@ -50,19 +61,19 @@ Spy_AnSampler_getAnSampler(void)
 }
 
 /* ---------------------------- Global functions --------------------------- */
-int 
+int
 anSampler_init(void)
 {
     int i, result = 0;
     AnSampleBuffer *pAnSig;
 
-    for (i = 0, pAnSig = anSampler.anSignals; 
-         (i < NUM_AN_SIGNALS) && (result == 0); 
+    for (i = 0, pAnSig = anSampler.anSignals;
+         (i < NUM_AN_SIGNALS) && (result == 0);
          ++i, ++pAnSig)
     {
-        result = cirBuffer_init(&pAnSig->buffer, 
-                                (unsigned char *)pAnSig->samples, 
-                                sizeof(SampleValue), 
+        result = cirBuffer_init(&pAnSig->buffer,
+                                (unsigned char *)pAnSig->samples,
+                                sizeof(SampleValue),
                                 MAX_AN_NUM_SAMPLES);
     }
     return result;
@@ -76,8 +87,8 @@ anSampler_put(void)
     SampleValue value;
 
     anSampler.timeStamp = epoch_get();
-    for (i = 0, pAnSig = anSampler.anSignals; 
-         (i < NUM_AN_SIGNALS) && (result == 0); 
+    for (i = 0, pAnSig = anSampler.anSignals;
+         (i < NUM_AN_SIGNALS) && (result == 0);
          ++i, ++pAnSig)
     {
         value = ADConv_getSample(i);
@@ -86,7 +97,7 @@ anSampler_put(void)
     return result;
 }
 
-int 
+int
 anSampler_getSet(AnSampleSet *set, int nSamples)
 {
     int i, result = 0;
@@ -95,7 +106,7 @@ anSampler_getSet(AnSampleSet *set, int nSamples)
     /* enter_critical_section() */
     pAnSig = anSampler.anSignals;
     set->timeStamp = anSampler.timeStamp;
-    set->timeStamp -= (AN_SAMPLING_RATE_SEC  * 
+    set->timeStamp -= (AN_SAMPLING_RATE_SEC  *
                        cirBuffer_getNumElem(&pAnSig->buffer));
     for (i = 0; i < NUM_AN_SIGNALS; ++i, ++pAnSig)
     {
@@ -107,7 +118,7 @@ anSampler_getSet(AnSampleSet *set, int nSamples)
     return result;
 }
 
-int 
+int
 anSampler_getNumSamples(void)
 {
     int nSamples;

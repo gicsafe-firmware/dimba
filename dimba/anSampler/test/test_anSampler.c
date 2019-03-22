@@ -1,11 +1,21 @@
+/*
+ *  --------------------------------------------------------------------------
+ *
+ *                               GICSAFe-Firmware
+ *                               ----------------
+ *
+ *                      Copyright (C) 2019 CONICET-GICSAFe
+ *          All rights reserved. Protected by international copyright laws.
+ *
+ *  Contact information:
+ *  site: https://github.com/gicsafe-firmware
+ *  e-mail: <someone>@<somewhere>
+ *  ---------------------------------------------------------------------------
+ */
+
 /**
  *  \file       test_AnSampler.c
  *  \brief      Unit test for analog signal sampler.
- */
-
-/* -------------------------- Development history -------------------------- */
-/*
- *  2018.05.17  LeFr  v1.0.00  ---
  */
 
 /* -------------------------------- Authors -------------------------------- */
@@ -30,14 +40,14 @@
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
 /* ---------------------------- Global functions --------------------------- */
-void 
+void
 setUp(void)
 {
     Mock_CirBuffer_Init();
     Mock_epoch_Init();
 }
 
-void 
+void
 tearDown(void)
 {
     Mock_CirBuffer_Verify();
@@ -148,7 +158,7 @@ test_GetAnSampleSet()
 
     result = anSampler_getSet(&set, nReqSamples);
     TEST_ASSERT_EQUAL(nReqSamples, result);
-    TEST_ASSERT_EQUAL(123456 - (nBufSamples * AN_SAMPLING_RATE_SEC), 
+    TEST_ASSERT_EQUAL(123456 - (nBufSamples * AN_SAMPLING_RATE_SEC),
                       set.timeStamp);
 }
 
