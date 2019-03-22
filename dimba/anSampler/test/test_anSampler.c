@@ -15,9 +15,9 @@
 
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
-#include "unity_fixture.h"
-#include "AnSampler.h"
-#include "Spy_AnSampler.h"
+#include "unity.h"
+#include "anSampler.h"
+#include "Spy_anSampler.h"
 #include "Mock_CirBuffer.h"
 #include "Mock_epoch.h"
 #include "Mock_adconv.h"
@@ -26,23 +26,19 @@
 /* ------------------------------- Constants ------------------------------- */
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
-int GlobalExpectCount;
-int GlobalVerifyOrder;
-char *GlobalOrderError;
-
-TEST_GROUP(AnSampler);
-
 /* ---------------------------- Local variables ---------------------------- */
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
 /* ---------------------------- Global functions --------------------------- */
-TEST_SETUP(AnSampler)
+void 
+setUp(void)
 {
     Mock_CirBuffer_Init();
     Mock_epoch_Init();
 }
 
-TEST_TEAR_DOWN(AnSampler)
+void 
+tearDown(void)
 {
     Mock_CirBuffer_Verify();
     Mock_epoch_Verify();
@@ -50,7 +46,8 @@ TEST_TEAR_DOWN(AnSampler)
     Mock_epoch_Destroy();
 }
 
-TEST(AnSampler, ClearAfterInit)
+void
+test_ClearAfterInit()
 {
     int i, result;
 
@@ -66,7 +63,8 @@ TEST(AnSampler, ClearAfterInit)
     TEST_ASSERT_EQUAL(0, result);
 }
 
-TEST(AnSampler, FailsOneAnSamplerOnInit)
+void
+test_FailsOneAnSamplerOnInit()
 {
     int result;
 
@@ -91,7 +89,8 @@ TEST(AnSampler, FailsOneAnSamplerOnInit)
     TEST_ASSERT_EQUAL(1, result);
 }
 
-TEST(AnSampler, StoreOneAnSample)
+void
+test_StoreOneAnSample()
 {
     int i, result;
 
@@ -119,7 +118,8 @@ TEST(AnSampler, StoreOneAnSample)
     TEST_ASSERT_EQUAL(0, result);
 }
 
-TEST(AnSampler, GetAnSampleSet)
+void
+test_GetAnSampleSet()
 {
     AnSampleSet set;
     int i, result, nReqSamples, nBufSamples;
@@ -152,7 +152,8 @@ TEST(AnSampler, GetAnSampleSet)
                       set.timeStamp);
 }
 
-TEST(AnSampler, GetTotalNumOfStoredSamples)
+void
+test_GetTotalNumOfStoredSamples()
 {
     AnSampleSet set;
     int nSamples, i, j, result, nReqSamples, nBufSamples;
