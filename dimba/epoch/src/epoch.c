@@ -1,16 +1,27 @@
+/*
+ *  --------------------------------------------------------------------------
+ *
+ *                               GICSAFe-Firmware
+ *                               ----------------
+ *
+ *                      Copyright (C) 2019 CONICET-GICSAFe
+ *          All rights reserved. Protected by international copyright laws.
+ *
+ *  Contact information:
+ *  site: https://github.com/gicsafe-firmware
+ *  e-mail: <someone>@<somewhere>
+ *  ---------------------------------------------------------------------------
+ */
+
 /**
  *  \file       epoch.c
  *  \brief      Implementation of epoch time Unix.
  */
 
-/* -------------------------- Development history -------------------------- */
-/*
- *  2018.05.18  LeFr  v1.0.00  Initial version
- */
-
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci lf@vortexmakes.com
+ *  CIM   Carlos Mancón manconci@gmail.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
@@ -57,15 +68,15 @@ updStep_calc1(void)
         month += 12;    /* Puts Feb last since it has leap day */
         year -= 1;
     }
-    updatingEpoch += (UL)year/4 - (UL)year/100 + year/400;
+    updatingEpoch += (UL)year / 4 - (UL)year / 100 + year / 400;
     return updatingEpoch;
 }
 
 static Epoch
 updStep_calc2(void)
 {
-    updatingEpoch += 367*(UL)month/12 + (UL)nextTime.tm_mday + 
-                     (UL)year*365 - 719499;
+    updatingEpoch += 367 * (UL)month / 12 + (UL)nextTime.tm_mday +
+                     (UL)year * 365 - 719499;
     return updatingEpoch;
 }
 
@@ -91,11 +102,11 @@ updStep_calc5(void)
     return updatingEpoch;
 }
 
-static UpdStep updSteps[] = 
+static UpdStep updSteps[] =
 {
-    updStep_start, 
-    updStep_calc1, 
-    updStep_calc2, 
+    updStep_start,
+    updStep_calc1,
+    updStep_calc2,
     updStep_calc3,
     updStep_calc4,
     updStep_calc5,
@@ -117,15 +128,16 @@ epoch_mktime(Time *stime)
     }
 
     return (((
-                (UL)year_/4 - (UL)year_/100 + year_/400 + 
-                367*(UL)month_/12 + (UL)stime->tm_mday + (UL)year_*365 - 719499
-             )*24 + stime->tm_hour  /* now have hours */
-            )*60 + stime->tm_min    /* now have minutes */
-           )*60 + stime->tm_sec;    /* finally seconds */
+                 (UL)year_ / 4 - (UL)year_ / 100 + year_ / 400 +
+                 367 * (UL)month_ / 12 + (UL)stime->tm_mday + (UL)year_ * 365 -
+                 719499
+                 ) * 24 + stime->tm_hour /* now have hours */
+             ) * 60 + stime->tm_min /* now have minutes */
+            ) * 60 + stime->tm_sec; /* finally seconds */
 }
 
 /* ---------------------------- Global functions --------------------------- */
-Epoch 
+Epoch
 epoch_init(void)
 {
     pUpd = updSteps;
@@ -133,13 +145,13 @@ epoch_init(void)
     return currEpoch;
 }
 
-Epoch 
+Epoch
 epoch_get(void)
 {
     return currEpoch;
 }
 
-void 
+void
 epoch_updateNow(void)
 {
     Time *currTime;
@@ -148,7 +160,7 @@ epoch_updateNow(void)
     currEpoch = epoch_mktime(currTime);
 }
 
-Epoch 
+Epoch
 epoch_updateByStep(void)
 {
     Epoch tempEpoch;

@@ -1,16 +1,27 @@
+/*
+ *  --------------------------------------------------------------------------
+ *
+ *                               GICSAFe-Firmware
+ *                               ----------------
+ *
+ *                      Copyright (C) 2019 CONICET-GICSAFe
+ *          All rights reserved. Protected by international copyright laws.
+ *
+ *  Contact information:
+ *  site: https://github.com/gicsafe-firmware
+ *  e-mail: <someone>@<somewhere>
+ *  ---------------------------------------------------------------------------
+ */
+
 /**
  *  \file       test_Epoch.c
  *  \brief      Unit test for epoch time of Unix
  */
 
-/* -------------------------- Development history -------------------------- */
-/*
- *  2018.05.18  LeFr  v1.0.00  ---
- */
-
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci  lf@vortexmakes.com
+ *  CIM   Carlos Mancón manconci@gmail.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
@@ -29,13 +40,13 @@ static Time time;
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
 /* ---------------------------- Global functions --------------------------- */
-void 
+void
 setUp(void)
 {
     Mock_rtime_Init();
 }
 
-void 
+void
 tearDown(void)
 {
     Mock_rtime_Verify();
@@ -123,10 +134,10 @@ test_UpdateStepByStep()
 
     updatingEpoch = epoch_updateByStep();
     TEST_ASSERT_EQUAL(25443360, updatingEpoch);
-    
+
     updatingEpoch = epoch_updateByStep();
     TEST_ASSERT_EQUAL(1526601600, updatingEpoch);
-    
+
     epoch = epoch_get();
     TEST_ASSERT_EQUAL(updatingEpoch, epoch);
 }
