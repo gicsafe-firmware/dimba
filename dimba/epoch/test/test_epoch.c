@@ -15,7 +15,7 @@
 
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
-#include "unity_fixture.h"
+#include "unity.h"
 #include "epoch.h"
 #include "Mock_rtime.h"
 
@@ -23,30 +23,27 @@
 /* ------------------------------- Constants ------------------------------- */
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
-int GlobalExpectCount;
-int GlobalVerifyOrder;
-char *GlobalOrderError;
-
-TEST_GROUP(Epoch);
-
 /* ---------------------------- Local variables ---------------------------- */
 static Time time;
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
 /* ---------------------------- Global functions --------------------------- */
-TEST_SETUP(Epoch)
+void 
+setUp(void)
 {
     Mock_rtime_Init();
 }
 
-TEST_TEAR_DOWN(Epoch)
+void 
+tearDown(void)
 {
     Mock_rtime_Verify();
     Mock_rtime_Destroy();
 }
 
-TEST(Epoch, ClearAfterInit)
+void
+test_ClearAfterInit()
 {
     Epoch epoch;
 
@@ -64,7 +61,8 @@ TEST(Epoch, ClearAfterInit)
     TEST_ASSERT_EQUAL(0, epoch);
 }
 
-TEST(Epoch, MakeTime)
+void
+test_MakeTime()
 {
     Epoch epoch;
 
@@ -84,7 +82,8 @@ TEST(Epoch, MakeTime)
     TEST_ASSERT_EQUAL(1526601600, epoch);
 }
 
-TEST(Epoch, UpdateStepByStep)
+void
+test_UpdateStepByStep()
 {
     Epoch epoch, updatingEpoch;
 
@@ -132,7 +131,8 @@ TEST(Epoch, UpdateStepByStep)
     TEST_ASSERT_EQUAL(updatingEpoch, epoch);
 }
 
-TEST(Epoch, ReceiveTimeZero)
+void
+test_ReceiveTimeZero()
 {
     Epoch epoch;
 
