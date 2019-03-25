@@ -105,6 +105,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/bsp/din.c</locationURI>
 		</link>
 		<link>
+			<name>src/bsp/eth.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/bsp/eth.c</locationURI>
+		</link>
+		<link>
 			<name>src/bsp/hook.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/bsp/hook.c</locationURI>

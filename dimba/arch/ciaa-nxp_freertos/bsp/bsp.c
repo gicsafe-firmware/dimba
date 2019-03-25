@@ -37,6 +37,7 @@
 #include "ioChgDet.h"
 #include "epoch.h"
 #include "rtime.h"
+#include "eth.h"
 
 RKH_THIS_MODULE
 
@@ -77,6 +78,8 @@ bsp_init(int argc, char *argv[])
 	anIn_init();
 
     rtime_init();
+
+    eth_init();
 }
 
 void
