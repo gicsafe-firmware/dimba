@@ -54,7 +54,7 @@ tearDown(void)
 }
 
 void
-test_ClearAfterInit()
+test_ClearAfterInit(void)
 {
     Epoch epoch;
 
@@ -73,7 +73,7 @@ test_ClearAfterInit()
 }
 
 void
-test_MakeTime()
+test_MakeTime(void)
 {
     Epoch epoch;
 
@@ -94,7 +94,7 @@ test_MakeTime()
 }
 
 void
-test_UpdateStepByStep()
+test_UpdateStepByStep(void)
 {
     Epoch epoch, updatingEpoch;
 
@@ -143,7 +143,7 @@ test_UpdateStepByStep()
 }
 
 void
-test_ReceiveTimeZero()
+test_ReceiveTimeZero(void)
 {
     Epoch epoch;
 
