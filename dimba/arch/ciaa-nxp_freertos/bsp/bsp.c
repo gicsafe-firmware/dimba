@@ -66,10 +66,7 @@ bsp_init(int argc, char *argv[])
     (void)argc;
     (void)argv;
 
-	SystemCoreClockUpdate();
-	Board_Init();
-
-//    boardConfig();
+    boardConfig();
     ModStatus_init();
     ModStatus(0);
     RegStatus(UnregisteredSt);

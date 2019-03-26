@@ -80,6 +80,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/bsp/FreeRTOSConfig.h</locationURI>
 		</link>
 		<link>
+			<name>src/bsp/FreeRTOSHooks.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/bsp/FreeRTOSHooks.c</locationURI>
+		</link>
+		<link>
 			<name>src/bsp/anin.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/bsp/anin.c</locationURI>
@@ -278,11 +283,6 @@
 			<name>src/dimba/sspcfg.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/sspcfg.h</locationURI>
-		</link>
-		<link>
-			<name>src/freertos/FreeRTOSCommonHooks.c</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/third-party/freertos/FreeRTOSCommonHooks.c</locationURI>
 		</link>
 		<link>
 			<name>src/freertos/croutine.c</name>

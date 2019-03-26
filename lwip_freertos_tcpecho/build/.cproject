@@ -75,8 +75,8 @@
 									<listOptionValue builtIn="false" value="--gc-sections"/>
 								</option>
 								<option id="com.crt.advproject.link.gcc.hdrlib.1496165377" name="Library" superClass="com.crt.advproject.link.gcc.hdrlib" useByScannerDiscovery="false" value="com.crt.advproject.gcc.link.hdrlib.codered.nohost" valueType="enumerated"/>
-								<option id="gnu.c.link.option.libs.1850385382" name="Libraries (-l)" superClass="gnu.c.link.option.libs" useByScannerDiscovery="false" valueType="libs"/>
-								<option id="gnu.c.link.option.paths.35002261" name="Library search path (-L)" superClass="gnu.c.link.option.paths" useByScannerDiscovery="false" valueType="libPaths"/>
+								<option id="gnu.c.link.option.libs.1850385382" name="Libraries (-l)" superClass="gnu.c.link.option.libs" useByScannerDiscovery="false"/>
+								<option id="gnu.c.link.option.paths.35002261" name="Library search path (-L)" superClass="gnu.c.link.option.paths" useByScannerDiscovery="false"/>
 								<option id="com.crt.advproject.link.fpu.613580578" name="Floating point" superClass="com.crt.advproject.link.fpu" useByScannerDiscovery="false" value="com.crt.advproject.link.fpu.fpv4" valueType="enumerated"/>
 								<option id="com.crt.advproject.link.gcc.multicore.slave.4495752" name="Multicore configuration" superClass="com.crt.advproject.link.gcc.multicore.slave" useByScannerDiscovery="false"/>
 								<option id="com.crt.advproject.link.memory.heapAndStack.107675718" name="Heap and Stack options" superClass="com.crt.advproject.link.memory.heapAndStack" useByScannerDiscovery="false" value="&amp;Heap:Default;Post Data;Default&amp;Stack:Default;End;Default" valueType="string"/>
@@ -171,8 +171,8 @@
 									<listOptionValue builtIn="false" value="--gc-sections"/>
 								</option>
 								<option id="com.crt.advproject.link.gcc.hdrlib.139527075" name="Library" superClass="com.crt.advproject.link.gcc.hdrlib" value="com.crt.advproject.gcc.link.hdrlib.codered.nohost" valueType="enumerated"/>
-								<option id="gnu.c.link.option.libs.992062073" name="Libraries (-l)" superClass="gnu.c.link.option.libs" valueType="libs"/>
-								<option id="gnu.c.link.option.paths.359559465" name="Library search path (-L)" superClass="gnu.c.link.option.paths" valueType="libPaths"/>
+								<option id="gnu.c.link.option.libs.992062073" name="Libraries (-l)" superClass="gnu.c.link.option.libs"/>
+								<option id="gnu.c.link.option.paths.359559465" name="Library search path (-L)" superClass="gnu.c.link.option.paths"/>
 								<option id="com.crt.advproject.link.fpu.1187708414" name="Floating point" superClass="com.crt.advproject.link.fpu" value="com.crt.advproject.link.fpu.fpv4" valueType="enumerated"/>
 								<option id="com.crt.advproject.link.memory.heapAndStack.744378155" name="Heap and Stack options" superClass="com.crt.advproject.link.memory.heapAndStack" value="&amp;Heap:Default;Post Data;Default&amp;Stack:Default;End;Default" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.linker.input.1803635761" superClass="cdt.managedbuild.tool.gnu.c.linker.input">

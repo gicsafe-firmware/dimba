@@ -65,6 +65,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/FreeRTOSConfig.h</locationURI>
 		</link>
 		<link>
+			<name>tcpecho/FreeRTOSHooks.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/FreeRTOSHooks.c</locationURI>
+		</link>
+		<link>
 			<name>tcpecho/common</name>
 			<type>2</type>
 			<locationURI>PARENT-1-PROJECT_LOC/common</locationURI>

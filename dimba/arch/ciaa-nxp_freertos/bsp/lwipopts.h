@@ -47,7 +47,7 @@
 /* pbuf buffers in pool. In zero-copy mode, these buffers are
    located in peripheral RAM. In copied mode, they are located in
    internal IRAM */
-#define PBUF_POOL_SIZE                  17
+#define PBUF_POOL_SIZE                  48
 
 /* No padding needed */
 #define ETH_PAD_SIZE                    0
@@ -72,7 +72,7 @@
 
 /* Non-static memory, used with DMA pool */
 #ifdef __CODE_RED
-#define MEM_SIZE                        (12 * 1024)
+#define MEM_SIZE                        (64 * 1024)
 #else
 #define MEM_SIZE                        (24 * 1024)
 #endif
@@ -124,7 +124,7 @@
 #define DEFAULT_UDP_RECVMBOX_SIZE       6
 
 /* TCPIP thread must run at higher priority than MAC threads! */
-#define TCPIP_THREAD_PRIO               (DEFAULT_THREAD_PRIO + configMAX_PRIORITIES - 1)
+#define TCPIP_THREAD_PRIO               (configMAX_PRIORITIES - 1)
 
 #define TCPIP_THREAD_STACKSIZE          (512)
 
