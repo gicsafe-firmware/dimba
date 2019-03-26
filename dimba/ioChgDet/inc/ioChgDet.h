@@ -11,6 +11,7 @@
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci lf@vortexmakes.com
+ *  BMP	  Bruno Palacios	BrunoPalacios@Embels.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
