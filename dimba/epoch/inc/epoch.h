@@ -18,6 +18,10 @@
  *  \brief      Specification of epoch time of Unix.
  */
 
+/* -------------------------- Development history -------------------------- */
+/*
+ */
+
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci lf@vortexmakes.com

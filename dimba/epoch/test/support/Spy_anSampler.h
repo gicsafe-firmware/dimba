@@ -18,6 +18,10 @@
  *  \brief      Specification of spy for analog signal sampler.
  */
 
+/* -------------------------- Development history -------------------------- */
+/*
+ */
+
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci lf@vortexmakes.com

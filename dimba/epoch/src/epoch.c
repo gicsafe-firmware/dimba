@@ -18,6 +18,10 @@
  *  \brief      Implementation of epoch time Unix.
  */
 
+/* -------------------------- Development history -------------------------- */
+/*
+ */
+
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci lf@vortexmakes.com
