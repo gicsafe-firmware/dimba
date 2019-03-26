@@ -1,3 +1,18 @@
+/*
+ *  --------------------------------------------------------------------------
+ *
+ *                               GICSAFe-Firmware
+ *                               ----------------
+ *
+ *                      Copyright (C) 2019 CONICET-GICSAFe
+ *          All rights reserved. Protected by international copyright laws.
+ *
+ *  Contact information:
+ *  site: https://github.com/gicsafe-firmware
+ *  e-mail: <someone>@<somewhere>
+ *  ---------------------------------------------------------------------------
+ */
+
 /**
  *  \file       test_Epoch.c
  *  \brief      Unit test for epoch time of Unix
@@ -5,17 +20,17 @@
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2018.05.18  LeFr  v1.0.00  ---
  */
 
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci  lf@vortexmakes.com
+ *  CIM   Carlos Mancón manconci@gmail.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
-#include "unity_fixture.h"
+#include "unity.h"
 #include "epoch.h"
 #include "Mock_rtime.h"
 
@@ -23,30 +38,27 @@
 /* ------------------------------- Constants ------------------------------- */
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
-int GlobalExpectCount;
-int GlobalVerifyOrder;
-char *GlobalOrderError;
-
-TEST_GROUP(Epoch);
-
 /* ---------------------------- Local variables ---------------------------- */
 static Time time;
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
 /* ---------------------------- Global functions --------------------------- */
-TEST_SETUP(Epoch)
+void
+setUp(void)
 {
     Mock_rtime_Init();
 }
 
-TEST_TEAR_DOWN(Epoch)
+void
+tearDown(void)
 {
     Mock_rtime_Verify();
     Mock_rtime_Destroy();
 }
 
-TEST(Epoch, ClearAfterInit)
+void
+test_ClearAfterInit(void)
 {
     Epoch epoch;
 
@@ -64,7 +76,8 @@ TEST(Epoch, ClearAfterInit)
     TEST_ASSERT_EQUAL(0, epoch);
 }
 
-TEST(Epoch, MakeTime)
+void
+test_MakeTime(void)
 {
     Epoch epoch;
 
@@ -84,7 +97,8 @@ TEST(Epoch, MakeTime)
     TEST_ASSERT_EQUAL(1526601600, epoch);
 }
 
-TEST(Epoch, UpdateStepByStep)
+void
+test_UpdateStepByStep(void)
 {
     Epoch epoch, updatingEpoch;
 
@@ -124,15 +138,16 @@ TEST(Epoch, UpdateStepByStep)
 
     updatingEpoch = epoch_updateByStep();
     TEST_ASSERT_EQUAL(25443360, updatingEpoch);
-    
+
     updatingEpoch = epoch_updateByStep();
     TEST_ASSERT_EQUAL(1526601600, updatingEpoch);
-    
+
     epoch = epoch_get();
     TEST_ASSERT_EQUAL(updatingEpoch, epoch);
 }
 
-TEST(Epoch, ReceiveTimeZero)
+void
+test_ReceiveTimeZero(void)
 {
     Epoch epoch;
 

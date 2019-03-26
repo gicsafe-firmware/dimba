@@ -1,3 +1,18 @@
+/*
+ *  --------------------------------------------------------------------------
+ *
+ *                               GICSAFe-Firmware
+ *                               ----------------
+ *
+ *                      Copyright (C) 2019 CONICET-GICSAFe
+ *          All rights reserved. Protected by international copyright laws.
+ *
+ *  Contact information:
+ *  site: https://github.com/gicsafe-firmware
+ *  e-mail: <someone>@<somewhere>
+ *  ---------------------------------------------------------------------------
+ */
+
 /**
  *  \file       epoch.c
  *  \brief      Implementation of epoch time Unix.
@@ -5,12 +20,12 @@
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2018.05.18  LeFr  v1.0.00  Initial version
  */
 
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci lf@vortexmakes.com
+ *  CIM   Carlos Mancón manconci@gmail.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
@@ -20,6 +35,8 @@
 
 /* ----------------------------- Local macros ------------------------------ */
 /* ------------------------------- Constants ------------------------------- */
+static const Time dftTime = {0, 0, 0, 1, 1, 1970, 3, 0};
+
 /* ---------------------------- Local data types --------------------------- */
 typedef unsigned long UL;
 typedef int MInt;
@@ -36,13 +53,33 @@ static short year;
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
+static int
+verifyTime(Time *tm)
+{
+    int isValid = 0;
+
+    if ((tm->tm_sec > 59) ||
+        (tm->tm_min > 59) ||
+        (tm->tm_hour > 24) ||
+        ((tm->tm_mday == 0) || (tm->tm_mday > 31)) ||
+        ((tm->tm_mon == 0) || (tm->tm_mon > 12)) ||
+        (tm->tm_year < 1970) ||
+        ((tm->tm_wday == 0) || (tm->tm_wday > 8)))
+    {
+        isValid = 1;
+    }
+    return isValid;
+}
+
 static Epoch
 updStep_start(void)
 {
+    int isValid;
     Time *currTime;
 
     currTime = rtime_get();
-    nextTime = *currTime;
+    isValid = verifyTime(currTime);
+    nextTime = (isValid == 0) ? *currTime : (Time)dftTime;
     updatingEpoch = 0;
     return updatingEpoch;
 }
@@ -57,15 +94,15 @@ updStep_calc1(void)
         month += 12;    /* Puts Feb last since it has leap day */
         year -= 1;
     }
-    updatingEpoch += (UL)year/4 - (UL)year/100 + year/400;
+    updatingEpoch += (UL)year / 4 - (UL)year / 100 + year / 400;
     return updatingEpoch;
 }
 
 static Epoch
 updStep_calc2(void)
 {
-    updatingEpoch += 367*(UL)month/12 + (UL)nextTime.tm_mday + 
-                     (UL)year*365 - 719499;
+    updatingEpoch += 367 * (UL)month / 12 + (UL)nextTime.tm_mday +
+                     (UL)year * 365 - 719499;
     return updatingEpoch;
 }
 
@@ -91,11 +128,11 @@ updStep_calc5(void)
     return updatingEpoch;
 }
 
-static UpdStep updSteps[] = 
+static UpdStep updSteps[] =
 {
-    updStep_start, 
-    updStep_calc1, 
-    updStep_calc2, 
+    updStep_start,
+    updStep_calc1,
+    updStep_calc2,
     updStep_calc3,
     updStep_calc4,
     updStep_calc5,
@@ -117,15 +154,16 @@ epoch_mktime(Time *stime)
     }
 
     return (((
-                (UL)year_/4 - (UL)year_/100 + year_/400 + 
-                367*(UL)month_/12 + (UL)stime->tm_mday + (UL)year_*365 - 719499
-             )*24 + stime->tm_hour  /* now have hours */
-            )*60 + stime->tm_min    /* now have minutes */
-           )*60 + stime->tm_sec;    /* finally seconds */
+                 (UL)year_ / 4 - (UL)year_ / 100 + year_ / 400 +
+                 367 * (UL)month_ / 12 + (UL)stime->tm_mday + (UL)year_ * 365 -
+                 719499
+                 ) * 24 + stime->tm_hour /* now have hours */
+             ) * 60 + stime->tm_min /* now have minutes */
+            ) * 60 + stime->tm_sec; /* finally seconds */
 }
 
 /* ---------------------------- Global functions --------------------------- */
-Epoch 
+Epoch
 epoch_init(void)
 {
     pUpd = updSteps;
@@ -133,22 +171,28 @@ epoch_init(void)
     return currEpoch;
 }
 
-Epoch 
+Epoch
 epoch_get(void)
 {
     return currEpoch;
 }
 
-void 
+void
 epoch_updateNow(void)
 {
+    int isValid;
     Time *currTime;
 
     currTime = rtime_get();
+    isValid = verifyTime(currTime);
+    if (isValid == 1)
+    {
+        currTime = (Time *)&dftTime;
+    }
     currEpoch = epoch_mktime(currTime);
 }
 
-Epoch 
+Epoch
 epoch_updateByStep(void)
 {
     Epoch tempEpoch;
