@@ -500,6 +500,11 @@
 			<locationURI>PARENT-4-PROJECT_LOC/third-party/LPCOpen/lpc_chip_43xx/src/rtc_18xx_43xx.c</locationURI>
 		</link>
 		<link>
+			<name>src/bsp/lpc_chip/sysinit_18xx_43xx.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/LPCOpen/lpc_chip_43xx/src/sysinit_18xx_43xx.c</locationURI>
+		</link>
+		<link>
 			<name>src/bsp/lpc_chip/uart_18xx_43xx.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/third-party/LPCOpen/lpc_chip_43xx/src/uart_18xx_43xx.c</locationURI>

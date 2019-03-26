@@ -124,7 +124,7 @@
 #define DEFAULT_UDP_RECVMBOX_SIZE       6
 
 /* TCPIP thread must run at higher priority than MAC threads! */
-#define TCPIP_THREAD_PRIO               (configMAX_PRIORITIES - 1)
+#define TCPIP_THREAD_PRIO               (DEFAULT_THREAD_PRIO + configMAX_PRIORITIES - 1)
 
 #define TCPIP_THREAD_STACKSIZE          (512)
 

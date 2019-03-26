@@ -134,11 +134,11 @@ main(int argc, char *argv[])
     MQTTProt_ctor(&mqttProtCfg, publishDimba);
 
 //    RKH_SMA_ACTIVATE(ethMgr, EthMgr_qsto, ETHMGR_QSTO_SIZE, 0, ETHMGR_STK_SIZE);
-    RKH_SMA_ACTIVATE(conMgr, ConMgr_qsto, CONMGR_QSTO_SIZE, 0, CONMGR_STK_SIZE);
-    RKH_SMA_ACTIVATE(modMgr, ModMgr_qsto, MODMGR_QSTO_SIZE, 0, MODMGR_STK_SIZE);
-    RKH_SMA_ACTIVATE(mqttProt, MQTTProt_qsto, MQTTPROT_QSTO_SIZE, 0, MQTTPROT_STK_SIZE);
+    //RKH_SMA_ACTIVATE(conMgr, ConMgr_qsto, CONMGR_QSTO_SIZE, 0, CONMGR_STK_SIZE);
+    //RKH_SMA_ACTIVATE(modMgr, ModMgr_qsto, MODMGR_QSTO_SIZE, 0, MODMGR_STK_SIZE);
+    //RKH_SMA_ACTIVATE(mqttProt, MQTTProt_qsto, MQTTPROT_QSTO_SIZE, 0, MQTTPROT_STK_SIZE);
 
-    RKH_SMA_POST_FIFO(conMgr, &e_Open, 0);
+    //RKH_SMA_POST_FIFO(conMgr, &e_Open, 0);
 //    RKH_SMA_POST_FIFO(ethMgr, &e_Open, 0);
 
     rkh_fwk_enter();
