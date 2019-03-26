@@ -27,7 +27,7 @@
   :include:
     - inc
     - ../CirBuffer
-    - ../epoch
+    - ../epoch/inc
     - ../adconv
     - ../anIn
     - ../mTime
