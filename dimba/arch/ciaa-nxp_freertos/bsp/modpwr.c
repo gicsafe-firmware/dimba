@@ -22,8 +22,8 @@
 #include "mTimeCfg.h"
 
 /* ----------------------------- Local macros ------------------------------ */
-#define PwrKey_init()       gpioConfig(GPIO0, GPIO_OUTPUT)
-#define PwrKey(b)           gpioWrite(GPIO0, !b)
+#define PwrKey_init()       gpioConfig(GPIO1, GPIO_OUTPUT)
+#define PwrKey(b)           gpioWrite(GPIO1, !b)
 #define Power_init()        gpioConfig(DO0, GPIO_OUTPUT)
 #define Power(b)            gpioWrite(DO0, b)
 
