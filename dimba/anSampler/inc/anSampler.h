@@ -1,3 +1,18 @@
+/*
+ *  --------------------------------------------------------------------------
+ *
+ *                               GICSAFe-Firmware
+ *                               ----------------
+ *
+ *                      Copyright (C) 2019 CONICET-GICSAFe
+ *          All rights reserved. Protected by international copyright laws.
+ *
+ *  Contact information:
+ *  site: https://github.com/gicsafe-firmware
+ *  e-mail: <someone>@<somewhere>
+ *  ---------------------------------------------------------------------------
+ */
+
 /**
  *  \file       anSampler.h
  *  \brief      Specification of analog signal sampler.
@@ -5,12 +20,12 @@
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2018.05.14  LeFr  v1.0.00  Initial version
  */
 
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci lf@vortexmakes.com
+ *  CIM   Carlos Mancón manconci@gmail.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
@@ -32,7 +47,9 @@ extern "C" {
 
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
-#define AN_SAMPLING_RATE_SEC (MTIME_ANSAMPLE_PUT_PERIOD * MTIME_TIME_TICK)/1000
+#define AN_SAMPLING_RATE_SEC \
+    (MTIME_ANSAMPLE_PUT_PERIOD * MTIME_TIME_TICK) / \
+    1000
 #define MAX_AN_NUM_SAMPLES   (32 << NUM_PUBTIME_STEPS)
 #define NUM_AN_SIGNALS       NUM_ANIN_SIGNALS
 
