@@ -109,6 +109,7 @@ main(int argc, char *argv[])
 {
     bsp_init(argc, argv);
 
+
     anSampler_init();
     IOChgDet_init();
     epoch_init();
@@ -116,15 +117,16 @@ main(int argc, char *argv[])
 
     rkh_fwk_init();
 
-    setupTraceFilters();
 
+    setupTraceFilters();
+#if 1
     RKH_TRC_OPEN();
 
     rkh_dynEvt_init();
     rkh_fwk_registerEvtPool(evPool0Sto, SIZEOF_EP0STO, SIZEOF_EP0_BLOCK);
     rkh_fwk_registerEvtPool(evPool1Sto, SIZEOF_EP1STO, SIZEOF_EP1_BLOCK);
     rkh_fwk_registerEvtPool(evPool2Sto, SIZEOF_EP2STO, SIZEOF_EP2_BLOCK);
-
+#else
     mqttProtCfg.publishTime = MAX_PUBLISH_TIME;
     mqttProtCfg.syncTime = 4;
     mqttProtCfg.keepAlive = 400;
@@ -132,7 +134,6 @@ main(int argc, char *argv[])
     strcpy(mqttProtCfg.clientId, "");
     strcpy(mqttProtCfg.topic, "");
     MQTTProt_ctor(&mqttProtCfg, publishDimba);
-
 //    RKH_SMA_ACTIVATE(ethMgr, EthMgr_qsto, ETHMGR_QSTO_SIZE, 0, ETHMGR_STK_SIZE);
     //RKH_SMA_ACTIVATE(conMgr, ConMgr_qsto, CONMGR_QSTO_SIZE, 0, CONMGR_STK_SIZE);
     //RKH_SMA_ACTIVATE(modMgr, ModMgr_qsto, MODMGR_QSTO_SIZE, 0, MODMGR_STK_SIZE);
@@ -140,7 +141,7 @@ main(int argc, char *argv[])
 
     //RKH_SMA_POST_FIFO(conMgr, &e_Open, 0);
 //    RKH_SMA_POST_FIFO(ethMgr, &e_Open, 0);
-
+#endif
     rkh_fwk_enter();
 
     RKH_TRC_CLOSE();

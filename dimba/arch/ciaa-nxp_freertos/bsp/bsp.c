@@ -77,9 +77,10 @@ bsp_init(int argc, char *argv[])
     NetStatus(DisconnectedSt);
 
     modPwr_init();
-    dIn_init();
-	anIn_init();
 
+    dIn_init();
+
+    anIn_init();
     rtime_init();
 
     eth_init();
