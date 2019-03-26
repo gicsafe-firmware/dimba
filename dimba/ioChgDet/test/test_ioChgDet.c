@@ -12,7 +12,7 @@
  *  e-mail: <someone>@<somewhere>
  *  ---------------------------------------------------------------------------
  */
- 
+
 /**
  *  \file       test_IoChgDet.c
  *  \brief      Unit test for IO change detector.
@@ -21,7 +21,7 @@
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci  lf@vortexmakes.com
- *  BMP	  Bruno Palacios	 BrunoPalacios@Embels.com
+ *  BMP   Bruno Palacios     BrunoPalacios@Embels.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
@@ -90,7 +90,6 @@ test_StoreOneIOChange(void)
     result = IOChgDet_put(signalId, signalValue);
     TEST_ASSERT_EQUAL(0, result);
 }
-
 
 void
 test_GetOneIOChange(void)
