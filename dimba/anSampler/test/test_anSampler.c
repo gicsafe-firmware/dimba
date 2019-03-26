@@ -18,9 +18,14 @@
  *  \brief      Unit test for analog signal sampler.
  */
 
+/* -------------------------- Development history -------------------------- */
+/*
+ */
+
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci  lf@vortexmakes.com
+ *  CIM   Carlos Mancón manconci@gmail.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
@@ -57,7 +62,7 @@ tearDown(void)
 }
 
 void
-test_ClearAfterInit()
+test_ClearAfterInit(void)
 {
     int i, result;
 
@@ -74,7 +79,7 @@ test_ClearAfterInit()
 }
 
 void
-test_FailsOneAnSamplerOnInit()
+test_FailsOneAnSamplerOnInit(void)
 {
     int result;
 
@@ -100,7 +105,7 @@ test_FailsOneAnSamplerOnInit()
 }
 
 void
-test_StoreOneAnSample()
+test_StoreOneAnSample(void)
 {
     int i, result;
 
@@ -129,7 +134,7 @@ test_StoreOneAnSample()
 }
 
 void
-test_GetAnSampleSet()
+test_GetAnSampleSet(void)
 {
     AnSampleSet set;
     int i, result, nReqSamples, nBufSamples;
@@ -163,7 +168,7 @@ test_GetAnSampleSet()
 }
 
 void
-test_GetTotalNumOfStoredSamples()
+test_GetTotalNumOfStoredSamples(void)
 {
     AnSampleSet set;
     int nSamples, i, j, result, nReqSamples, nBufSamples;

@@ -1,3 +1,18 @@
+/*
+ *  --------------------------------------------------------------------------
+ *
+ *                               GICSAFe-Firmware
+ *                               ----------------
+ *
+ *                      Copyright (C) 2019 CONICET-GICSAFe
+ *          All rights reserved. Protected by international copyright laws.
+ *
+ *  Contact information:
+ *  site: https://github.com/gicsafe-firmware
+ *  e-mail: <someone>@<somewhere>
+ *  ---------------------------------------------------------------------------
+ */
+
 /**
  *  \file       Spy_anSampler.h
  *  \brief      Specification of spy for analog signal sampler.
@@ -5,7 +20,6 @@
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2018.05.18  LeFr  v1.0.00  Initial version
  */
 
 /* -------------------------------- Authors -------------------------------- */
