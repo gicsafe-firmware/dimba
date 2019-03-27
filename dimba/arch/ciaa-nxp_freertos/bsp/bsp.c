@@ -87,7 +87,7 @@ void
 bsp_timeTick(void)
 {
     ++tstamp;
-    
+
     dIn_scan();
     modPwr_ctrl();
     mTime_tick();
@@ -101,9 +101,15 @@ rkh_trc_getts(void)
 
 static
 void
-gsm_rx_isr( unsigned char byte )
+gsm_rx_isr(unsigned char byte)
 {
     cmdParser(byte);
+}
+
+void
+bsp_eth_open(void)
+{
+    //eth_init();
 }
 
 void
@@ -125,7 +131,7 @@ bsp_serial_close(int ch)
 void
 bsp_serial_puts(int ch, char *p)
 {
-    while(*p!='\0')
+    while (*p != '\0')
     {
         uartWriteByte(UART_232, *p);
         ++p;
@@ -135,7 +141,7 @@ bsp_serial_puts(int ch, char *p)
 void
 bsp_serial_putnchar(int ch, unsigned char *p, ruint ndata)
 {
-    while(ndata && (ndata-- != 0))
+    while (ndata && (ndata-- != 0))
     {
         uartWriteByte(UART_232, *p);
         ++p;
@@ -148,17 +154,16 @@ bsp_regStatus(Status_t status)
     RegStatus(status);
 }
 
-void 
+void
 bsp_netStatus(Status_t status)
 {
     NetStatus(status);
 }
 
-void 
+void
 bsp_modStatusToggle(void)
 {
     ModStatus_toggle();
 }
-
 
 /* ------------------------------ File footer ------------------------------ */

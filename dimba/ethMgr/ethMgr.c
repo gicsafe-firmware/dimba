@@ -110,6 +110,7 @@ open(EthMgr *const me, RKH_EVT_T *pe)
     (void)pe;
     (void)me;
 
+    bsp_eth_open();
 }
 
 static void

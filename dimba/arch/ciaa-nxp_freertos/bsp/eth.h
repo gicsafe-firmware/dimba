@@ -1,6 +1,6 @@
 /**
  *  \file       eth.h
- *  \brief      
+ *  \brief
  */
 
 /* -------------------------- Development history -------------------------- */

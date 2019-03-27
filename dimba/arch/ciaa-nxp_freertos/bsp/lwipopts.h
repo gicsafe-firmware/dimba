@@ -13,8 +13,10 @@
  * all warranties, express or implied, including all implied warranties of
  * merchantability, fitness for a particular purpose and non-infringement of
  * intellectual property rights.  NXP Semiconductors assumes no responsibility
- * or liability for the use of the software, conveys no license or rights under any
- * patent, copyright, mask work right, or any other intellectual property rights in
+ * or liability for the use of the software, conveys no license or rights under
+ *any
+ * patent, copyright, mask work right, or any other intellectual property rights
+ *in
  * or to any products. NXP Semiconductors reserves the right to make changes
  * in the software without notification. NXP Semiconductors also makes no
  * representation or warranty that such application will be suitable for the
@@ -45,8 +47,8 @@
 #define MEM_ALIGNMENT                   4
 
 /* pbuf buffers in pool. In zero-copy mode, these buffers are
-   located in peripheral RAM. In copied mode, they are located in
-   internal IRAM */
+ * located in peripheral RAM. In copied mode, they are located in
+ * internal IRAM */
 #define PBUF_POOL_SIZE                  48
 
 /* No padding needed */
@@ -56,7 +58,7 @@
 #define IP_SOF_BROADCAST_RECV           1
 
 /* The ethernet FCS is performed in hardware. The IP, TCP, and UDP
-   CRCs still need to be done in hardware. */
+ * CRCs still need to be done in hardware. */
 #define CHECKSUM_GEN_IP                 1
 #define CHECKSUM_GEN_UDP                1
 #define CHECKSUM_GEN_TCP                1
@@ -66,8 +68,8 @@
 #define LWIP_CHECKSUM_ON_COPY           1
 
 /* Use LWIP version of htonx() to allow generic functionality across
-   all platforms. If you are using the Cortex Mx devices, you might
-   be able to use the Cortex __rev instruction instead. */
+ * all platforms. If you are using the Cortex Mx devices, you might
+ * be able to use the Cortex __rev instruction instead. */
 #define LWIP_PLATFORM_BYTESWAP          0
 
 /* Non-static memory, used with DMA pool */
@@ -102,8 +104,8 @@
 #define LWIP_STATS_DISPLAY              0
 
 /* There are more *_DEBUG options that can be selected.
-   See opts.h. Make sure that LWIP_DEBUG is defined when
-   building the code to use debug. */
+ * See opts.h. Make sure that LWIP_DEBUG is defined when
+ * building the code to use debug. */
 #define TCP_DEBUG                       LWIP_DBG_OFF
 #define ETHARP_DEBUG                    LWIP_DBG_OFF
 #define PBUF_DEBUG                      LWIP_DBG_OFF
@@ -113,7 +115,7 @@
 #define UDP_DEBUG                       LWIP_DBG_OFF
 
 /* This define is custom for the LPC EMAC driver. Enabled it to
-   get debug messages for the driver. */
+ * get debug messages for the driver. */
 #define EMAC_DEBUG                    LWIP_DBG_OFF
 
 #define DEFAULT_THREAD_PRIO             (tskIDLE_PRIORITY + 1)
@@ -147,20 +149,19 @@
 #define mem_malloc  pvPortMalloc
 
 /* Reentrant Calloc */
-STATIC INLINE void *pvPortCalloc(size_t nmemb, size_t size)
+STATIC INLINE void *
+pvPortCalloc(size_t nmemb, size_t size)
 {
-	void *x = mem_malloc(nmemb * size);
-	if (x != NULL)
-		memset(x, 0, nmemb * size);
-	return x;
+    void *x = mem_malloc(nmemb * size);
+    if (x != NULL)
+    {
+        memset(x, 0, nmemb * size);
+    }
+    return x;
 }
 
 #define mem_calloc pvPortCalloc
 
 #endif /* __LWIPOPTS_H_ */
 
-
-
-
-
-
+/* ------------------------------ End of file ------------------------------ */

@@ -58,9 +58,9 @@ RKH_THIS_MODULE
 
 /* ----------------------------- Local macros ------------------------------ */
 #if DEBUG == 1
-#define reset_now()		__asm volatile	("	bkpt 0x00FF\n" )
+#define reset_now()     __asm volatile ("	bkpt 0x00FF\n")
 #else
-#define reset_now()		NVIC_SystemReset()
+#define reset_now()     NVIC_SystemReset()
 #endif
 
 /* ------------------------------- Constants ------------------------------- */
@@ -76,7 +76,7 @@ rkh_assert(RKHROM char * const file, int line)
     RKH_DIS_INTERRUPT();
     RKH_TR_FWK_ASSERT((RKHROM char *)file, __LINE__);
     rkh_fwk_exit();
-	reset_now();
+    reset_now();
 }
 
 /* ------------------------------ File footer ------------------------------ */

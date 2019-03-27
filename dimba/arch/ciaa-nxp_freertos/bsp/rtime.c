@@ -28,7 +28,7 @@
 /* ---------------------------- Local variables ---------------------------- */
 static Time t;
 static rtc_t rtc;
-static rtc_t rtcDft = { 1970, 1, 1, 1, 0, 0, 0 };
+static rtc_t rtcDft = {1970, 1, 1, 1, 0, 0, 0};
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
@@ -39,20 +39,20 @@ rtime_init(void)
     RunLed_init();
     RunLed_toggle();
 
-	Chip_RTC_Init(LPC_RTC);
+    Chip_RTC_Init(LPC_RTC);
     Chip_RTC_Enable(LPC_RTC, ENABLE);
     rtcRead(&rtc);
 
-    if( (rtc.year < 1970) ||
-		(rtc.month < 1) || (rtc.month > 12) ||
-    	(rtc.mday < 1) || (rtc.mday > 31) ||
-		(rtc.wday < 1) || (rtc.wday > 7) ||
-		(rtc.hour < 0) || (rtc.hour > 23) ||
-		(rtc.min < 0) || (rtc.min > 59) ||
-		(rtc.sec < 0) || (rtc.sec > 59)
-      )
+    if ((rtc.year < 1970) ||
+        (rtc.month < 1) || (rtc.month > 12) ||
+        (rtc.mday < 1) || (rtc.mday > 31) ||
+        (rtc.wday < 1) || (rtc.wday > 7) ||
+        (rtc.hour < 0) || (rtc.hour > 23) ||
+        (rtc.min < 0) || (rtc.min > 59) ||
+        (rtc.sec < 0) || (rtc.sec > 59)
+        )
     {
-    	rtcWrite(&rtcDft);
+        rtcWrite(&rtcDft);
     }
 }
 
@@ -77,15 +77,15 @@ rtime_get(void)
 void
 rtime_set(Time *pt)
 {
-   rtc.sec = pt->tm_sec;
-   rtc.min = pt->tm_min;
-   rtc.hour = pt->tm_hour;
-   rtc.wday = pt->tm_wday;
-   rtc.mday = pt->tm_mday;
-   rtc.month = pt->tm_mon;
-   rtc.year = pt->tm_year;
+    rtc.sec = pt->tm_sec;
+    rtc.min = pt->tm_min;
+    rtc.hour = pt->tm_hour;
+    rtc.wday = pt->tm_wday;
+    rtc.mday = pt->tm_mday;
+    rtc.month = pt->tm_mon;
+    rtc.year = pt->tm_year;
 
-   rtcWrite(&rtc);
+    rtcWrite(&rtc);
 }
 
 /* ------------------------------ End of file ------------------------------ */

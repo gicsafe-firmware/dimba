@@ -1,6 +1,6 @@
 /**
  *  \file       uart_isr.h
- *  \brief      
+ *  \brief
  */
 
 /* -------------------------- Development history -------------------------- */
@@ -29,11 +29,11 @@ extern "C" {
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
 /* ------------------------------- Data types ------------------------------ */
-typedef void (* uartIsrCb)(unsigned char c);
+typedef void (*uartIsrCb)(unsigned char c);
 
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
-void uartIsr_rxEnable( uartMap_t uart, uartIsrCb cb );
+void uartIsr_rxEnable(uartMap_t uart, uartIsrCb cb);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus

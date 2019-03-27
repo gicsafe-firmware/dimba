@@ -28,16 +28,16 @@
 #define Power(b)            gpioWrite(DO0, b)
 
 #define modPwr_toggle() \
-        { \
-            RKH_SR_ALLOC(); \
-            RKH_ENTER_CRITICAL(); \
-            counter = SIM900_PWR_TIME; \
-            state = Toggling; \
-            RKH_EXIT_CRITICAL(); \
-        }
+    { \
+        RKH_SR_ALLOC(); \
+        RKH_ENTER_CRITICAL(); \
+        counter = SIM900_PWR_TIME; \
+        state = Toggling; \
+        RKH_EXIT_CRITICAL(); \
+    }
 
 /* ------------------------------- Constants ------------------------------- */
-#define SIM900_PWR_TIME     (1000/MTIME_MODPWR_BASE)
+#define SIM900_PWR_TIME     (1000 / MTIME_MODPWR_BASE)
 
 /* ---------------------------- Local data types --------------------------- */
 typedef enum ModPwrStates
@@ -66,7 +66,7 @@ modPwr_init(void)
 void
 modPwr_ctrl(void)
 {
-    switch(state)
+    switch (state)
     {
         case OnOff:
             PwrKey(1);
@@ -74,7 +74,7 @@ modPwr_ctrl(void)
 
         case Toggling:
             PwrKey(0);
-            if(counter && (--counter == 0))
+            if (counter && (--counter == 0))
             {
                 state = OnOff;
             }
@@ -82,7 +82,6 @@ modPwr_ctrl(void)
             break;
     }
 }
-
 
 void
 modPwr_off(void)

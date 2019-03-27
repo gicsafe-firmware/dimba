@@ -37,7 +37,7 @@
 									<listOptionValue builtIn="false" value="ARCH_LITTLE_ENDIAN"/>
 									<listOptionValue builtIn="false" value="DEBUG=1"/>
 									<listOptionValue builtIn="false" value="GPRS_QUICK_SEND=1"/>
-									<listOptionValue builtIn="false" value="__FREERTOS_V10_0_1__"/>
+									<listOptionValue builtIn="false" value="__NO_OFICIAL_PORT__"/>
 								</option>
 								<option id="gnu.c.compiler.option.misc.other.656698687" name="Other flags" superClass="gnu.c.compiler.option.misc.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -fno-builtin -ffunction-sections -fdata-sections -fsingle-precision-constant" valueType="string"/>
 								<option id="gnu.c.compiler.option.optimization.flags.1201889724" name="Other optimization flags" superClass="gnu.c.compiler.option.optimization.flags" useByScannerDiscovery="false" value="-fno-common" valueType="string"/>
@@ -46,6 +46,7 @@
 								<option id="com.crt.advproject.gcc.fpu.2107142452" name="Floating point" superClass="com.crt.advproject.gcc.fpu" useByScannerDiscovery="false" value="com.crt.advproject.gcc.fpu.fpv4" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.include.paths.117219667" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../bsp&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../bsp/rkhport&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/LPCOpen/lpc_chip_43xx/inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/LPCOpen/lpc_board_ciaa_edu_4337/inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/sapi_rtos/inc&quot;"/>
@@ -127,8 +128,9 @@
 					</folderInfo>
 					<fileInfo id="com.crt.advproject.config.exe.debug.1287796118.857230718" name="ethMgr.c" rcbsApplicability="disable" resourcePath="src/dimba/ethMgr/ethMgr.c" toolsToInvoke="com.crt.advproject.gcc.exe.debug.110044005.542383249">
 						<tool id="com.crt.advproject.gcc.exe.debug.110044005.542383249" name="MCU C Compiler" superClass="com.crt.advproject.gcc.exe.debug.110044005">
-							<option id="gnu.c.compiler.option.include.paths.856713489" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
+							<option id="gnu.c.compiler.option.include.paths.856713489" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../bsp&quot;"/>
+								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../bsp/rkhport&quot;"/>
 								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/LPCOpen/lpc_chip_43xx/inc&quot;"/>
 								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/LPCOpen/lpc_board_ciaa_edu_4337/inc&quot;"/>
 								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/sapi_rtos/inc&quot;"/>
@@ -203,7 +205,6 @@
 								<option id="com.crt.advproject.gcc.thumb.499395876" name="Thumb mode" superClass="com.crt.advproject.gcc.thumb" useByScannerDiscovery="false" value="true" valueType="boolean"/>
 								<option id="com.crt.advproject.gcc.arch.825510719" name="Architecture" superClass="com.crt.advproject.gcc.arch" useByScannerDiscovery="false" value="com.crt.advproject.gcc.target.cm4" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1000227059" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
-									<listOptionValue builtIn="false" value="__FREERTOS_V10_0_1__"/>
 									<listOptionValue builtIn="false" value="__CODE_RED"/>
 									<listOptionValue builtIn="false" value="CORE_M4"/>
 									<listOptionValue builtIn="false" value="__LPC43XX__"/>
@@ -215,6 +216,7 @@
 									<listOptionValue builtIn="false" value="ARCH_LITTLE_ENDIAN"/>
 									<listOptionValue builtIn="false" value="NDEBUG"/>
 									<listOptionValue builtIn="false" value="GPRS_QUICK_SEND=1"/>
+									<listOptionValue builtIn="false" value="__NO_OFICIAL_PORT__"/>
 								</option>
 								<option id="gnu.c.compiler.option.misc.other.989585946" name="Other flags" superClass="gnu.c.compiler.option.misc.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -fno-builtin -ffunction-sections -fdata-sections -fsingle-precision-constant" valueType="string"/>
 								<option id="gnu.c.compiler.option.optimization.flags.184349289" name="Other optimization flags" superClass="gnu.c.compiler.option.optimization.flags" useByScannerDiscovery="false" value="-fno-common" valueType="string"/>
@@ -223,6 +225,7 @@
 								<option id="com.crt.advproject.gcc.fpu.597330360" name="Floating point" superClass="com.crt.advproject.gcc.fpu" useByScannerDiscovery="false" value="com.crt.advproject.gcc.fpu.fpv4" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.include.paths.1075921380" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../bsp&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../bsp/rkhport&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/LPCOpen/lpc_chip_43xx/inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/LPCOpen/lpc_board_ciaa_edu_4337/inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/sapi_rtos/inc&quot;"/>
@@ -305,6 +308,7 @@
 						<tool id="com.crt.advproject.gcc.exe.release.66117631.1444523415" name="MCU C Compiler" superClass="com.crt.advproject.gcc.exe.release.66117631">
 							<option id="gnu.c.compiler.option.include.paths.1568166459" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
 								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../bsp&quot;"/>
+								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../bsp/rkhport&quot;"/>
 								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/LPCOpen/lpc_chip_43xx/inc&quot;"/>
 								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/LPCOpen/lpc_board_ciaa_edu_4337/inc&quot;"/>
 								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/sapi_rtos/inc&quot;"/>

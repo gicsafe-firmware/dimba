@@ -47,23 +47,22 @@ anIn_adcStart(int channel)
 
 static uint16_t
 anIn_adcRead(int channel)
-{   
+{
     uint8_t lpcAdcChannel = SAPI_ADC_CH_OFFSET - chMap[channel];
     uint16_t analogValue = 0;
     int i;
 
-    while(
-       (Chip_ADC_ReadStatus(LPC_ADC0, lpcAdcChannel, ADC_DR_DONE_STAT) != SET)
-    )
-       ++i;
+    while (
+        (Chip_ADC_ReadStatus(LPC_ADC0, lpcAdcChannel, ADC_DR_DONE_STAT) != SET)
+        )
+        ++i;
 
-    Chip_ADC_ReadValue( LPC_ADC0, lpcAdcChannel, &analogValue );
+    Chip_ADC_ReadValue(LPC_ADC0, lpcAdcChannel, &analogValue);
 
-    Chip_ADC_EnableChannel( LPC_ADC0, lpcAdcChannel, DISABLE );
+    Chip_ADC_EnableChannel(LPC_ADC0, lpcAdcChannel, DISABLE);
 
     return analogValue;
 }
-
 
 /* ---------------------------- Global functions --------------------------- */
 void
@@ -71,7 +70,7 @@ anIn_init(void)
 {
     adcConfig(ADC_ENABLE);
 
-    currChannel = anIn0; 
+    currChannel = anIn0;
     anIn_adcStart(currChannel);
 }
 
@@ -81,12 +80,14 @@ anIn_captureAndFilter(void)
     uint16_t value;
 
     value = anIn_adcRead(currChannel);
-    anIns[currChannel] = emaFilter_LowPass(value, 
+    anIns[currChannel] = emaFilter_LowPass(value,
                                            anIns[currChannel],
                                            ANINS_EMA_ALPHA);
 
-    if(++currChannel > anIn3)
+    if (++currChannel > anIn3)
+    {
         currChannel = anIn0;
+    }
 
     anIn_adcStart(currChannel);
 }
@@ -94,8 +95,10 @@ anIn_captureAndFilter(void)
 adc_t
 anIn_get(int channel)
 {
-    if(channel > NUM_ANIN_SIGNALS)
+    if (channel > NUM_ANIN_SIGNALS)
+    {
         return 0;
+    }
 
     return anIns[channel];
 }
@@ -103,7 +106,7 @@ anIn_get(int channel)
 void
 anIn_update(void)
 {
-   anSampler_put();
+    anSampler_put();
 }
 
 /* ------------------------------ End of file ------------------------------ */

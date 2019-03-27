@@ -13,8 +13,10 @@
  * all warranties, express or implied, including all implied warranties of
  * merchantability, fitness for a particular purpose and non-infringement of
  * intellectual property rights.  NXP Semiconductors assumes no responsibility
- * or liability for the use of the software, conveys no license or rights under any
- * patent, copyright, mask work right, or any other intellectual property rights in
+ * or liability for the use of the software, conveys no license or rights under
+ *any
+ * patent, copyright, mask work right, or any other intellectual property rights
+ *in
  * or to any products. NXP Semiconductors reserves the right to make changes
  * in the software without notification. NXP Semiconductors also makes no
  * representation or warranty that such application will be suitable for the
@@ -38,7 +40,7 @@
 /*****************************************************************************
  * Private types/enumerations/variables
  ****************************************************************************/
-#if defined ( __ICCARM__ )
+#if defined (__ICCARM__)
 #define __WEAK__   __weak
 #else
 #define __WEAK__   __attribute__((weak))
@@ -57,65 +59,74 @@
  ****************************************************************************/
 
 /* Delay for the specified number of milliSeconds */
-void FreeRTOSDelay(uint32_t ms)
+void
+FreeRTOSDelay(uint32_t ms)
 {
-	TickType_t xDelayTime;
+    TickType_t xDelayTime;
 
-	xDelayTime = xTaskGetTickCount();
-	vTaskDelayUntil(&xDelayTime, ms);
+    xDelayTime = xTaskGetTickCount();
+    vTaskDelayUntil(&xDelayTime, ms);
 }
 
 /* FreeRTOS malloc fail hook */
-__WEAK__ void vApplicationMallocFailedHook(void)
+__WEAK__ void
+vApplicationMallocFailedHook(void)
 {
-	taskDISABLE_INTERRUPTS();
-	__BKPT(0x01);
-	for (;; ) {}
+    taskDISABLE_INTERRUPTS();
+    __BKPT(0x01);
+    for (;; )
+    {
+    }
 }
 
 /* FreeRTOS application idle hook */
-__WEAK__ void vApplicationIdleHook(void)
+__WEAK__ void
+vApplicationIdleHook(void)
 {
-	/* Best to sleep here until next systick */
+    /* Best to sleep here until next systick */
     rkh_trc_flush();
-	__WFI();
+    __WFI();
 }
 
 /* FreeRTOS stack overflow hook */
-__WEAK__ void vApplicationStackOverflowHook(TaskHandle_t pxTask, char *pcTaskName)
+__WEAK__ void
+vApplicationStackOverflowHook(TaskHandle_t pxTask, char *pcTaskName)
 {
-	(void) pxTask;
-	(void) pcTaskName;
+    (void) pxTask;
+    (void) pcTaskName;
 
-	/* Run time stack overflow checking is performed if
-	   configCHECK_FOR_STACK_OVERFLOW is defined to 1 or 2.  This hook
-	   function is called if a stack overflow is detected. */
-	taskDISABLE_INTERRUPTS();
-	__BKPT(0x02);
-	for (;; ) {}
+    /* Run time stack overflow checking is performed if
+     * configCHECK_FOR_STACK_OVERFLOW is defined to 1 or 2.  This hook
+     * function is called if a stack overflow is detected. */
+    taskDISABLE_INTERRUPTS();
+    __BKPT(0x02);
+    for (;; )
+    {
+    }
 }
 
 /* FreeRTOS application tick hook */
-__WEAK__ void vApplicationTickHook(void)
-{}
+__WEAK__ void
+vApplicationTickHook(void)
+{
+}
 
 #ifdef __CC_ARM
 #ifndef EXTRA_HEAP_SZ
 #define EXTRA_HEAP_SZ 0x6000
 #endif
 static uint32_t extra_heap[EXTRA_HEAP_SZ / sizeof(uint32_t)];
-__attribute__((used)) unsigned __user_heap_extend(int var0, void **base, unsigned requested_size)
+__attribute__((used)) unsigned
+__user_heap_extend(int var0, void **base, unsigned requested_size)
 {
-	if (requested_size > EXTRA_HEAP_SZ)
-		return 0;
+    if (requested_size > EXTRA_HEAP_SZ)
+    {
+        return 0;
+    }
 
-	*base = (void *) extra_heap;
-	return sizeof(extra_heap);
+    *base = (void *) extra_heap;
+    return sizeof(extra_heap);
 }
 #endif
 
-
-
-
-
-
+/* ------------------------------ End of file ------------------------------ */

@@ -145,6 +145,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/bsp/modpwr.c</locationURI>
 		</link>
 		<link>
+			<name>src/bsp/rkhport</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/bsp/rkhport</locationURI>
+		</link>
+		<link>
 			<name>src/bsp/rtime.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/bsp/rtime.c</locationURI>
@@ -153,6 +158,16 @@
 			<name>src/bsp/sapi_rtos</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>src/bsp/tcpecho.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/bsp/tcpecho.c</locationURI>
+		</link>
+		<link>
+			<name>src/bsp/tcpecho.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/bsp/tcpecho.h</locationURI>
 		</link>
 		<link>
 			<name>src/bsp/trace_io.c</name>
@@ -373,11 +388,6 @@
 			<name>src/rkh/rkhmempool.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/third-party/rkh/source/mempool/src/rkhmempool.c</locationURI>
-		</link>
-		<link>
-			<name>src/rkh/rkhport.c</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/third-party/rkh/source/portable/freertos/v10_0_1/rkhport.c</locationURI>
 		</link>
 		<link>
 			<name>src/rkh/rkhqueue.c</name>

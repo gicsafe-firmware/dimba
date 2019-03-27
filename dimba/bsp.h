@@ -70,6 +70,8 @@ void bsp_init(int argc, char *argv[]);
 void bsp_keyParser(int c);
 void bsp_timeTick(void);
 
+void bsp_eth_open(void);
+
 void bsp_serial_open(int ch);
 void bsp_serial_close(int ch);
 void bsp_serial_puts(int ch, char *p);

@@ -13,8 +13,10 @@
  * all warranties, express or implied, including all implied warranties of
  * merchantability, fitness for a particular purpose and non-infringement of
  * intellectual property rights.  NXP Semiconductors assumes no responsibility
- * or liability for the use of the software, conveys no license or rights under any
- * patent, copyright, mask work right, or any other intellectual property rights in
+ * or liability for the use of the software, conveys no license or rights under
+ *any
+ * patent, copyright, mask work right, or any other intellectual property rights
+ *in
  * or to any products. NXP Semiconductors reserves the right to make changes
  * in the software without notification. NXP Semiconductors also makes no
  * representation or warranty that such application will be suitable for the
@@ -46,11 +48,11 @@ extern "C"
 #define PHY_USE_AUTONEG 1
 
 /* PHY interface full duplex operation or half duplex enable flag.
-   Only applies if PHY_USE_AUTONEG = 0 */
+ * Only applies if PHY_USE_AUTONEG = 0 */
 #define PHY_USE_FULL_DUPLEX 1
 
 /* PHY interface 100MBS or 10MBS enable flag.
-   Only applies if PHY_USE_AUTONEG = 0 */
+ * Only applies if PHY_USE_AUTONEG = 0 */
 #define PHY_USE_100MBS 1
 
 /* Defines the number of descriptors used for RX */
@@ -75,8 +77,4 @@ extern "C"
 
 #endif /* __LPC_EMAC_CONFIG_H */
 
-
-
-
-
-
+/* ------------------------------ End of file ------------------------------ */

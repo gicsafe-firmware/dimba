@@ -56,7 +56,7 @@
 /* ------------------------------- Constants ------------------------------- */
 #define TRC_COM_PORT        UART_USB
 #define TRC_BAUD_RATE       19200
-#define BSP_TS_RATE_HZ      (1000/RKH_CFG_FWK_TICK_RATE_HZ)
+#define BSP_TS_RATE_HZ      (1000 / RKH_CFG_FWK_TICK_RATE_HZ)
 
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */

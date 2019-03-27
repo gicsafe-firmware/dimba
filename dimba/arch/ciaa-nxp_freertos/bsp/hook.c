@@ -55,7 +55,7 @@ RKH_THIS_MODULE
 
 /* ----------------------------- Local macros ------------------------------ */
 /* ------------------------------- Constants ------------------------------- */
-#define BSP_TICK_RATE_MS    (1000/RKH_CFG_FWK_TICK_RATE_HZ)
+#define BSP_TICK_RATE_MS    (1000 / RKH_CFG_FWK_TICK_RATE_HZ)
 
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
@@ -68,22 +68,22 @@ static rui8_t rkhtick;
 static bool_t tickHook(void *p);
 
 /* ---------------------------- Local functions ---------------------------- */
-/* FreeRtos RKH port call to rkh_tim_tick from 	vApplicationTickHook */
+/* FreeRtos RKH port call to rkh_tim_tick from  vApplicationTickHook */
 /*
-static bool_t
-tickHook(void *p)
-{
-    RKH_TIM_TICK(&rkhtick);
-    return 0;
-}*/
+ * static bool_t
+ * tickHook(void *p)
+ * {
+ *  RKH_TIM_TICK(&rkhtick);
+ *  return 0;
+ * }*/
 
 /* ---------------------------- Global functions --------------------------- */
 void
 rkh_hook_start(void)
 {
 /* Since tickHook is not needed, rkh_hook_start is empty */
-//    tickConfig(BSP_TICK_RATE_MS, tickHook);
-//    RKH_TR_FWK_ACTOR(&rkhtick, "rkhtick");
+/*    tickConfig(BSP_TICK_RATE_MS, tickHook); */
+/*    RKH_TR_FWK_ACTOR(&rkhtick, "rkhtick"); */
 }
 
 void
@@ -101,7 +101,7 @@ rkh_hook_timetick(void)
 void
 rkh_hook_idle(void)             /* called within critical section */
 {
-	RKH_ENA_INTERRUPT();
+    RKH_ENA_INTERRUPT();
     RKH_TRC_FLUSH();
 }
 
