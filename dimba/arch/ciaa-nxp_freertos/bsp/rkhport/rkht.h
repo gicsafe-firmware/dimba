@@ -40,14 +40,12 @@
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2018.09.23  FrBu Initial version
- *  2019.03.18  DaBa Fix queue and task prio
+ *  2019.03.18  DaBa Initial version
  */
 
 /* -------------------------------- Authors -------------------------------- */
 /*
- *  FrBu  Franco Bucafusco
- *  DaBa  Dario Bali#a       dariosb@gmail.com
+ *  DaBa  Dario Bali#a       db@vortexmakes.com
  */
 
 /* --------------------------------- Module -------------------------------- */

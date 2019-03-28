@@ -40,13 +40,11 @@
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2018.09.23  FrBu Initial version
- *  2019.03.18  DaBa Fix post queue fifo/lifo and priority assignment
+ *  2019.03.18  DaBa Initial version 
  */
 
 /* -------------------------------- Authors -------------------------------- */
 /*
- *  FrBu  Franco Bucafusco
  *  DaBa  Dario Bali#a       db@vortexmakes.com
  */
 
@@ -71,26 +69,13 @@ static rui8_t l_isr_tick;
 #endif
 static TaskHandle_t idleTaskHandler;
 static rui8_t running;
-
+static StaticQueue_t QueueBuff[RKH_CFG_FWK_MAX_SMA];
 
 /* ----------------------- Local function prototypes ----------------------- */
 static void idleTask_function(void *arg);
 static void thread_function(void *arg);
 
 /* ---------------------------- Local functions ---------------------------- */
-/*
-void
-vApplicationTickHook(void)
-{
-    if (tickScaler && --tickScaler)
-    {
-        return;
-    }
-
-    tickScaler = configTICK_RATE_HZ / RKH_CFG_FWK_TICK_RATE_HZ;
-
-    rkh_tmr_tick(0);
-}*/
 static
 void
 idleTask_function(void *arg)
@@ -170,16 +155,6 @@ rkh_fwk_init(void)
 void
 rkh_fwk_enter(void)
 {
-#if 0
-    RKH_SR_ALLOC();
-
-    RKH_HOOK_START();   /* RKH start-up callback */
-    RKH_TR_FWK_EN();
-
-    vTaskStartScheduler();
-
-    RKH_TRC_CLOSE();    /* cleanup the trace session */
-#else
     BaseType_t rv;
     RKH_SR_ALLOC();
 
@@ -216,7 +191,6 @@ rkh_fwk_enter(void)
     RKH_TRC_CLOSE();                    /* cleanup the trace session */
 
     vTaskDelete(NULL);
-#endif
 }
 
 void
@@ -233,7 +207,7 @@ void
 rkh_sma_terminate(RKH_SMA_T *sma)
 {
     sma->running = (rbool_t)0;
-    vQueueDelete(&sma->equeue);
+    vQueueDelete(sma->equeue);
 }
 
 void
@@ -241,12 +215,19 @@ rkh_sma_activate(RKH_SMA_T *sma, const RKH_EVT_T **qs, RKH_QUENE_T qsize,
                  void *stks, rui32_t stksize)
 {
 	rui8_t prio;
-    BaseType_t rv;
+    TaskHandle_t TaskHandle = NULL;
+    StaticQueue_t *pStaticQueue;
+
     //RKH_SR_ALLOC();
 
-    RKH_REQUIRE(qs == (const RKH_EVT_T **)0 && (stks == (void *)0));
+    RKH_REQUIRE(qs != (const RKH_EVT_T **)0 && (qsize != 0));
+    RKH_REQUIRE((stks != (void *)0) && (stksize != 0));
 
-    sma->equeue = xQueueCreate(qsize, sizeof(void*));
+    pStaticQueue = &QueueBuff[RKH_GET_PRIO(sma)];
+
+    sma->equeue = xQueueCreateStatic(qsize, sizeof(void*), (uint8_t *)qs, pStaticQueue);
+
+    RKH_ASSERT(sma->equeue);
 
     rkh_sma_register(sma);
     rkh_sm_init((RKH_SM_T *)sma);
@@ -255,14 +236,15 @@ rkh_sma_activate(RKH_SMA_T *sma, const RKH_EVT_T **qs, RKH_QUENE_T qsize,
 
     sma->running = (rbool_t)1;
 
-    rv = xTaskCreate(thread_function,                   /* function */
-                     "freertos task",                   /* name */
-                     stksize / sizeof(StackType_t),     /* stack size */
-                     sma,                               /* function argument */
-                     prio,                              /* priority */
-                     &sma->thread);
+    TaskHandle = xTaskCreateStatic(thread_function,    /* function */
+                                   "freertos task",    /* name */
+                                   stksize,            /* stack size */
+                                   sma,                /* function argument */
+                                   prio,               /* priority */
+                                   stks,               /* stack storage */
+                                   &sma->thread);      /* task data structure */
 
-    RKH_ASSERT(rv == pdTRUE);
+    RKH_ASSERT(TaskHandle);
 
     //RKH_TR_SMA_ACT(sma, RKH_GET_PRIO(sma), qsize);
 }

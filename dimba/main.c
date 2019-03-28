@@ -50,18 +50,27 @@
 #define SIZEOF_EP2_BLOCK    sizeof(ModMgrEvt)
 
 /* ------------------------------- Constants ------------------------------- */
-#define MQTTPROT_STK_SIZE   (4096 / sizeof(RKH_THREAD_STK_TYPE))
-#define ETHMGR_STK_SIZE     (4096 / sizeof(RKH_THREAD_STK_TYPE))
-#define CONMGR_STK_SIZE     (4096 / sizeof(RKH_THREAD_STK_TYPE))
-#define MODMGR_STK_SIZE      (4096 / sizeof(RKH_THREAD_STK_TYPE))
+#define MODMGR_STK_SIZE     	512
+#define CONMGR_STK_SIZE     	512
+#define MQTTPROT_STK_SIZE   	512
+#define ETHMGR_STK_SIZE     	512
+
+#define RKH_STARTUP_STACK_SIZE	512
 
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
+static RKH_THREAD_STK_TYPE ModMgrStack[ MODMGR_STK_SIZE ];
+static RKH_THREAD_STK_TYPE ConMgrStack[ CONMGR_STK_SIZE ];
+static RKH_THREAD_STK_TYPE MQTTProtStack[ MQTTPROT_STK_SIZE ];
+static RKH_THREAD_STK_TYPE EthMGRStack[ ETHMGR_STK_SIZE ];
+
+
 static RKH_EVT_T *MQTTProt_qsto[MQTTPROT_QSTO_SIZE];
 static RKH_EVT_T *EthMgr_qsto[CONMGR_QSTO_SIZE];
 static RKH_EVT_T *ConMgr_qsto[CONMGR_QSTO_SIZE];
 static RKH_EVT_T *ModMgr_qsto[MODMGR_QSTO_SIZE];
+
 static rui8_t evPool0Sto[SIZEOF_EP0STO], 
               evPool1Sto[SIZEOF_EP1STO], 
               evPool2Sto[SIZEOF_EP2STO];
@@ -127,10 +136,14 @@ rkh_startupTask(void *pvParameter)
     strcpy(mqttProtCfg.clientId, "");
     strcpy(mqttProtCfg.topic, "");
     MQTTProt_ctor(&mqttProtCfg, publishDimba);
-    RKH_SMA_ACTIVATE(conMgr, ConMgr_qsto, CONMGR_QSTO_SIZE, 0, CONMGR_STK_SIZE);
-    RKH_SMA_ACTIVATE(ethMgr, EthMgr_qsto, ETHMGR_QSTO_SIZE, 0, ETHMGR_STK_SIZE);
-    RKH_SMA_ACTIVATE(modMgr, ModMgr_qsto, MODMGR_QSTO_SIZE, 0, MODMGR_STK_SIZE);
-    RKH_SMA_ACTIVATE(mqttProt, MQTTProt_qsto, MQTTPROT_QSTO_SIZE, 0, MQTTPROT_STK_SIZE);
+    RKH_SMA_ACTIVATE(conMgr, ConMgr_qsto, CONMGR_QSTO_SIZE,
+                     ConMgrStack, CONMGR_STK_SIZE);
+    RKH_SMA_ACTIVATE(ethMgr, EthMgr_qsto, ETHMGR_QSTO_SIZE,
+                     EthMGRStack, ETHMGR_STK_SIZE);
+    RKH_SMA_ACTIVATE(modMgr, ModMgr_qsto, MODMGR_QSTO_SIZE,
+                     ModMgrStack, MODMGR_STK_SIZE);
+    RKH_SMA_ACTIVATE(mqttProt, MQTTProt_qsto, MQTTPROT_QSTO_SIZE,
+                     MQTTProtStack, MQTTPROT_STK_SIZE);
 
     RKH_SMA_POST_FIFO(conMgr, &e_Open, 0);
     RKH_SMA_POST_FIFO(ethMgr, &e_Open, 0);
@@ -152,7 +165,7 @@ main(int argc, char *argv[])
     mTime_init();
 
 	xTaskCreate(rkh_startupTask, "rkh_startupTask",
-				configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL),
+			    RKH_STARTUP_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL),
 				(xTaskHandle *) NULL);
 
 	vTaskStartScheduler();
