@@ -435,6 +435,36 @@
 			<locationURI>PARENT-4-PROJECT_LOC/third-party/rkh/source/trc/src/rkhtrc_stream.c</locationURI>
 		</link>
 		<link>
+			<name>src/rtos/event_groups.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/amazon-freertos/lib/FreeRTOS/event_groups.c</locationURI>
+		</link>
+		<link>
+			<name>src/rtos/list.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/amazon-freertos/lib/FreeRTOS/list.c</locationURI>
+		</link>
+		<link>
+			<name>src/rtos/queue.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/amazon-freertos/lib/FreeRTOS/queue.c</locationURI>
+		</link>
+		<link>
+			<name>src/rtos/stream_buffer.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/amazon-freertos/lib/FreeRTOS/stream_buffer.c</locationURI>
+		</link>
+		<link>
+			<name>src/rtos/tasks.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/amazon-freertos/lib/FreeRTOS/tasks.c</locationURI>
+		</link>
+		<link>
+			<name>src/rtos/timers.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/amazon-freertos/lib/FreeRTOS/timers.c</locationURI>
+		</link>
+		<link>
 			<name>src/ssp/ssp.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/third-party/ssp/src/ssp.c</locationURI>
@@ -613,6 +643,21 @@
 			<name>src/dimba/parser/sim900parser.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/parser/sim900/sim900parser.h</locationURI>
+		</link>
+		<link>
+			<name>src/rtos/portable/heap_3.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/amazon-freertos/lib/FreeRTOS/portable/MemMang/heap_3.c</locationURI>
+		</link>
+		<link>
+			<name>src/rtos/portable/port.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/amazon-freertos/lib/FreeRTOS/portable/GCC/ARM_CM4F/port.c</locationURI>
+		</link>
+		<link>
+			<name>src/rtos/portable/portmacro.h</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/amazon-freertos/lib/FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h</locationURI>
 		</link>
 	</linkedResources>
 	<variableList>

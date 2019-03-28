@@ -33,7 +33,7 @@
 
 #include "FreeRTOS.h"
 #include "task.h"
-#include "FreeRTOSCommonHooks.h"
+//#include "FreeRTOSCommonHooks.h"
 #include "rkh.h"
 #include "chip.h"
 
