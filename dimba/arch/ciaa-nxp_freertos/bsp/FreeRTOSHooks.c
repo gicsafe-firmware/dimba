@@ -84,7 +84,7 @@ __WEAK__ void
 vApplicationIdleHook(void)
 {
     /* Best to sleep here until next systick */
-    rkh_trc_flush();
+    //rkh_trc_flush();
     __WFI();
 }
 

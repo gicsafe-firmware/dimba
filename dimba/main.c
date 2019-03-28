@@ -40,7 +40,7 @@
 #define MQTTPROT_QSTO_SIZE  16
 #define ETHMGR_QSTO_SIZE    8
 #define CONMGR_QSTO_SIZE    8
-#define MODMGR_QSTO_SIZE    4
+#define MODMGR_QSTO_SIZE    8
 
 #define SIZEOF_EP0STO       16
 #define SIZEOF_EP0_BLOCK    sizeof(RKH_EVT_T)
@@ -104,15 +104,10 @@ dimbaCfg_topic(char *t)
     sprintf(mqttProtCfg.topic, "/dimba/%s", t);
 }
 
-int
-main(int argc, char *argv[])
+void
+rkh_startupTask(void *pvParameter)
 {
-    bsp_init(argc, argv);
-
-    anSampler_init();
-    IOChgDet_init();
-    epoch_init();
-    mTime_init();
+    RKH_SR_ALLOC();
 
     rkh_fwk_init();
 
@@ -140,9 +135,28 @@ main(int argc, char *argv[])
     RKH_SMA_POST_FIFO(conMgr, &e_Open, 0);
     RKH_SMA_POST_FIFO(ethMgr, &e_Open, 0);
 
-    rkh_fwk_enter();
+	rkh_fwk_enter();
 
-    RKH_TRC_CLOSE();
+    vTaskDelete(NULL);
+}
+
+
+int
+main(int argc, char *argv[])
+{
+    bsp_init(argc, argv);
+
+    anSampler_init();
+    IOChgDet_init();
+    epoch_init();
+    mTime_init();
+
+	xTaskCreate(rkh_startupTask, "rkh_startupTask",
+				configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL),
+				(xTaskHandle *) NULL);
+
+	vTaskStartScheduler();
+
     return 0;
 }
 

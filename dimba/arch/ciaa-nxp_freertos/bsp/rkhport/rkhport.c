@@ -66,11 +66,19 @@ RKH_MODULE_DESC(rkhport, "FreeRTOS v10.0.1")
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
-static ruint tickScaler;
+#if defined(RKH_USE_TRC_SENDER)
+static rui8_t l_isr_tick;
+#endif
+static TaskHandle_t idleTaskHandler;
+static rui8_t running;
+
 
 /* ----------------------- Local function prototypes ----------------------- */
-/* ---------------------------- Local functions ---------------------------- */
+static void idleTask_function(void *arg);
+static void thread_function(void *arg);
 
+/* ---------------------------- Local functions ---------------------------- */
+/*
 void
 vApplicationTickHook(void)
 {
@@ -82,6 +90,20 @@ vApplicationTickHook(void)
     tickScaler = configTICK_RATE_HZ / RKH_CFG_FWK_TICK_RATE_HZ;
 
     rkh_tmr_tick(0);
+}*/
+static
+void
+idleTask_function(void *arg)
+{
+    (void)arg;
+
+    while (running)
+    {
+        RKH_TRC_FLUSH();
+        vTaskDelay(configTICK_RATE_HZ / RKH_CFG_FWK_TICK_RATE_HZ);
+    }
+
+    vTaskDelete(NULL);
 }
 
 static
@@ -89,15 +111,15 @@ void
 thread_function(void *arg)
 {
     RKH_SMA_T *sma;
-
     RKH_SR_ALLOC();
 
     sma = (RKH_SMA_T *)arg;
+
     while (sma->running != (rbool_t)0)
     {
         RKH_EVT_T *e = rkh_sma_get(sma);
-        RKH_SMA_DISPATCH((RKH_SM_T *)arg, e);
-        RKH_FWK_GC(e, arg);
+        RKH_SMA_DISPATCH(sma, e);
+        RKH_FWK_GC(e, sma);
     }
 
     rkh_sma_unregister(sma);
@@ -121,7 +143,7 @@ rkhport_get_desc(void)
 {
     return RKH_MODULE_GET_DESC();
 }
-
+#if 0
 void
 rkh_sma_block(RKH_SMA_T *const me)
 {
@@ -139,7 +161,7 @@ rkh_sma_setUnready(RKH_SMA_T *const me)
 {
     (void)me;
 }
-
+#endif
 void
 rkh_fwk_init(void)
 {
@@ -148,6 +170,7 @@ rkh_fwk_init(void)
 void
 rkh_fwk_enter(void)
 {
+#if 0
     RKH_SR_ALLOC();
 
     RKH_HOOK_START();   /* RKH start-up callback */
@@ -156,14 +179,54 @@ rkh_fwk_enter(void)
     vTaskStartScheduler();
 
     RKH_TRC_CLOSE();    /* cleanup the trace session */
+#else
+    BaseType_t rv;
+    RKH_SR_ALLOC();
+
+    running = (rui8_t)1;
+
+    /*
+     *  For avoiding to have multiple threads (idle and main) sending data on
+     *  the same socket, i.e. using the send() function, the idle thread is
+     *  created to be run only after the initial process has finished.
+     *  Without this trick, the streams are interleaving and the trace stream
+     *  is corrupted.
+     */
+    rv = xTaskCreate(idleTask_function,                 /* function */
+                     "idleTask",                        /* name */
+					 configMINIMAL_STACK_SIZE,          /* stack size */
+                     NULL,                              /* function argument */
+					 configMAX_PRIORITIES-1,            /* priority */
+                     &idleTaskHandler);
+
+    RKH_ASSERT(rv == pdTRUE);
+
+    RKH_HOOK_START();                       /* start-up callback */
+    RKH_TR_FWK_EN();
+
+    RKH_TR_FWK_OBJ(&l_isr_tick);
+
+    while (running)
+    {
+    	vTaskDelay(configTICK_RATE_HZ   /* wait for the tick interval */
+    			  / RKH_CFG_FWK_TICK_RATE_HZ);
+        RKH_TIM_TICK(&l_isr_tick);      /* tick handler */
+    }
+    RKH_HOOK_EXIT();                    /* cleanup callback */
+    RKH_TRC_CLOSE();                    /* cleanup the trace session */
+
+    vTaskDelete(NULL);
+#endif
 }
 
 void
 rkh_fwk_exit(void)
 {
     RKH_SR_ALLOC();
+
     RKH_TR_FWK_EX();
-    RKH_HOOK_EXIT();    /* RKH cleanup callback */
+    RKH_HOOK_EXIT();
+    running = (rui8_t)0;
 }
 
 void
@@ -177,10 +240,11 @@ void
 rkh_sma_activate(RKH_SMA_T *sma, const RKH_EVT_T **qs, RKH_QUENE_T qsize,
                  void *stks, rui32_t stksize)
 {
-    rui8_t prio;
+	rui8_t prio;
     BaseType_t rv;
+    //RKH_SR_ALLOC();
 
-    RKH_REQUIRE(qs == (const RKH_EVT_T **)0);
+    RKH_REQUIRE(qs == (const RKH_EVT_T **)0 && (stks == (void *)0));
 
     sma->equeue = xQueueCreate(qsize, sizeof(void*));
 
@@ -188,6 +252,8 @@ rkh_sma_activate(RKH_SMA_T *sma, const RKH_EVT_T **qs, RKH_QUENE_T qsize,
     rkh_sm_init((RKH_SM_T *)sma);
 
     prio = RKH_LOWEST_PRIO - RKH_GET_PRIO(sma) + tskIDLE_PRIORITY;
+
+    sma->running = (rbool_t)1;
 
     rv = xTaskCreate(thread_function,                   /* function */
                      "freertos task",                   /* name */
@@ -198,7 +264,7 @@ rkh_sma_activate(RKH_SMA_T *sma, const RKH_EVT_T **qs, RKH_QUENE_T qsize,
 
     RKH_ASSERT(rv == pdTRUE);
 
-    sma->running = (rbool_t)1;
+    //RKH_TR_SMA_ACT(sma, RKH_GET_PRIO(sma), qsize);
 }
 
 #if defined(RKH_USE_TRC_SENDER)
