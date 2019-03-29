@@ -67,12 +67,14 @@ RKH_MODULE_DESC(rkhport, "FreeRTOS v10.2.0")
 #if defined(RKH_USE_TRC_SENDER)
 static rui8_t l_isr_tick;
 #endif
-static TaskHandle_t idleTaskHandler;
 static rui8_t running;
+
 static StaticQueue_t QueueBuff[RKH_CFG_FWK_MAX_SMA];
 
+static StaticTask_t startupTask;
+static StackType_t startupTaskStack[RKH_STARTUP_STACK_SIZE];
+
 /* ----------------------- Local function prototypes ----------------------- */
-static void idleTask_function(void *arg);
 static void thread_function(void *arg);
 
 /* ---------------------------- Local functions ---------------------------- */
@@ -127,9 +129,16 @@ rkh_startupTask(void *pvParameter)
 void
 rkh_fwk_init(void)
 {
-    xTaskCreate(rkh_startupTask, "rkh_startupTask",
-                RKH_STARTUP_STACK_SIZE, NULL, RKH_TASK_PRIORITY,
-                (xTaskHandle *) NULL);
+    TaskHandle_t TaskHandle = NULL;
+
+    TaskHandle = xTaskCreateStatic(rkh_startupTask,
+                                   "rkh_startupTask",
+                                   RKH_STARTUP_STACK_SIZE,
+                                   NULL,
+                                   RKH_TASK_PRIORITY,
+                                   startupTaskStack,
+                                   &startupTask);
+    RKH_ASSERT(TaskHandle);
 }
 
 void
@@ -139,7 +148,7 @@ rkh_fwk_enter(void)
 
     running = (rui8_t)1;
 
-    RKH_HOOK_START();                       /* start-up callback */
+    RKH_HOOK_START();                   /* start-up callback */
     RKH_TR_FWK_EN();
 
     RKH_TR_FWK_OBJ(&l_isr_tick);

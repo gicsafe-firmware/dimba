@@ -7,7 +7,8 @@
 /*
  *  2018.05.17  LeFr  Initial version
  *  2018.06.17  Daba  Publisher
- *  2019.03.19  Daba  Ethernet Manager
+ *  2019.03.19  Daba  Ethernet Connection Manager
+ *  2019.03.29  Daba  FreeRtos integration
  */
 
 /* -------------------------------- Authors -------------------------------- */
