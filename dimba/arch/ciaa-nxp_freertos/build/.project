@@ -60,6 +60,36 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>src/FreeRTOS/event_groups.c</name>
+			<type>1</type>
+			<location>D:/Vortex/DIMBA/dimba/third-party/amazon-freertos/lib/FreeRTOS/event_groups.c</location>
+		</link>
+		<link>
+			<name>src/FreeRTOS/list.c</name>
+			<type>1</type>
+			<location>D:/Vortex/DIMBA/dimba/third-party/amazon-freertos/lib/FreeRTOS/list.c</location>
+		</link>
+		<link>
+			<name>src/FreeRTOS/queue.c</name>
+			<type>1</type>
+			<location>D:/Vortex/DIMBA/dimba/third-party/amazon-freertos/lib/FreeRTOS/queue.c</location>
+		</link>
+		<link>
+			<name>src/FreeRTOS/stream_buffer.c</name>
+			<type>1</type>
+			<location>D:/Vortex/DIMBA/dimba/third-party/amazon-freertos/lib/FreeRTOS/stream_buffer.c</location>
+		</link>
+		<link>
+			<name>src/FreeRTOS/tasks.c</name>
+			<type>1</type>
+			<location>D:/Vortex/DIMBA/dimba/third-party/amazon-freertos/lib/FreeRTOS/tasks.c</location>
+		</link>
+		<link>
+			<name>src/FreeRTOS/timers.c</name>
+			<type>1</type>
+			<location>D:/Vortex/DIMBA/dimba/third-party/amazon-freertos/lib/FreeRTOS/timers.c</location>
+		</link>
+		<link>
 			<name>src/MQTT-C/mqtt.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/third-party/MQTT-C/src/mqtt.c</locationURI>
@@ -300,61 +330,6 @@
 			<locationURI>PARENT-3-PROJECT_LOC/sspcfg.h</locationURI>
 		</link>
 		<link>
-			<name>src/freertos/croutine.c</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/third-party/freertos/croutine.c</locationURI>
-		</link>
-		<link>
-			<name>src/freertos/heap_3.c</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/third-party/freertos/heap_3.c</locationURI>
-		</link>
-		<link>
-			<name>src/freertos/inc</name>
-			<type>2</type>
-			<locationURI>PARENT-4-PROJECT_LOC/third-party/freertos/inc</locationURI>
-		</link>
-		<link>
-			<name>src/freertos/inc_arm_cm4f</name>
-			<type>2</type>
-			<locationURI>PARENT-4-PROJECT_LOC/third-party/freertos/inc_arm_cm4f</locationURI>
-		</link>
-		<link>
-			<name>src/freertos/inc_arm_m0</name>
-			<type>2</type>
-			<locationURI>PARENT-4-PROJECT_LOC/third-party/freertos/inc_arm_m0</locationURI>
-		</link>
-		<link>
-			<name>src/freertos/inc_freertoslpc</name>
-			<type>2</type>
-			<locationURI>PARENT-4-PROJECT_LOC/third-party/freertos/inc_freertoslpc</locationURI>
-		</link>
-		<link>
-			<name>src/freertos/list.c</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/third-party/freertos/list.c</locationURI>
-		</link>
-		<link>
-			<name>src/freertos/port.c</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/third-party/freertos/port.c</locationURI>
-		</link>
-		<link>
-			<name>src/freertos/queue.c</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/third-party/freertos/queue.c</locationURI>
-		</link>
-		<link>
-			<name>src/freertos/tasks.c</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/third-party/freertos/tasks.c</locationURI>
-		</link>
-		<link>
-			<name>src/freertos/timers.c</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/third-party/freertos/timers.c</locationURI>
-		</link>
-		<link>
 			<name>src/jWrite/jWrite.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/third-party/jWrite/jWrite/jWrite.c</locationURI>
@@ -435,39 +410,24 @@
 			<locationURI>PARENT-4-PROJECT_LOC/third-party/rkh/source/trc/src/rkhtrc_stream.c</locationURI>
 		</link>
 		<link>
-			<name>src/rtos/event_groups.c</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/third-party/amazon-freertos/lib/FreeRTOS/event_groups.c</locationURI>
-		</link>
-		<link>
-			<name>src/rtos/list.c</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/third-party/amazon-freertos/lib/FreeRTOS/list.c</locationURI>
-		</link>
-		<link>
-			<name>src/rtos/queue.c</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/third-party/amazon-freertos/lib/FreeRTOS/queue.c</locationURI>
-		</link>
-		<link>
-			<name>src/rtos/stream_buffer.c</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/third-party/amazon-freertos/lib/FreeRTOS/stream_buffer.c</locationURI>
-		</link>
-		<link>
-			<name>src/rtos/tasks.c</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/third-party/amazon-freertos/lib/FreeRTOS/tasks.c</locationURI>
-		</link>
-		<link>
-			<name>src/rtos/timers.c</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/third-party/amazon-freertos/lib/FreeRTOS/timers.c</locationURI>
-		</link>
-		<link>
 			<name>src/ssp/ssp.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/third-party/ssp/src/ssp.c</locationURI>
+		</link>
+		<link>
+			<name>src/FreeRTOS/portable/heap_3.c</name>
+			<type>1</type>
+			<location>D:/Vortex/DIMBA/dimba/third-party/amazon-freertos/lib/FreeRTOS/portable/MemMang/heap_3.c</location>
+		</link>
+		<link>
+			<name>src/FreeRTOS/portable/port.c</name>
+			<type>1</type>
+			<location>D:/Vortex/DIMBA/dimba/third-party/amazon-freertos/lib/FreeRTOS/portable/GCC/ARM_CM4F/port.c</location>
+		</link>
+		<link>
+			<name>src/FreeRTOS/portable/portmacro.h</name>
+			<type>1</type>
+			<location>D:/Vortex/DIMBA/dimba/third-party/amazon-freertos/lib/FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h</location>
 		</link>
 		<link>
 			<name>src/bsp/lpc_board/board.c</name>
@@ -643,21 +603,6 @@
 			<name>src/dimba/parser/sim900parser.h</name>
 			<type>1</type>
 			<locationURI>PARENT-3-PROJECT_LOC/parser/sim900/sim900parser.h</locationURI>
-		</link>
-		<link>
-			<name>src/rtos/portable/heap_3.c</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/third-party/amazon-freertos/lib/FreeRTOS/portable/MemMang/heap_3.c</locationURI>
-		</link>
-		<link>
-			<name>src/rtos/portable/port.c</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/third-party/amazon-freertos/lib/FreeRTOS/portable/GCC/ARM_CM4F/port.c</locationURI>
-		</link>
-		<link>
-			<name>src/rtos/portable/portmacro.h</name>
-			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/third-party/amazon-freertos/lib/FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h</locationURI>
 		</link>
 	</linkedResources>
 	<variableList>
