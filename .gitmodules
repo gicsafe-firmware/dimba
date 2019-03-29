@@ -1,7 +1,7 @@
 [submodule "third-party/rkh"]
 	path = third-party/rkh
     	url = https://github.com/vortexmakes/RKH.git
-	tag = v3.1.1
+	tag = v3.2.0
 
 [submodule "third-party/ssp"]
 	path = third-party/ssp
