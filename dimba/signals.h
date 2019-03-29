@@ -34,14 +34,14 @@ extern "C" {
 typedef enum Signals Signals;
 enum Signals
 {
-	evOpen,
-	evClose,
+    evOpen,
+    evClose,
     evCmd,
     evResponse,
     evNoResponse,
     evURC,
-	evTimeout,
-	evRegTimeout,
+    evTimeout,
+    evRegTimeout,
     evToutWaitResponse,
     evOk,
     evError,
@@ -68,11 +68,11 @@ enum Signals
     evNetConnected,
     evNetDisconnected,
     evDisconnected,
-	evTerminate,     /* press the key escape on the keyboard */
-	evConnRefused,
-	evWaitConnectTout,
-	evWaitPublishTout,
-	evWaitSyncTout,
+    evTerminate,     /* press the key escape on the keyboard */
+    evConnRefused,
+    evWaitConnectTout,
+    evWaitPublishTout,
+    evWaitSyncTout,
     evConnAccepted,
     evActivate,
     evDeactivate,
@@ -83,7 +83,7 @@ enum Signals
     evImei,
     evOper,
     evSigLevel,
-	evRestart
+    evRestart
 };
 
 /* ------------------------------- Data types ------------------------------ */

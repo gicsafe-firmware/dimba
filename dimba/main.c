@@ -50,29 +50,28 @@
 #define SIZEOF_EP2_BLOCK    sizeof(ModMgrEvt)
 
 /* ------------------------------- Constants ------------------------------- */
-#define MODMGR_STK_SIZE     	512
-#define CONMGR_STK_SIZE     	512
-#define MQTTPROT_STK_SIZE   	512
-#define ETHMGR_STK_SIZE     	512
-
-#define RKH_STARTUP_STACK_SIZE	512
+#define MODMGR_STK_SIZE         512
+#define CONMGR_STK_SIZE         512
+#define MQTTPROT_STK_SIZE       512
+#define ETHMGR_STK_SIZE         512
 
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
-static RKH_THREAD_STK_TYPE ModMgrStack[ MODMGR_STK_SIZE ];
-static RKH_THREAD_STK_TYPE ConMgrStack[ CONMGR_STK_SIZE ];
-static RKH_THREAD_STK_TYPE MQTTProtStack[ MQTTPROT_STK_SIZE ];
-static RKH_THREAD_STK_TYPE EthMGRStack[ ETHMGR_STK_SIZE ];
-
-
-static RKH_EVT_T *MQTTProt_qsto[MQTTPROT_QSTO_SIZE];
-static RKH_EVT_T *EthMgr_qsto[CONMGR_QSTO_SIZE];
-static RKH_EVT_T *ConMgr_qsto[CONMGR_QSTO_SIZE];
+static RKH_THREAD_STK_TYPE ModMgrStack[MODMGR_STK_SIZE];
 static RKH_EVT_T *ModMgr_qsto[MODMGR_QSTO_SIZE];
 
-static rui8_t evPool0Sto[SIZEOF_EP0STO], 
-              evPool1Sto[SIZEOF_EP1STO], 
+static RKH_THREAD_STK_TYPE ConMgrStack[CONMGR_STK_SIZE];
+static RKH_EVT_T *ConMgr_qsto[CONMGR_QSTO_SIZE];
+
+static RKH_THREAD_STK_TYPE EthMGRStack[ETHMGR_STK_SIZE];
+static RKH_EVT_T *EthMgr_qsto[CONMGR_QSTO_SIZE];
+
+static RKH_THREAD_STK_TYPE MQTTProtStack[MQTTPROT_STK_SIZE];
+static RKH_EVT_T *MQTTProt_qsto[MQTTPROT_QSTO_SIZE];
+
+static rui8_t evPool0Sto[SIZEOF_EP0STO],
+              evPool1Sto[SIZEOF_EP1STO],
               evPool2Sto[SIZEOF_EP2STO];
 
 static RKH_ROM_STATIC_EVENT(e_Open, evOpen);
@@ -85,13 +84,13 @@ setupTraceFilters(void)
 {
     RKH_FILTER_ON_GROUP(RKH_TRC_ALL_GROUPS);
     RKH_FILTER_ON_EVENT(RKH_TRC_ALL_EVENTS);
-	RKH_FILTER_OFF_EVENT(MODCMD_USR_TRACE);
-	RKH_FILTER_OFF_GROUP_ALL_EVENTS(RKH_TG_USR);
+    RKH_FILTER_OFF_EVENT(MODCMD_USR_TRACE);
+    RKH_FILTER_OFF_GROUP_ALL_EVENTS(RKH_TG_USR);
     RKH_FILTER_OFF_EVENT(RKH_TE_TMR_TOUT);
     RKH_FILTER_OFF_EVENT(RKH_TE_SM_STATE);
-    //RKH_FILTER_OFF_EVENT(RKH_TE_SMA_FIFO);
-    //RKH_FILTER_OFF_EVENT(RKH_TE_SMA_LIFO);
-    //RKH_FILTER_OFF_EVENT(RKH_TE_SM_TS_STATE);
+    /* RKH_FILTER_OFF_EVENT(RKH_TE_SMA_FIFO); */
+    /* RKH_FILTER_OFF_EVENT(RKH_TE_SMA_LIFO); */
+    /* RKH_FILTER_OFF_EVENT(RKH_TE_SM_TS_STATE); */
     RKH_FILTER_OFF_EVENT(RKH_TE_SM_DCH);
     RKH_FILTER_OFF_SMA(modMgr);
     RKH_FILTER_OFF_SMA(conMgr);
@@ -116,10 +115,6 @@ dimbaCfg_topic(char *t)
 void
 rkh_startupTask(void *pvParameter)
 {
-    RKH_SR_ALLOC();
-
-    rkh_fwk_init();
-
     setupTraceFilters();
 
     RKH_TRC_OPEN();
@@ -136,6 +131,7 @@ rkh_startupTask(void *pvParameter)
     strcpy(mqttProtCfg.clientId, "");
     strcpy(mqttProtCfg.topic, "");
     MQTTProt_ctor(&mqttProtCfg, publishDimba);
+
     RKH_SMA_ACTIVATE(conMgr, ConMgr_qsto, CONMGR_QSTO_SIZE,
                      ConMgrStack, CONMGR_STK_SIZE);
     RKH_SMA_ACTIVATE(ethMgr, EthMgr_qsto, ETHMGR_QSTO_SIZE,
@@ -148,11 +144,10 @@ rkh_startupTask(void *pvParameter)
     RKH_SMA_POST_FIFO(conMgr, &e_Open, 0);
     RKH_SMA_POST_FIFO(ethMgr, &e_Open, 0);
 
-	rkh_fwk_enter();
+    rkh_fwk_enter();
 
     vTaskDelete(NULL);
 }
-
 
 int
 main(int argc, char *argv[])
@@ -164,11 +159,9 @@ main(int argc, char *argv[])
     epoch_init();
     mTime_init();
 
-	xTaskCreate(rkh_startupTask, "rkh_startupTask",
-			    RKH_STARTUP_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL),
-				(xTaskHandle *) NULL);
+    rkh_fwk_init();
 
-	vTaskStartScheduler();
+    vTaskStartScheduler();
 
     return 0;
 }

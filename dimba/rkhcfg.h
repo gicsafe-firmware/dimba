@@ -350,10 +350,10 @@
 
 /**
  *  \brief
- *  If RKH_CFG_SMA_ORTHREG_EN is set to RKH_ENABLED, the state machine 
- *  functions are reentrant, therefore it could be used as workaround to 
- *  easily emulates a state machine or composite state with orthogonal 
- *  regions, for example, dispatching the same event to multiple state 
+ *  If RKH_CFG_SMA_ORTHREG_EN is set to RKH_ENABLED, the state machine
+ *  functions are reentrant, therefore it could be used as workaround to
+ *  easily emulates a state machine or composite state with orthogonal
+ *  regions, for example, dispatching the same event to multiple state
  *  machines (regions) at the same time.
  *
  *  \type       Boolean

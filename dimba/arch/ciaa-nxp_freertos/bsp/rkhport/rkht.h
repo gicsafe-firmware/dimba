@@ -33,7 +33,7 @@
 
 /**
  *  \file       rkht.h
- *  \brief      FreeRTOS
+ *  \brief      FreeRTOS v10.2.0 port
  *
  *  \ingroup    port
  */

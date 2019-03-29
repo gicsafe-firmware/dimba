@@ -60,30 +60,12 @@ RKH_THIS_MODULE
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
-#if defined(RKH_USE_TRC_SENDER)
-static rui8_t rkhtick;
-#endif
-
 /* ----------------------- Local function prototypes ----------------------- */
-static bool_t tickHook(void *p);
-
 /* ---------------------------- Local functions ---------------------------- */
-/* FreeRtos RKH port call to rkh_tim_tick from  vApplicationTickHook */
-/*
- * static bool_t
- * tickHook(void *p)
- * {
- *  RKH_TIM_TICK(&rkhtick);
- *  return 0;
- * }*/
-
 /* ---------------------------- Global functions --------------------------- */
 void
 rkh_hook_start(void)
 {
-/* Since tickHook is not needed, rkh_hook_start is empty */
-/*    tickConfig(BSP_TICK_RATE_MS, tickHook); */
-/*    RKH_TR_FWK_ACTOR(&rkhtick, "rkhtick"); */
 }
 
 void

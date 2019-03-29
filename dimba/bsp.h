@@ -33,9 +33,9 @@ extern "C" {
  */
 enum
 {
-	GSM_PORT, 
+    GSM_PORT,
 
-  	NUM_CHANNELS
+    NUM_CHANNELS
 };
 
 /*
@@ -47,11 +47,11 @@ enum
 };
 
 /*
- * Status Led큦 
+ * Status Led큦
  */
 typedef enum
 {
-    DisconnectedSt, 
+    DisconnectedSt,
     UnregisteredSt = DisconnectedSt,
 
     ConnectedSt,
@@ -59,7 +59,7 @@ typedef enum
 } Status_t;
 
 /*
- * Status Led큦 
+ * Status Led큦
  */
 
 /* ------------------------------- Data types ------------------------------ */

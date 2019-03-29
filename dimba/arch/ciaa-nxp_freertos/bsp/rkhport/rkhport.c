@@ -40,7 +40,7 @@
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2019.03.18  DaBa Initial version 
+ *  2019.03.18  DaBa Initial version
  */
 
 /* -------------------------------- Authors -------------------------------- */
@@ -59,7 +59,7 @@
 /* ------------------------------- Constants ------------------------------- */
 RKH_MODULE_NAME(rkhport)
 RKH_MODULE_VERSION(rkhport, 1.00)
-RKH_MODULE_DESC(rkhport, "FreeRTOS v10.0.1")
+RKH_MODULE_DESC(rkhport, "FreeRTOS v10.2.0")
 
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
@@ -76,21 +76,6 @@ static void idleTask_function(void *arg);
 static void thread_function(void *arg);
 
 /* ---------------------------- Local functions ---------------------------- */
-static
-void
-idleTask_function(void *arg)
-{
-    (void)arg;
-
-    while (running)
-    {
-        RKH_TRC_FLUSH();
-        vTaskDelay(configTICK_RATE_HZ / RKH_CFG_FWK_TICK_RATE_HZ);
-    }
-
-    vTaskDelete(NULL);
-}
-
 static
 void
 thread_function(void *arg)
@@ -128,53 +113,31 @@ rkhport_get_desc(void)
 {
     return RKH_MODULE_GET_DESC();
 }
-#if 0
-void
-rkh_sma_block(RKH_SMA_T *const me)
+
+__attribute__((weak)) void
+rkh_startupTask(void *pvParameter)
 {
-    (void)me;
+    RKH_TRC_OPEN();
+
+    rkh_fwk_enter();
+
+    vTaskDelete(NULL);
 }
 
-void
-rkh_sma_setReady(RKH_SMA_T *const me)
-{
-    (void)me;
-}
-
-void
-rkh_sma_setUnready(RKH_SMA_T *const me)
-{
-    (void)me;
-}
-#endif
 void
 rkh_fwk_init(void)
 {
+    xTaskCreate(rkh_startupTask, "rkh_startupTask",
+                RKH_STARTUP_STACK_SIZE, NULL, RKH_TASK_PRIORITY,
+                (xTaskHandle *) NULL);
 }
 
 void
 rkh_fwk_enter(void)
 {
-    BaseType_t rv;
     RKH_SR_ALLOC();
 
     running = (rui8_t)1;
-
-    /*
-     *  For avoiding to have multiple threads (idle and main) sending data on
-     *  the same socket, i.e. using the send() function, the idle thread is
-     *  created to be run only after the initial process has finished.
-     *  Without this trick, the streams are interleaving and the trace stream
-     *  is corrupted.
-     */
-    rv = xTaskCreate(idleTask_function,                 /* function */
-                     "idleTask",                        /* name */
-					 configMINIMAL_STACK_SIZE,          /* stack size */
-                     NULL,                              /* function argument */
-					 configMAX_PRIORITIES-1,            /* priority */
-                     &idleTaskHandler);
-
-    RKH_ASSERT(rv == pdTRUE);
 
     RKH_HOOK_START();                       /* start-up callback */
     RKH_TR_FWK_EN();
@@ -183,8 +146,8 @@ rkh_fwk_enter(void)
 
     while (running)
     {
-    	vTaskDelay(configTICK_RATE_HZ   /* wait for the tick interval */
-    			  / RKH_CFG_FWK_TICK_RATE_HZ);
+        vTaskDelay(configTICK_RATE_HZ   /* wait for the tick interval */
+                   / RKH_CFG_FWK_TICK_RATE_HZ);
         RKH_TIM_TICK(&l_isr_tick);      /* tick handler */
     }
     RKH_HOOK_EXIT();                    /* cleanup callback */
@@ -214,18 +177,23 @@ void
 rkh_sma_activate(RKH_SMA_T *sma, const RKH_EVT_T **qs, RKH_QUENE_T qsize,
                  void *stks, rui32_t stksize)
 {
-	rui8_t prio;
+    rui8_t prio;
     TaskHandle_t TaskHandle = NULL;
     StaticQueue_t *pStaticQueue;
 
-    //RKH_SR_ALLOC();
+    RKH_SR_ALLOC();
 
     RKH_REQUIRE(qs != (const RKH_EVT_T **)0 && (qsize != 0));
     RKH_REQUIRE((stks != (void *)0) && (stksize != 0));
 
+    RKH_ENTER_CRITICAL_();
+
     pStaticQueue = &QueueBuff[RKH_GET_PRIO(sma)];
 
-    sma->equeue = xQueueCreateStatic(qsize, sizeof(void*), (uint8_t *)qs, pStaticQueue);
+    sma->equeue = xQueueCreateStatic(qsize,
+                                     sizeof(void*),
+                                     (uint8_t *)qs,
+                                     pStaticQueue);
 
     RKH_ASSERT(sma->equeue);
 
@@ -246,7 +214,9 @@ rkh_sma_activate(RKH_SMA_T *sma, const RKH_EVT_T **qs, RKH_QUENE_T qsize,
 
     RKH_ASSERT(TaskHandle);
 
-    //RKH_TR_SMA_ACT(sma, RKH_GET_PRIO(sma), qsize);
+    RKH_TR_SMA_ACT(sma, RKH_GET_PRIO(sma), qsize);
+
+    RKH_EXIT_CRITICAL_();
 }
 
 #if defined(RKH_USE_TRC_SENDER)
@@ -260,6 +230,9 @@ rkh_sma_post_fifo(RKH_SMA_T *sma, const RKH_EVT_T *e)
 {
     BaseType_t taskwoken = pdFALSE;
     BaseType_t rv;
+    RKH_SR_ALLOC();
+
+    RKH_ENTER_CRITICAL_();
 
     RKH_HOOK_SIGNAL(e);
 
@@ -271,7 +244,7 @@ rkh_sma_post_fifo(RKH_SMA_T *sma, const RKH_EVT_T *e)
 
     RKH_TR_SMA_FIFO(sma, e, sender, e->pool, e->nref, 0, 0);
 
-//    portYIELD_FROM_ISR(taskwoken);
+    RKH_EXIT_CRITICAL_();
 }
 
 #if (RKH_CFG_QUE_PUT_LIFO_EN == RKH_ENABLED) && \
@@ -286,6 +259,9 @@ rkh_sma_post_lifo(RKH_SMA_T *sma, const RKH_EVT_T *e)
 {
     BaseType_t taskwoken = pdFALSE;
     BaseType_t rv;
+    RKH_SR_ALLOC();
+
+    RKH_ENTER_CRITICAL_();
 
     RKH_HOOK_SIGNAL(e);
 
@@ -297,7 +273,7 @@ rkh_sma_post_lifo(RKH_SMA_T *sma, const RKH_EVT_T *e)
 
     RKH_TR_SMA_LIFO(sma, e, sender, e->pool, e->nref, 0, 0);
 
-//    portYIELD_FROM_ISR(taskwoken);
+    RKH_EXIT_CRITICAL_();
 }
 
 RKH_EVT_T *
@@ -308,11 +284,15 @@ rkh_sma_get(RKH_SMA_T *sma)
 
     RKH_SR_ALLOC();
 
+    RKH_ENTER_CRITICAL_();
+
     rv = xQueueReceive(sma->equeue, &e, portMAX_DELAY);
 
     RKH_ASSERT(rv == pdTRUE);
 
     RKH_TR_SMA_GET(sma, e, e->pool, e->nref, 0, 0);
+
+    RKH_EXIT_CRITICAL_();
 
     return e;
 }

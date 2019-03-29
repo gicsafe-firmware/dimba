@@ -131,6 +131,10 @@ extern int DbgConsole_Printf( const char *fmt_s, ... );
 #define config_ETHERNET_INTERRUPT_PRIORITY ( \
         configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1)
 
+/* RKH definitions for FreeRTOS integration */
+#define RKH_STARTUP_STACK_SIZE				512
+#define RKH_TASK_PRIORITY					(configMAX_PRIORITIES - 1)
+
 /* Normal assert() semantics without relying on the provision of an assert.h
  * header file. */
 #define configASSERT( x )                                       \

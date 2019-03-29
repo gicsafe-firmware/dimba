@@ -33,7 +33,7 @@
 
 /**
  *  \file       rkhport.h
- *  \brief      FreeRTOS v10.0.1 port
+ *  \brief      FreeRTOS v10.2.0 port
  *
  *  \ingroup    port
  */
@@ -81,7 +81,7 @@
 /* ------------------------------- Constants ------------------------------- */
 /**
  *	If the #RKH_CFGPORT_SMA_THREAD_EN is set to 1, each SMA (active object) has
- *its own thread of execution.
+ ***its own thread of execution.
  */
 #define RKH_CFGPORT_SMA_THREAD_EN           RKH_ENABLED
 
@@ -192,6 +192,7 @@ void rkh_enter_critical(void);
 void rkh_exit_critical(void);
 const char *rkh_get_port_version(void);
 const char *rkh_get_port_desc(void);
+void rkh_startupTask(void *pvParameter);
 
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus

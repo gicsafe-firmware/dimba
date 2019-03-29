@@ -126,54 +126,6 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="com.crt.advproject.config.exe.debug.1287796118.857230718" name="ethMgr.c" rcbsApplicability="disable" resourcePath="src/dimba/ethMgr/ethMgr.c" toolsToInvoke="com.crt.advproject.gcc.exe.debug.110044005.542383249">
-						<tool id="com.crt.advproject.gcc.exe.debug.110044005.542383249" name="MCU C Compiler" superClass="com.crt.advproject.gcc.exe.debug.110044005">
-							<option id="gnu.c.compiler.option.include.paths.856713489" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../bsp&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../bsp/rkhport&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/LPCOpen/lpc_chip_43xx/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/LPCOpen/lpc_board_ciaa_edu_4337/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/sapi_rtos/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/ssp/src&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../conmgr&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../modcmd&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../modmgr&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../mqttProt&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/rkh/source/fwk/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/rkh/source/mempool/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/rkh/source/queue/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/rkh/source/sm/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/rkh/source/sma/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/rkh/source/tmr/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/rkh/source/trc/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../parser/sim900&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../adconv&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../anIn&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../anSampler&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../CirBuffer&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../dIn&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../emaFilter&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../epoch&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../ioChgDet&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../mTime&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../rtime&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../modpwr&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../date&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../publisher&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/MQTT-C/include&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/jWrite/jWrite&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/freertos/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/freertos/inc_arm_cm4f&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/freertos/inc_freertoslpc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../ethMgr&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/lwip/include&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/lwip/include/ipv4&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../bsp/common&quot;"/>
-							</option>
-							<inputType id="com.crt.advproject.compiler.input.1969537971" superClass="com.crt.advproject.compiler.input"/>
-						</tool>
-					</fileInfo>
 					<sourceEntries>
 						<entry excluding="freertos" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>
@@ -305,54 +257,6 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="com.crt.advproject.config.exe.release.587497307.75614578" name="ethMgr.c" rcbsApplicability="disable" resourcePath="src/dimba/ethMgr/ethMgr.c" toolsToInvoke="com.crt.advproject.gcc.exe.release.66117631.1444523415">
-						<tool id="com.crt.advproject.gcc.exe.release.66117631.1444523415" name="MCU C Compiler" superClass="com.crt.advproject.gcc.exe.release.66117631">
-							<option id="gnu.c.compiler.option.include.paths.1568166459" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../bsp&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../bsp/rkhport&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/LPCOpen/lpc_chip_43xx/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/LPCOpen/lpc_board_ciaa_edu_4337/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/sapi_rtos/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/ssp/src&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../conmgr&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../modcmd&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../modmgr&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../mqttProt&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/rkh/source/fwk/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/rkh/source/mempool/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/rkh/source/queue/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/rkh/source/sm/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/rkh/source/sma/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/rkh/source/tmr/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/rkh/source/trc/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../parser/sim900&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../adconv&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../anIn&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../anSampler&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../CirBuffer&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../dIn&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../emaFilter&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../epoch&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../ioChgDet&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../mTime&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../rtime&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../modpwr&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../date&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../publisher&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/MQTT-C/include&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/jWrite/jWrite&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/freertos/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/freertos/inc_arm_cm4f&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/freertos/inc_freertoslpc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../ethMgr&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/lwip/include&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/lwip/include/ipv4&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../bsp/common&quot;"/>
-							</option>
-							<inputType id="com.crt.advproject.compiler.input.212154230" superClass="com.crt.advproject.compiler.input"/>
-						</tool>
-					</fileInfo>
 					<sourceEntries>
 						<entry excluding="freertos" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>
@@ -485,54 +389,6 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="com.crt.advproject.config.exe.debug.1287796118.1235179668.src/dimba/ethMgr/ethMgr.c" name="ethMgr.c" rcbsApplicability="disable" resourcePath="src/dimba/ethMgr/ethMgr.c" toolsToInvoke="com.crt.advproject.gcc.exe.debug.425978243">
-						<tool id="com.crt.advproject.gcc.exe.debug.425978243" name="MCU C Compiler" superClass="com.crt.advproject.gcc.exe.debug.853590693">
-							<option id="gnu.c.compiler.option.include.paths.1002036251" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../bsp&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../bsp/rkhport&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/LPCOpen/lpc_chip_43xx/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/LPCOpen/lpc_board_ciaa_edu_4337/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/sapi_rtos/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/ssp/src&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../conmgr&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../modcmd&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../modmgr&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../mqttProt&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/rkh/source/fwk/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/rkh/source/mempool/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/rkh/source/queue/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/rkh/source/sm/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/rkh/source/sma/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/rkh/source/tmr/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/rkh/source/trc/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../parser/sim900&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../adconv&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../anIn&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../anSampler&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../CirBuffer&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../dIn&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../emaFilter&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../epoch&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../ioChgDet&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../mTime&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../rtime&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../modpwr&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../date&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../publisher&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/MQTT-C/include&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/jWrite/jWrite&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/freertos/inc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/freertos/inc_arm_cm4f&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/freertos/inc_freertoslpc&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../ethMgr&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/lwip/include&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../third-party/lwip/include/ipv4&quot;"/>
-								<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../bsp/common&quot;"/>
-							</option>
-							<inputType id="com.crt.advproject.compiler.input.531595992" superClass="com.crt.advproject.compiler.input"/>
-						</tool>
-					</fileInfo>
 					<sourceEntries>
 						<entry excluding="freertos" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>
@@ -633,6 +489,7 @@
 	</storageModule>
 	<storageModule moduleId="com.crt.advproject"/>
 	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Debug_rtos"/>
 		<configuration configurationName="Debug">
 			<resource resourceType="PROJECT" workspacePath="/dimba"/>
 		</configuration>
