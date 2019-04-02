@@ -1,3 +1,18 @@
+/*
+ *  --------------------------------------------------------------------------
+ *
+ *                               GICSAFe-Firmware
+ *                               ----------------
+ *
+ *                      Copyright (C) 2019 CONICET-GICSAFe
+ *          All rights reserved. Protected by international copyright laws.
+ *
+ *  Contact information:
+ *  site: https://github.com/gicsafe-firmware
+ *  e-mail: <someone>@<somewhere>
+ *  ---------------------------------------------------------------------------
+ */
+
 /**
  *  \file       test_cirBuffer.c
  *  \brief      Unit test for circular buffer.
@@ -5,12 +20,12 @@
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2018.05.15  LeFr  v1.0.00  ---
  */
 
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci  lf@vortexmakes.com
+ *  CIM   Carlos Mancón manconci@gmail.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
@@ -32,7 +47,7 @@ static unsigned char block[32];
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
 /* ---------------------------- Global functions --------------------------- */
-void 
+void
 setUp(void)
 {
     Mock_rkhport_Init();
@@ -41,7 +56,7 @@ setUp(void)
     memset(block, 0xaa, sizeof(block));
 }
 
-void 
+void
 tearDown(void)
 {
     Mock_rkhport_Verify();

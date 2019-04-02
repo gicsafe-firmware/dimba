@@ -1,3 +1,18 @@
+/*
+ *  --------------------------------------------------------------------------
+ *
+ *                               GICSAFe-Firmware
+ *                               ----------------
+ *
+ *                      Copyright (C) 2019 CONICET-GICSAFe
+ *          All rights reserved. Protected by international copyright laws.
+ *
+ *  Contact information:
+ *  site: https://github.com/gicsafe-firmware
+ *  e-mail: <someone>@<somewhere>
+ *  ---------------------------------------------------------------------------
+ */
+
 /**
  *  \file       CirBuffer.c
  *  \brief      Implementation of circular buffer.
@@ -5,12 +20,12 @@
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2018.05.15  LeFr  v1.0.00  Initial version
  */
 
 /* -------------------------------- Authors -------------------------------- */
 /*
- *  2018.05.07  LeFr  v1.0.00  Initial version
+ *  LeFr  Leandro Francucci lf@vortexmakes.com
+ *  CIM   Carlos Mancón manconci@gmail.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
@@ -27,7 +42,7 @@
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
 /* ---------------------------- Global functions --------------------------- */
-int 
+int
 cirBuffer_init(CirBuffer *const me, unsigned char *sto, int elemSize,
                int nElem)
 {
@@ -46,7 +61,7 @@ cirBuffer_init(CirBuffer *const me, unsigned char *sto, int elemSize,
     return result;
 }
 
-int 
+int
 cirBuffer_put(CirBuffer *const me, unsigned char *elem)
 {
     int result = 1;
@@ -75,7 +90,7 @@ cirBuffer_put(CirBuffer *const me, unsigned char *elem)
     return result;
 }
 
-int 
+int
 cirBuffer_get(CirBuffer *const me, unsigned char *elem)
 {
     int result = 1;
@@ -101,8 +116,8 @@ cirBuffer_get(CirBuffer *const me, unsigned char *elem)
     return result;
 }
 
-int 
-cirBuffer_getBlock(CirBuffer *const me, unsigned char *destBlock, 
+int
+cirBuffer_getBlock(CirBuffer *const me, unsigned char *destBlock,
                    int nElem)
 {
     int n, nConsumed, result = 0, offset = 0;
@@ -115,7 +130,7 @@ cirBuffer_getBlock(CirBuffer *const me, unsigned char *destBlock,
         if (me->qty != 0)
         {
             nConsumed = (nElem >= me->qty) ? me->qty : nElem;
-            n = (me->end - me->out) / me->elemSize; 
+            n = (me->end - me->out) / me->elemSize;
             if (n > me->qty)
             {
                 n = me->qty;
@@ -138,7 +153,8 @@ cirBuffer_getBlock(CirBuffer *const me, unsigned char *destBlock,
                 }
                 nConsumed -= n;
                 n = nConsumed;
-            } while (nConsumed);
+            }
+            while (nConsumed);
         }
     }
     RKH_EXIT_CRITICAL_();
@@ -146,7 +162,7 @@ cirBuffer_getBlock(CirBuffer *const me, unsigned char *destBlock,
     return result;
 }
 
-int 
+int
 cirBuffer_getNumElem(CirBuffer *const me)
 {
     int n;
