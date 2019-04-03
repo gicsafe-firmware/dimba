@@ -25,7 +25,7 @@
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci  lf@vortexmakes.com
- *  CIM   Carlos Mancón manconci@gmail.com
+ *  CaMa   Carlos Mancón manconci@gmail.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
