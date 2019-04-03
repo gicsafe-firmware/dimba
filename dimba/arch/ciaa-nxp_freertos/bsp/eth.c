@@ -15,6 +15,9 @@
 
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
+#include "rkh.h"
+#include "bsp.h"
+
 #include "lwip/init.h"
 #include "lwip/opt.h"
 #include "lwip/sys.h"
@@ -70,6 +73,9 @@ vSetupEthTask(void *pvParameters)
 
     /* Wait until the TCP/IP thread is finished before
      * continuing or wierd things may happen */
+
+    RKH_TR_FWK_TUSR(ETH_USR_TRACE);
+
     LWIP_DEBUGF(LWIP_DBG_ON, ("Waiting for TCPIP thread to initialize...\n"));
     tcpip_init(tcpip_init_done_signal, (void *) &tcpipdone);
     while (!tcpipdone)
@@ -167,6 +173,11 @@ vSetupEthTask(void *pvParameters)
             DEBUGOUT("Link connect status: %d\r\n",
                      ((physts & PHY_LINK_CONNECTED) != 0));
 
+            RKH_TRC_USR_BEGIN(ETH_USR_TRACE)
+                 RKH_TUSR_STR("Ethernet Link ");
+                 RKH_TUSR_STR(((physts & PHY_LINK_CONNECTED) != 0 ? 
+                                    "Connected" : "Disconnected"));
+            RKH_TRC_USR_END();
             /* Delay for link detection (250mS) */
             vTaskDelay(configTICK_RATE_HZ / 4);
         }
@@ -176,18 +187,31 @@ vSetupEthTask(void *pvParameters)
         {
             if (lpc_netif.ip_addr.addr)
             {
-                static char tmp_buff[16];
+                static char ip[16];
+                static char mask[16];
+                static char gw[16];
+
                 DEBUGOUT("IP_ADDR    : %s\r\n",
                          ipaddr_ntoa_r((const ip_addr_t *) &lpc_netif.ip_addr,
-                                       tmp_buff,
+                                       ip,
                                        16));
+
+
                 DEBUGOUT("NET_MASK   : %s\r\n",
                          ipaddr_ntoa_r((const ip_addr_t *) &lpc_netif.netmask,
-                                       tmp_buff,
+                                       mask,
                                        16));
+
                 DEBUGOUT("GATEWAY_IP : %s\r\n",
                          ipaddr_ntoa_r((const ip_addr_t *) &lpc_netif.gw,
-                                       tmp_buff, 16));
+                                       gw, 16));
+
+                RKH_TRC_USR_BEGIN(ETH_USR_TRACE)
+                	RKH_TUSR_STR(ip);
+                	RKH_TUSR_STR(mask);
+                    RKH_TUSR_STR(gw);
+                RKH_TRC_USR_END();
+
                 prt_ip = 1;
             }
         }

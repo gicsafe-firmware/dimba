@@ -13,7 +13,7 @@
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci  lf@vortexmakes.com
- *  DaBa  Dario Baliña       dariosb@gmail.com
+ *  DaBa  Dario Baliï¿½a       dariosb@gmail.com
  */
 
 /* --------------------------------- Module -------------------------------- */
@@ -39,15 +39,16 @@ enum
 };
 
 /*
- * User trace events id´s
+ * User trace events idï¿½s
  */
 enum
 {
     MODCMD_USR_TRACE = RKH_TE_USER,
+	ETH_USR_TRACE
 };
 
 /*
- * Status Led´s
+ * Status Ledï¿½s
  */
 typedef enum
 {
@@ -59,7 +60,7 @@ typedef enum
 } Status_t;
 
 /*
- * Status Led´s
+ * Status Ledï¿½s
  */
 
 /* ------------------------------- Data types ------------------------------ */
