@@ -557,42 +557,42 @@
 		<link>
 			<name>src/dimba/CirBuffer/CirBuffer.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/CirBuffer/CirBuffer.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/CirBuffer/src/CirBuffer.c</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/CirBuffer/CirBuffer.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/CirBuffer/CirBuffer.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/CirBuffer/inc/CirBuffer.h</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/anSampler/anSampler.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/anSampler/anSampler.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/anSampler/src/anSampler.c</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/anSampler/anSampler.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/anSampler/anSampler.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/anSampler/inc/anSampler.h</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/epoch/epoch.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/epoch/epoch.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/epoch/src/epoch.c</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/epoch/epoch.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/epoch/epoch.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/epoch/inc/epoch.h</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/ioChgDet/ioChgDet.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/ioChgDet/ioChgDet.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/ioChgDet/src/ioChgDet.c</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/ioChgDet/ioChgDet.h</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/ioChgDet/ioChgDet.h</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/ioChgDet/inc/ioChgDet.h</locationURI>
 		</link>
 		<link>
 			<name>src/dimba/parser/sim900parser.c</name>
