@@ -1,3 +1,18 @@
+/*
+ *  --------------------------------------------------------------------------
+ *
+ *                               GICSAFe-Firmware
+ *                               ----------------
+ *
+ *                      Copyright (C) 2019 CONICET-GICSAFe
+ *          All rights reserved. Protected by international copyright laws.
+ *
+ *  Contact information:
+ *  site: https://github.com/gicsafe-firmware
+ *  e-mail: <someone>@<somewhere>
+ *  ---------------------------------------------------------------------------
+ */
+
 /**
  *  \file       CirBuffer.h
  *  \brief      Specification of circular buffer.
@@ -5,12 +20,12 @@
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2018.05.15  LeFr  v1.0.00  Initial version
  */
 
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci lf@vortexmakes.com
+ *  CaMa   Carlos Mancón manconci@gmail.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
@@ -45,7 +60,7 @@ int cirBuffer_init(CirBuffer *const me, unsigned char *sto, int elemSize,
                    int nElem);
 int cirBuffer_put(CirBuffer *const me, unsigned char *elem);
 int cirBuffer_get(CirBuffer *const me, unsigned char *elem);
-int cirBuffer_getBlock(CirBuffer *const me, unsigned char *destBlock, 
+int cirBuffer_getBlock(CirBuffer *const me, unsigned char *destBlock,
                        int nElem);
 int cirBuffer_getNumElem(CirBuffer *const me);
 
