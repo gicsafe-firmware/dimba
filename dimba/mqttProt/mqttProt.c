@@ -548,8 +548,8 @@ initSendAll(SyncRegion *const me, RKH_EVT_T *pe)
 static void 
 initSendOk(SyncRegion *const me, RKH_EVT_T *pe)
 {
-    (void *)me;
-    (void *)pe;
+    (void)me;
+    (void)pe;
 }
 
 static void 

@@ -75,13 +75,6 @@ RKH_SMA_DEF_PTR(ethMgr);
  *  statically allocated just once by means of RKH_ROM_STATIC_EVENT() macro.
  */
 static RKH_STATIC_EVENT(e_tout, evToutDelay);
-static RKH_ROM_STATIC_EVENT(e_Open, evOpen);
-static RKH_ROM_STATIC_EVENT(e_Close, evClose);
-static RKH_ROM_STATIC_EVENT(e_NetConnected, evNetConnected);
-static RKH_ROM_STATIC_EVENT(e_NetDisconnected, evNetDisconnected);
-static RKH_ROM_STATIC_EVENT(e_Sent,     evSent);
-static RKH_ROM_STATIC_EVENT(e_SendFail, evSendFail);
-static RKH_ROM_STATIC_EVENT(e_RecvFail, evRecvFail);
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */

@@ -47,7 +47,6 @@ typedef struct {
 } io_port_t;
 
 static const io_port_t gpioLEDBits[] = {{5,0},{5,1},{5,2},{0,14},{1,11},{1,12}};
-static uint32_t lcd_cfg_val;
 static const io_port_t gpioBtnBits[] = {{0,4},{0,8},{0,9},{1,9}};
 static const uint8_t gpioBtnIDs[] = {TEC1_PRESSED, TEC2_PRESSED, TEC3_PRESSED, TEC4_PRESSED};
 
