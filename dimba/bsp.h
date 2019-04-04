@@ -13,7 +13,7 @@
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci  lf@vortexmakes.com
- *  DaBa  Dario Baliña       dariosb@gmail.com
+ *  DaBa  Dario Baliï¿½a       dariosb@gmail.com
  */
 
 /* --------------------------------- Module -------------------------------- */
@@ -33,25 +33,26 @@ extern "C" {
  */
 enum
 {
-	GSM_PORT, 
+    GSM_PORT,
 
-  	NUM_CHANNELS
+    NUM_CHANNELS
 };
 
 /*
- * User trace events id´s
+ * User trace events idï¿½s
  */
 enum
 {
     MODCMD_USR_TRACE = RKH_TE_USER,
+	ETH_USR_TRACE
 };
 
 /*
- * Status Led´s 
+ * Status Ledï¿½s
  */
 typedef enum
 {
-    DisconnectedSt, 
+    DisconnectedSt,
     UnregisteredSt = DisconnectedSt,
 
     ConnectedSt,
@@ -59,7 +60,7 @@ typedef enum
 } Status_t;
 
 /*
- * Status Led´s 
+ * Status Ledï¿½s
  */
 
 /* ------------------------------- Data types ------------------------------ */
@@ -69,6 +70,8 @@ void bsp_init(int argc, char *argv[]);
 
 void bsp_keyParser(int c);
 void bsp_timeTick(void);
+
+void bsp_eth_open(void);
 
 void bsp_serial_open(int ch);
 void bsp_serial_close(int ch);
