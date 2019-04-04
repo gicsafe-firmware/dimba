@@ -96,6 +96,10 @@ vSetupEthTask(void *pvParameters)
     IP4_ADDR(&netmask, 255, 255, 255, 0);
 #endif
 
+    Chip_GPIO_SetPinState(LPC_GPIO_PORT, 3, 0, false);							/* GPIO3[0] PHY_NRESET output high */
+    msDelay(10);
+    Chip_GPIO_SetPinState(LPC_GPIO_PORT, 3, 0, true);							/* GPIO3[0] PHY_NRESET output high */
+
     /* Add netif interface for lpc17xx_8x */
     if (!netif_add(&lpc_netif, &ipaddr, &netmask, &gw, NULL, lpc_enetif_init,
                    tcpip_input))

@@ -229,8 +229,7 @@ void Board_Init(void)
 	Chip_SCU_PinMuxSet(0x6, 1, (SCU_MODE_PULLUP | SCU_MODE_INBUFF_EN | SCU_MODE_FUNC0));			/* P6_1 GPIO0 */
 	Chip_GPIO_SetPinDIROutput(LPC_GPIO_PORT, 3, 0);							/* GPIO3[0] = PHY_NRESET */
 	/*** Reset PHY_NRESET ***/
-    Chip_GPIO_SetPinState(LPC_GPIO_PORT, 3, 0, false);							/* GPIO3[0] output low */
-	Chip_GPIO_SetPinState(LPC_GPIO_PORT, 3, 0, true);							/* GPIO3[0] output high */
+    Chip_GPIO_SetPinState(LPC_GPIO_PORT, 3, 0, false);						/* GPIO3[0] output low */
 
 	Chip_ENET_RMIIEnable(LPC_ETHERNET);
 #else
