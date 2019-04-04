@@ -1,3 +1,18 @@
+/*
+ *  --------------------------------------------------------------------------
+ *
+ *                               GICSAFe-Firmware
+ *                               ----------------
+ *
+ *                      Copyright (C) 2019 CONICET-GICSAFe
+ *          All rights reserved. Protected by international copyright laws.
+ *
+ *  Contact information:
+ *  site: https://github.com/gicsafe-firmware
+ *  e-mail: <someone>@<somewhere>
+ *  ---------------------------------------------------------------------------
+ */
+
 /**
  *  \file       test_cirBuffer.c
  *  \brief      Unit test for circular buffer.
@@ -5,18 +20,18 @@
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2018.05.15  LeFr  v1.0.00  ---
  */
 
 /* -------------------------------- Authors -------------------------------- */
 /*
  *  LeFr  Leandro Francucci  lf@vortexmakes.com
+ *  CaMa   Carlos Mancón manconci@gmail.com
  */
 
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
 #include <string.h>
-#include "unity_fixture.h"
+#include "unity.h"
 #include "CirBuffer.h"
 #include "Mock_rkhport.h"
 
@@ -24,12 +39,6 @@
 /* ------------------------------- Constants ------------------------------- */
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
-int GlobalExpectCount;
-int GlobalVerifyOrder;
-char *GlobalOrderError;
-
-TEST_GROUP(cirBuffer);
-
 /* ---------------------------- Local variables ---------------------------- */
 static CirBuffer buf;
 static unsigned char storage[128];
@@ -38,7 +47,8 @@ static unsigned char block[32];
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
 /* ---------------------------- Global functions --------------------------- */
-TEST_SETUP(cirBuffer)
+void
+setUp(void)
 {
     Mock_rkhport_Init();
     rkh_enter_critical_Ignore();
@@ -46,13 +56,15 @@ TEST_SETUP(cirBuffer)
     memset(block, 0xaa, sizeof(block));
 }
 
-TEST_TEAR_DOWN(cirBuffer)
+void
+tearDown(void)
 {
     Mock_rkhport_Verify();
     Mock_rkhport_Destroy();
 }
 
-TEST(cirBuffer, ClearAfterInit)
+void
+test_ClearAfterInit(void)
 {
     int result;
 
@@ -68,7 +80,8 @@ TEST(cirBuffer, ClearAfterInit)
     TEST_ASSERT_EQUAL(&storage[128], buf.end);
 }
 
-TEST(cirBuffer, WrongArgsOnInit)
+void
+test_WrongArgsOnInit(void)
 {
     int result;
 
@@ -85,7 +98,8 @@ TEST(cirBuffer, WrongArgsOnInit)
     TEST_ASSERT_EQUAL(1, result);
 }
 
-TEST(cirBuffer, PutOneElement)
+void
+test_PutOneElement(void)
 {
     int result;
     unsigned char elem;
@@ -100,7 +114,8 @@ TEST(cirBuffer, PutOneElement)
     TEST_ASSERT_EQUAL(0, result);
 }
 
-TEST(cirBuffer, PutOneElementWrapAround)
+void
+test_PutOneElementWrapAround(void)
 {
     unsigned char elem;
 
@@ -121,7 +136,8 @@ TEST(cirBuffer, PutOneElementWrapAround)
     TEST_ASSERT_EQUAL(4, buf.qty);
 }
 
-TEST(cirBuffer, GetOneElement)
+void
+test_GetOneElement(void)
 {
     int result;
     unsigned char expectedElem;
@@ -137,7 +153,8 @@ TEST(cirBuffer, GetOneElement)
     TEST_ASSERT_EQUAL(expectedElem, elem);
 }
 
-TEST(cirBuffer, GetFromEmpty)
+void
+test_GetFromEmpty(void)
 {
     int result;
     unsigned char elem;
@@ -148,7 +165,8 @@ TEST(cirBuffer, GetFromEmpty)
     TEST_ASSERT_EQUAL(1, result);
 }
 
-TEST(cirBuffer, GetInOrderWrapAround)
+void
+test_GetInOrderWrapAround(void)
 {
     int result;
     unsigned char expectedElem;
@@ -182,7 +200,8 @@ TEST(cirBuffer, GetInOrderWrapAround)
     TEST_ASSERT_EQUAL(1, result);
 }
 
-TEST(cirBuffer, GetManyElemsLessThanStored)
+void
+test_GetManyElemsLessThanStored(void)
 {
     int nGetElem;
     unsigned char expectedElem;
@@ -202,7 +221,8 @@ TEST(cirBuffer, GetManyElemsLessThanStored)
     TEST_ASSERT_EQUAL(0xaa, block[2]);
 }
 
-TEST(cirBuffer, GetManyElemsEqualThanStored)
+void
+test_GetManyElemsEqualThanStored(void)
 {
     int nGetElem;
     unsigned char expectedElem;
@@ -223,7 +243,8 @@ TEST(cirBuffer, GetManyElemsEqualThanStored)
     TEST_ASSERT_EQUAL(0xaa, block[3]);
 }
 
-TEST(cirBuffer, GetManyElemsMoreThanStored)
+void
+test_GetManyElemsMoreThanStored(void)
 {
     int nGetElem;
     unsigned char expectedElem;
@@ -244,7 +265,8 @@ TEST(cirBuffer, GetManyElemsMoreThanStored)
     TEST_ASSERT_EQUAL(0xaa, block[3]);
 }
 
-TEST(cirBuffer, GetManyElemsEqualThanStoredWrapAround)
+void
+test_GetManyElemsEqualThanStoredWrapAround(void)
 {
     int nGetElem, i, blockSize;
     unsigned char expectedElem;
@@ -267,7 +289,8 @@ TEST(cirBuffer, GetManyElemsEqualThanStoredWrapAround)
     TEST_ASSERT_EQUAL(0xaa, block[5]);
 }
 
-TEST(cirBuffer, GetManyElemsLessThanStoredWrapAround)
+void
+test_GetManyElemsLessThanStoredWrapAround(void)
 {
     int nGetElem, i, blockSize;
     unsigned char expectedElem;
@@ -294,7 +317,8 @@ TEST(cirBuffer, GetManyElemsLessThanStoredWrapAround)
     TEST_ASSERT_EQUAL(blockSize - nGetElem, cirBuffer_getNumElem(&buf));
 }
 
-TEST(cirBuffer, GetManyElemsMoreThanStoredWrapAround)
+void
+test_GetManyElemsMoreThanStoredWrapAround(void)
 {
     int nGetElem, i, blockSize;
     unsigned char expectedElem;
@@ -316,7 +340,8 @@ TEST(cirBuffer, GetManyElemsMoreThanStoredWrapAround)
     TEST_ASSERT_EQUAL(0xaa, block[4]);
 }
 
-TEST(cirBuffer, GetManyFromEmpty)
+void
+test_GetManyFromEmpty(void)
 {
     int nGetElem;
 
