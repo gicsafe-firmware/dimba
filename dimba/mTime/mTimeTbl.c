@@ -19,6 +19,7 @@
 #include "mTime.h"
 #include "mTimeCfg.h"
 
+#include "din.h"
 #include "anin.h"
 #include "epoch.h"
 #include "modpwr.h"
@@ -34,6 +35,7 @@ static void(* const actions_100[])( void ) =
 	modPwr_ctrl, 
 #endif
     epoch_updateByStep,
+    dIn_scan,
     NULL
 };
 

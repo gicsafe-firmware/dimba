@@ -84,7 +84,6 @@ bsp_timeTick(void)
 {
     ++tstamp;
     
-    dIn_scan();
     modPwr_ctrl();
     mTime_tick();
 }
