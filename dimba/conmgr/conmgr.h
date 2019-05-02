@@ -148,12 +148,15 @@ extern "C" {
 #define AZURE_SERVER            "191.239.243.244"
 #define AZURE_PORT              "1883"
 
+#define SOFSE_SERVER            "gicsafe.sofse.gob.ar"
+#define SOFSE_PORT              "1883"
+
 #define DOCKLIGHT_SERVER        "181.230.72.86"
 #define DOCKLIGHT_PORT          "33498"
 
 #define CONNECTION_PROT         "TCP"
-#define CONNECTION_DOMAIN       AZURE_SERVER
-#define CONNECTION_PORT         AZURE_PORT
+#define CONNECTION_DOMAIN       SOFSE_SERVER
+#define CONNECTION_PORT         SOFSE_PORT
 
 /* ................................ Signals ................................ */
 /* ........................ Declares active object ......................... */
