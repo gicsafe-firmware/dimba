@@ -253,7 +253,6 @@ bsp_keyParser(int c)
 void
 bsp_timeTick(void)
 {
-    dIn_scan();
     mTime_tick();
 }
 

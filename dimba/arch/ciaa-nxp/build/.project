@@ -255,6 +255,16 @@
 			<locationURI>PARENT-4-PROJECT_LOC/third-party/rkh/source/fwk/src/rkhfwk_evtpool.c</locationURI>
 		</link>
 		<link>
+			<name>src/rkh/rkhfwk_pubsub.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/rkh/source/fwk/src/rkhfwk_pubsub.c</locationURI>
+		</link>
+		<link>
+			<name>src/rkh/rkhfwk_rdygrp.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/third-party/rkh/source/fwk/src/rkhfwk_rdygrp.c</locationURI>
+		</link>
+		<link>
 			<name>src/rkh/rkhfwk_sched.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/third-party/rkh/source/fwk/src/rkhfwk_sched.c</locationURI>
